@@ -14,12 +14,47 @@ interface SolutionDetail {
 interface IndustryData {
   id: string;
   name: string;
-  icon: React.ReactNode;
   riskKicker: string;
-  description: string;
-  solutions: SolutionDetail[];
-  image: string;
   accent: string;
+  image: string;
+  description: string;
+  icon?: React.ReactNode;
+}
+
+interface CorePortfolio {
+  title: string;
+  description: string;
+  items: string[];
+  icon: string;
+}
+
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+interface SolutionsPageConfig {
+  heroBgImage: string;
+  heroTagline: string;
+  heroTitle: string;
+  heroDescription: string;
+  industriesTagline: string;
+  industriesTitle: string;
+  industriesDesc: string;
+  industries: IndustryData[];
+  capabilitiesTagline: string;
+  capabilitiesTitle: string;
+  capabilitiesDesc: string;
+  corePortfolios: CorePortfolio[];
+  partnersTagline: string;
+  partnersTitle: string;
+  partnersDesc: string;
+  partners: string[];
+  gatewayTagline: string;
+  gatewayTitle: string;
+  gatewayDesc: string;
+  solutionScopeOptions: DropdownOption[];
+  submitButtonText: string;
 }
 
 const itemSlugMap: Record<string, string> = {
@@ -60,141 +95,60 @@ const itemSlugMap: Record<string, string> = {
   "Digital mobility Xshilder": "xshielder"
 };
 
-export default function SolutionsPage() {
-  const [activeTab, setActiveTab] = useState<string>("oil-gas");
-  const [hoveredSolution, setHoveredSolution] = useState<string | null>(null);
-
-  const industries: IndustryData[] = [
+const defaultPageConfig: SolutionsPageConfig = {
+  heroBgImage: "/solution.png",
+  heroTagline: "Ecosystem Engineering Portal",
+  heroTitle: "High-Compliance Engineered Solutions",
+  heroDescription: "Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator. We formulate high-risk protective frameworks that isolate hazards, guarantee regional operational safety, and structurally reduce asset TCO.",
+  industriesTagline: "Operating Environments",
+  industriesTitle: "Solutions By Operating Industry",
+  industriesDesc: "Industrial sectors feature highly specific chemical, thermal, and spatial risks. We build multi-layered mitigation loops engineered to perform reliably inside harsh conditions.",
+  industries: [
     {
       id: "oil-gas",
       name: "Oil & Gas",
       riskKicker: "HAZARDOUS ATMOSPHERE | ATEX ZONE 0 & ZONE 1",
-      accent: "#c22026", // East Wind Red
+      accent: "#c22026",
       image: "/predictive_intelligence.webp",
-      description: "Securing petrochemical extraction, transport infrastructure, and downstream refining loops through intrinsically safe telemetry, explosion isolation, and toxic gas environment management.",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.656 48.656 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3M3 12l3 3m-3-3-3 3M19.5 12a48.11 48.11 0 0 1-.34 9m-14.32 0c-.017-.22-.032-.441-.046-.662M4.5 12H19" />
-        </svg>
-      ),
-      solutions: [
-        {
-          name: "Wireless & Telemetry Systems",
-          items: ["End-End ISA 100 wireless gas detection system", "Plant OPS", "Air loops systems", "Wireless data acquisition"]
-        },
-        {
-          name: "Containment & Safety Infrastructure",
-          items: ["TGR(temporary refuge chamber)", "LER", "Analyzer shelters"]
-        },
-        {
-          name: "Fire Fighting & Operations",
-          items: ["Tank farm fire fighting", "Digital mobility-x shielder", "H2s shelter rental", "Breathing air cascade system"]
-        },
-        {
-          name: "Engineering & Risk Consultancy",
-          items: ["HSE consultancy", "Explosion proof design consultancy"]
-        }
-      ]
+      description: "Securing petrochemical extraction, transport infrastructure, and downstream refining loops through intrinsically safe telemetry, explosion isolation, and toxic gas environment management."
     },
     {
       id: "petrochemical",
       name: "Petrochemicals",
       riskKicker: "PROCESS HAZARD CONTROL | ZONE 1 & ZONE 2",
-      accent: "#f59e0b", // Amber/Gold
+      accent: "#f59e0b",
       image: "/industrial_digitalization.webp",
-      description: "Optimising downstream chemical refining ecosystems with real-time Physics-Informed ML, predictive anomaly diagnostics, and high-fidelity wireless telemetry layers.",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M3 12h18M12 3a9 9 0 0 1 9 9m-9-9a9 9 0 0 0-9 9m9 9a9 9 0 0 1 9-9m-9 9a9 9 0 0 0-9-9" />
-        </svg>
-      ),
-      solutions: [
-        {
-          name: "Factory Digitalization",
-          items: ["Smart factories", "Plant Ai", "Wireless data acquisition"]
-        },
-        {
-          name: "Wireless Systems & Gas Safety",
-          items: ["SIL2 wireless gas detection systems", "ISA 100, LUARA, HART, Wireless systems"]
-        },
-        {
-          name: "Emergency Operations",
-          items: ["Emergency response solution"]
-        }
-      ]
+      description: "Optimising downstream chemical refining ecosystems with real-time Physics-Informed ML, predictive anomaly diagnostics, and high-fidelity wireless telemetry layers."
     },
     {
       id: "civil-defense",
       name: "Civil Defense",
       riskKicker: "TACTICAL EMERGENCY INCIDENT COMMAND",
-      accent: "#ef4444", // Red/Orange
+      accent: "#ef4444",
       image: "/emergency_vehicle.webp",
-      description: "Equipping public safety, civil protection, and regional defense forces with heavy tactical command apparatus, specialized life-support vehicles, and optimized foam suppression networks.",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.617 3.064a5.976 5.976 0 0 1-2.903 2.903c-.674.987-1.796 1.617-3.064 1.617a5.976 5.976 0 0 1-3.064-1.617 5.976 5.976 0 0 1-2.903-2.903C2.63 14.39 shadow-sm" />
-        </svg>
-      ),
-      solutions: [
-        {
-          name: "Fleet & Specialized Vehicles",
-          items: ["Asset management systems AI integrated fire trucks", "Rescue intervention truck (RIV)", "SCBA trucks", "CBRN Vehicles"]
-        },
-        {
-          name: "Extinguishing & Incident Response",
-          items: ["Compressed air form system (CAFS)", "Emergency response system"]
-        }
-      ]
+      description: "Equipping public safety, civil protection, and regional defense forces with heavy tactical command apparatus, specialized life-support vehicles, and optimized foam suppression networks."
     },
     {
       id: "marine",
       name: "Marine & Offshore",
       riskKicker: "OFFSHORE ARCHITECTURE | ABS & DNV COMPLIANT",
-      accent: "#1e3e8f", // East Wind Blue
+      accent: "#1e3e8f",
       image: "/thermal_ehouse.webp",
-      description: "Providing deepwater infrastructure defense, automated hull breach stabilization tracking, and extreme salt-atmosphere corrosive protection systems.",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15a4.5 4.5 0 0 0 4.5 4.5H18a3.75 3.75 0 0 0 3.75-3.75V15m-19.5 0A4.5 4.5 0 0 1 6.75 10.5H18a3.75 3.75 0 0 1 3.75 3.75V15M2.25 15V12a4.5 4.5 0 0 1 4.5-4.5H18A3.75 3.75 0 0 1 21.75 11.25V15" />
-        </svg>
-      ),
-      solutions: [
-        {
-          name: "Vessel Containment & Integrity",
-          items: ["Damage control system", "TGR", "DE Compression champeers"]
-        },
-        {
-          name: "Wireless & Telecom Infrastructures",
-          items: ["Wireless data acquisition and LAUARA 1SA 100, WIRELESS HART", "Digital mobility Xshielder", "Plant OPS"]
-        },
-        {
-          name: "Field Services & Rentals",
-          items: ["H2S shelter rental", "Air loops systems", "Breathing air cascade solution"]
-        }
-      ]
+      description: "Providing deepwater infrastructure defense, automated hull breach stabilization tracking, and extreme salt-atmosphere corrosive protection systems."
     },
     {
       id: "utility-power",
       name: "Utility & Power",
       riskKicker: "CRITICAL GRID SAFETY MARGIN | IEEE & IEC CERTIFIED",
-      accent: "#10b981", // Emerald
+      accent: "#10b981",
       image: "/wireless_monitoring.webp",
-      description: "Hardening continental power distribution grids, high-output electrical substations, and water transformation architectures through high-noise immune telemetry and physical containment monitoring.",
-      icon: (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-        </svg>
-      ),
-      solutions: [
-        {
-          name: "Grid Telemetry & Infrastructure",
-          items: ["Sampling systems", "Wireless infrastructure", "Smart Facility", "Digital mobility Xshilder"]
-        }
-      ]
+      description: "Hardening continental power distribution grids, high-output electrical substations, and water transformation architectures through high-noise immune telemetry and physical containment monitoring."
     }
-  ];
-
-  const corePortfolios = [
+  ],
+  capabilitiesTagline: "Core Expertise",
+  capabilitiesTitle: "Core Capabilities Portfolio",
+  capabilitiesDesc: "Eastwind executes complex, multi-disciplinary workflows through structural, instrumentation, and fire safety engineering domains to assure unified system performance.",
+  corePortfolios: [
     {
       title: "AI, Digitalisation & Data Architecture",
       description: "Advanced data acquisition pipelines running Agentic AI models to enable automated predictive asset diagnostics.",
@@ -261,34 +215,153 @@ export default function SolutionsPage() {
       ],
       icon: "🔬"
     }
-  ];
-
-  const partners = [
+  ],
+  partnersTagline: "Global Integration",
+  partnersTitle: "Integrated Technology Partners",
+  partnersDesc: "We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.",
+  partners: [
     "Dräger", "Empel", "Nardi", "Mimes", "One Seven", "Sieon", "Xshielder",
     "Nittan", "FlamePro", "E2S", "Schneider", "CRI", "CEJN", "Polyhose",
     "Keiconnections", "Leader", "Tridiagonal", "Phoenix", "Pepperl+Fuchs",
     "Guttor", "Paratech", "Panam", "Atexxor", "Thermocable"
-  ];
+  ],
+  gatewayTagline: "Enquiry Gateway",
+  gatewayTitle: "Initiate Solution Proposal Request",
+  gatewayDesc: "Our regional infrastructure engineering office coordinates directly with technical site operators to map out field constraints, balance topologies, and deploy high-compliance certified safety systems.",
+  solutionScopeOptions: [
+    { value: "ai-digitalization", label: "AI, Digitalisation & Data" },
+    { value: "firefighting", label: "Tactical Response Fleet Systems" },
+    { value: "gas-detection", label: "Fire & Gas Topology Loops" },
+    { value: "suppression", label: "Extinguishing & Simulator Skids" },
+    { value: "wireless", label: "Industrial Wireless Mesh Networks" },
+    { value: "services", label: "Specialised Field Services" }
+  ],
+  submitButtonText: "Submit Request"
+};
 
-  const activeIndustry = industries.find((ind) => ind.id === activeTab) || industries[0];
+const defaultIndustrySolutionsMap: Record<string, { name: string; items: string[] }[]> = {
+  "oil-gas": [
+    {
+      name: "Wireless & Telemetry Systems",
+      items: ["End-End ISA 100 wireless gas detection system", "Plant OPS", "Air loops systems", "Wireless data acquisition"]
+    },
+    {
+      name: "Containment & Safety Infrastructure",
+      items: ["TGR(temporary refuge chamber)", "LER", "Analyzer shelters"]
+    },
+    {
+      name: "Fire Fighting & Operations",
+      items: ["Tank farm fire fighting", "Digital mobility-x shielder", "H2s shelter rental", "Breathing air cascade system"]
+    },
+    {
+      name: "Engineering & Risk Consultancy",
+      items: ["HSE consultancy", "Explosion proof design consultancy"]
+    }
+  ],
+  "petrochemical": [
+    {
+      name: "Factory Digitalization",
+      items: ["Smart factories", "Plant Ai", "Wireless data acquisition"]
+    },
+    {
+      name: "Wireless Systems & Gas Safety",
+      items: ["SIL2 wireless gas detection systems", "ISA 100, LUARA, HART, Wireless systems"]
+    },
+    {
+      name: "Emergency Operations",
+      items: ["Emergency response solution"]
+    }
+  ],
+  "civil-defense": [
+    {
+      name: "Fleet & Specialized Vehicles",
+      items: ["Asset management systems AI integrated fire trucks", "Rescue intervention truck (RIV)", "SCBA trucks", "CBRN Vehicles"]
+    },
+    {
+      name: "Extinguishing & Incident Response",
+      items: ["Compressed air form system (CAFS)", "Emergency response system"]
+    }
+  ],
+  "marine": [
+    {
+      name: "Vessel Containment & Integrity",
+      items: ["Damage control system", "TGR", "DE Compression champeers"]
+    },
+    {
+      name: "Wireless & Telecom Infrastructures",
+      items: ["Wireless data acquisition and LAUARA 1SA 100, WIRELESS HART", "Digital mobility Xshielder", "Plant OPS"]
+    },
+    {
+      name: "Field Services & Rentals",
+      items: ["H2S shelter rental", "Air loops systems", "Breathing air cascade solution"]
+    }
+  ],
+  "utility-power": [
+    {
+      name: "Grid Telemetry & Infrastructure",
+      items: ["Sampling systems", "Wireless infrastructure", "Smart Facility", "Digital mobility Xshilder"]
+    }
+  ]
+};
 
+export default function SolutionsPage() {
+  const [pageConfig, setPageConfig] = useState<SolutionsPageConfig>(defaultPageConfig);
+  const [activeTab, setActiveTab] = useState<string>("oil-gas");
+  const [hoveredSolution, setHoveredSolution] = useState<string | null>(null);
   const [solutionsList, setSolutionsList] = useState<any[]>([]);
 
   useEffect(() => {
-    async function loadSolutions() {
+    async function loadData() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const res = await fetch(`${baseUrl}/api/solutions`);
-        if (res.ok) {
-          const list = await res.json();
+        
+        // Fetch Solutions Page Configuration
+        const pageRes = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store" });
+        if (pageRes.ok) {
+          const data = await pageRes.json();
+          setPageConfig({
+            heroBgImage: data.heroBgImage || defaultPageConfig.heroBgImage,
+            heroTagline: data.heroTagline || defaultPageConfig.heroTagline,
+            heroTitle: data.heroTitle || defaultPageConfig.heroTitle,
+            heroDescription: data.heroDescription || defaultPageConfig.heroDescription,
+            industriesTagline: data.industriesTagline || defaultPageConfig.industriesTagline,
+            industriesTitle: data.industriesTitle || defaultPageConfig.industriesTitle,
+            industriesDesc: data.industriesDesc || defaultPageConfig.industriesDesc,
+            industries: data.industries && data.industries.length > 0 ? data.industries : defaultPageConfig.industries,
+            capabilitiesTagline: data.capabilitiesTagline || defaultPageConfig.capabilitiesTagline,
+            capabilitiesTitle: data.capabilitiesTitle || defaultPageConfig.capabilitiesTitle,
+            capabilitiesDesc: data.capabilitiesDesc || defaultPageConfig.capabilitiesDesc,
+            corePortfolios: data.corePortfolios && data.corePortfolios.length > 0 ? data.corePortfolios : defaultPageConfig.corePortfolios,
+            partnersTagline: data.partnersTagline || defaultPageConfig.partnersTagline,
+            partnersTitle: data.partnersTitle || defaultPageConfig.partnersTitle,
+            partnersDesc: data.partnersDesc || defaultPageConfig.partnersDesc,
+            partners: data.partners && data.partners.length > 0 ? data.partners : defaultPageConfig.partners,
+            gatewayTagline: data.gatewayTagline || defaultPageConfig.gatewayTagline,
+            gatewayTitle: data.gatewayTitle || defaultPageConfig.gatewayTitle,
+            gatewayDesc: data.gatewayDesc || defaultPageConfig.gatewayDesc,
+            solutionScopeOptions: data.solutionScopeOptions && data.solutionScopeOptions.length > 0 ? data.solutionScopeOptions : defaultPageConfig.solutionScopeOptions,
+            submitButtonText: data.submitButtonText || defaultPageConfig.submitButtonText,
+          });
+
+          if (data.industries && data.industries.length > 0) {
+            setActiveTab(data.industries[0].id);
+          }
+        }
+
+        // Fetch Individual Solutions Catalog
+        const solRes = await fetch(`${baseUrl}/api/solutions`);
+        if (solRes.ok) {
+          const list = await solRes.json();
           setSolutionsList(list);
         }
       } catch (err) {
-        console.error("Failed to load solutions database catalog:", err);
+        console.error("Failed to load solutions page configuration:", err);
       }
     }
-    loadSolutions();
+    loadData();
   }, []);
+
+  const activeIndustry = pageConfig.industries.find((ind) => ind.id === activeTab) || pageConfig.industries[0] || defaultPageConfig.industries[0];
 
   const activeIndustrySolutions = solutionsList.filter((sol) => {
     const apps = sol.applications || [];
@@ -309,12 +382,14 @@ export default function SolutionsPage() {
     groupedSolutions[cat].push(sol);
   });
 
+  const fallbackDefaults = defaultIndustrySolutionsMap[activeIndustry.id] || defaultIndustrySolutionsMap["oil-gas"];
+
   const displaySolutions = Object.keys(groupedSolutions).length > 0 
     ? Object.entries(groupedSolutions).map(([name, items]) => ({
         name,
         items: items.map((i) => ({ name: i.title, id: i.id }))
       }))
-    : activeIndustry.solutions.map((s) => ({
+    : fallbackDefaults.map((s) => ({
         name: s.name,
         items: s.items.map((it) => {
           const slug = itemSlugMap[it];
@@ -328,19 +403,16 @@ export default function SolutionsPage() {
 
       <main className="min-h-screen relative z-10 w-full overflow-x-clip text-slate-800 bg-white antialiased">
         
-        {/* Symmetrical Ambient Glow System */}
+        {/* Ambient Glow System */}
         <div className="absolute top-[20%] left-1/4 w-[500px] h-[500px] rounded-full bg-[#1e3e8f]/5 blur-[120px] pointer-events-none z-0" />
         <div className="absolute bottom-[30%] right-1/4 w-[600px] h-[600px] rounded-full bg-[#ff2228]/4 blur-[140px] pointer-events-none z-0" />
-
-        {/* Structural Tech Grid Overlay */}
         <div className="industrial-grid absolute inset-0 opacity-[0.015] pointer-events-none z-0" />
 
-        {/* Cinematic Hero Section - Updated layout matching image_6f023c.png removal request */}
+        {/* Dynamic Hero Section */}
         <section className="relative pt-[220px] pb-[160px] overflow-hidden border-b border-white/5 min-h-[600px] flex items-center bg-slate-950 w-full z-10">
-          
           <img
-            src="/solution.png"
-            alt="Industrial Fire Safety Infrastructure System"
+            src={pageConfig.heroBgImage}
+            alt={pageConfig.heroTitle}
             className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none brightness-[0.85] scale-101 z-0"
           />
 
@@ -350,13 +422,13 @@ export default function SolutionsPage() {
           <div className="max-w-[1400px] w-full mx-auto px-10 max-sm:px-5 relative z-20">
             <div className="max-w-[750px] space-y-4">
               <span className="inline-block text-[#c22026] text-xs font-bold uppercase tracking-[0.25em]">
-                Ecosystem Engineering Portal
+                {pageConfig.heroTagline}
               </span>
               <h1 className="text-[2.6rem] max-md:text-[2.1rem] max-sm:text-[1.8rem] leading-[1.15] uppercase font-extrabold tracking-tight text-white m-0">
-                High-Compliance Engineered Solutions
+                {pageConfig.heroTitle}
               </h1>
               <p className="text-[0.95rem] text-slate-200 leading-relaxed font-light m-0">
-                Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator. We formulate high-risk protective frameworks that isolate hazards, guarantee regional operational safety, and structurally reduce asset TCO.
+                {pageConfig.heroDescription}
               </p>
             </div>
           </div>
@@ -367,17 +439,17 @@ export default function SolutionsPage() {
           
           <div className="border-b border-slate-200/60 pb-12 mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">Operating Environments</span>
-              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">Solutions By Operating Industry</h2>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">{pageConfig.industriesTagline}</span>
+              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">{pageConfig.industriesTitle}</h2>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed max-w-md">
-              Industrial sectors feature highly specific chemical, thermal, and spatial risks. We build multi-layered mitigation loops engineered to perform reliably inside harsh conditions.
+              {pageConfig.industriesDesc}
             </p>
           </div>
 
           {/* Premium Fluid Segmented Switch */}
           <div className="flex overflow-x-auto no-scrollbar md:flex-wrap p-1.5 bg-slate-100/80 border border-slate-200/60 backdrop-blur-md rounded-xl gap-1 max-w-4xl mx-auto mb-16 relative z-20 max-sm:justify-start shadow-sm">
-            {industries.map((ind) => {
+            {pageConfig.industries.map((ind) => {
               const isActive = activeTab === ind.id;
               return (
                 <button
@@ -386,14 +458,13 @@ export default function SolutionsPage() {
                   className="flex items-center justify-center gap-2.5 py-3 px-5 text-xs font-mono uppercase tracking-wider transition-all duration-300 rounded-lg relative flex-1 min-w-[140px] shrink-0 cursor-pointer"
                 >
                   <span className={`relative z-10 flex items-center gap-2 ${isActive ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-800'}`}>
-                    {ind.icon}
                     <span>{ind.name}</span>
                   </span>
                   {isActive && (
                     <motion.div
                       layoutId="spatialActiveTabHighlight"
                       className="absolute inset-0 bg-white border border-slate-200/80 rounded-lg shadow-sm"
-                      style={{ borderBottom: `2px solid ${activeIndustry.accent}` }}
+                      style={{ borderBottom: `2px solid ${activeIndustry.accent || '#c22026'}` }}
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -413,7 +484,7 @@ export default function SolutionsPage() {
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch"
             >
               
-              {/* Left Wing: Geometric Overview Deck */}
+              {/* Left Wing: Overview Card */}
               <div className="lg:col-span-4 flex flex-col gap-6">
                 
                 {/* Image Component with Layer Depth Overlays */}
@@ -427,7 +498,7 @@ export default function SolutionsPage() {
                   />
                   <div 
                     className="absolute bottom-4 left-4 right-4 z-20 flex justify-between items-center bg-[#080c14]/90 border px-3 py-1.5 font-mono text-[9px] tracking-widest rounded-lg backdrop-blur-md"
-                    style={{ borderColor: `${activeIndustry.accent}50`, color: activeIndustry.accent }}
+                    style={{ borderColor: `${activeIndustry.accent || '#c22026'}50`, color: activeIndustry.accent || '#c22026' }}
                   >
                     <span>{activeIndustry.riskKicker}</span>
                   </div>
@@ -435,7 +506,7 @@ export default function SolutionsPage() {
 
                 {/* Sub-system Narrative Container */}
                 <div className="p-6 bg-white border border-slate-200/60 rounded-xl flex-grow flex flex-col justify-center space-y-3 relative overflow-hidden shadow-3xs">
-                  <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: activeIndustry.accent }} />
+                  <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: activeIndustry.accent || '#c22026' }} />
                   <h3 className="text-md font-bold text-slate-900 uppercase tracking-tight pl-2">
                     {activeIndustry.name} Control Parameters
                   </h3>
@@ -456,21 +527,21 @@ export default function SolutionsPage() {
                       onMouseLeave={() => setHoveredSolution(null)}
                       className="p-6 bg-slate-50/50 border border-slate-200/60 hover:border-slate-350 hover:bg-slate-50/80 rounded-xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between group shadow-3xs hover:shadow-md"
                       style={{
-                        backgroundImage: isHovered ? `radial-gradient(circle at 10% 10%, ${activeIndustry.accent}0f, transparent 70%)` : 'none'
+                        backgroundImage: isHovered ? `radial-gradient(circle at 10% 10%, ${activeIndustry.accent || '#c22026'}0f, transparent 70%)` : 'none'
                       }}
                     >
                       <div className="space-y-4 relative z-10">
                         <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
                           <h4 
                             className="text-xs font-mono font-bold text-slate-850 uppercase tracking-wider transition-colors duration-300"
-                            style={{ color: isHovered ? activeIndustry.accent : '' }}
+                            style={{ color: isHovered ? activeIndustry.accent || '#c22026' : '' }}
                           >
                             {sol.name}
                           </h4>
                         </div>
                         
                         <ul className="space-y-3 pl-0 list-none m-0">
-                          {sol.items.map((item, itemIdx) => {
+                          {sol.items.map((item: any, itemIdx: number) => {
                             const isService = ["hse-consultancy", "explosion-proof-design"].includes(item.id || "");
                             const isProduct = ["fire-truck", "one-seven-cafs", "sione-hood", "gas-detector", "smoke-detector", "heat-detector", "temp-transmitter", "pressure-transmitter", "diving-chambers", "cascade-system", "scba-system", "nardi-compressor"].includes(item.id || "");
                             const path = item.id 
@@ -479,7 +550,7 @@ export default function SolutionsPage() {
 
                             return (
                               <li key={itemIdx} className="flex items-start gap-3 text-xs text-slate-650 group-hover:text-slate-800 transition-colors">
-                                <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ backgroundColor: activeIndustry.accent }} />
+                                <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ backgroundColor: activeIndustry.accent || '#c22026' }} />
                                 {path ? (
                                   <Link href={path} className="hover:text-sky-600 hover:underline transition-colors font-medium">
                                     {item.name}
@@ -501,21 +572,21 @@ export default function SolutionsPage() {
           </AnimatePresence>
         </section>
 
-        {/* Section 2: Framework Competence */}
+        {/* Section 2: Framework Competence / Core Capabilities */}
         <section className="py-24 bg-[#f8fafc] border-t border-b border-slate-200/60 relative z-10">
           <div className="max-w-[1400px] mx-auto px-10 max-sm:px-5">
             
             <div className="mb-20 max-w-3xl space-y-2">
-              <span className="text-xs font-bold uppercase tracking-[0.2em]">Core Expertise</span>
-              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">Core Capabilities Portfolio</h2>
+              <span className="text-xs font-bold uppercase tracking-[0.2em]">{pageConfig.capabilitiesTagline}</span>
+              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">{pageConfig.capabilitiesTitle}</h2>
               <p className="text-sm text-slate-600 leading-relaxed pt-2">
-                Eastwind executes complex, multi-disciplinary workflows through structural, instrumentation, and fire safety engineering domains to assure unified system performance.
+                {pageConfig.capabilitiesDesc}
               </p>
             </div>
 
             {/* Spatial Grid Framework Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {corePortfolios.map((portfolio, idx) => (
+              {pageConfig.corePortfolios.map((portfolio, idx) => (
                 <div
                   key={idx}
                   className="p-6 bg-white border border-slate-200 hover:border-slate-350 transition-all duration-300 rounded-xl group flex flex-col justify-between relative overflow-hidden shadow-3xs hover:shadow-md"
@@ -523,7 +594,7 @@ export default function SolutionsPage() {
                   <div className="space-y-5">
                     <div className="flex items-center justify-between border-b border-slate-200/60 pb-4">
                       <div className="w-9 h-9 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-sm shadow-inner group-hover:scale-110 transition-transform duration-300">
-                        {portfolio.icon}
+                        {portfolio.icon || "⚡"}
                       </div>
                     </div>
 
@@ -552,19 +623,19 @@ export default function SolutionsPage() {
           </div>
         </section>
 
-        {/* Section 3: Tech Ecosystem */}
+        {/* Section 3: Tech Ecosystem / Technology Partners */}
         <section className="py-24 max-w-[1400px] mx-auto px-10 max-sm:px-5 z-10 relative">
           
           <div className="mb-14 text-center space-y-2">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">Global Integration</span>
-            <h2 className="text-2xl font-extrabold uppercase text-slate-900 tracking-tight">Integrated Technology Partners</h2>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">{pageConfig.partnersTagline}</span>
+            <h2 className="text-2xl font-extrabold uppercase text-slate-900 tracking-tight">{pageConfig.partnersTitle}</h2>
             <p className="text-sm text-slate-600 max-w-xl mx-auto">
-              We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.
+              {pageConfig.partnersDesc}
             </p>
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-w-5xl mx-auto">
-            {partners.map((partner) => (
+            {pageConfig.partners.map((partner) => (
               <div
                 key={partner}
                 className="bg-white border border-slate-200 hover:border-slate-350 py-3.5 px-4 rounded-xl text-slate-600 hover:text-[#1e3e8f] hover:bg-[#1e3e8f]/5 text-center font-mono text-[10px] uppercase tracking-wider transition-all duration-300 cursor-default select-none shadow-3xs hover:shadow-sm"
@@ -585,13 +656,13 @@ export default function SolutionsPage() {
               
               <div className="mb-12 space-y-3 max-w-2xl">
                 <span className="block text-xs font-bold text-[#c22026] uppercase tracking-[0.25em]">
-                  Enquiry Gateway
+                  {pageConfig.gatewayTagline}
                 </span>
                 <h3 className="text-[2.2rem] max-md:text-[1.8rem] max-sm:text-[1.45rem] font-extrabold uppercase text-slate-900 tracking-tight leading-none m-0">
-                  Initiate Solution Proposal Request
+                  {pageConfig.gatewayTitle}
                 </h3>
                 <p className="text-sm max-sm:text-xs text-slate-500 font-normal leading-relaxed m-0">
-                  Our regional infrastructure engineering office coordinates directly with technical site operators to map out field constraints, balance topologies, and deploy high-compliance certified safety systems.
+                  {pageConfig.gatewayDesc}
                 </p>
               </div>
 
@@ -631,11 +702,11 @@ export default function SolutionsPage() {
                         defaultValue=""
                       >
                         <option value="" disabled>Select industry classification...</option>
-                        <option value="oil-gas">Oil & Gas Infrastructure</option>
-                        <option value="petrochemical">Petrochemical Operations</option>
-                        <option value="civil-defense">Civil Defense Command</option>
-                        <option value="marine">Marine & Offshore Platforms</option>
-                        <option value="utility-power">Utility & Electrical Grids</option>
+                        {pageConfig.industries.map((ind) => (
+                          <option key={ind.id} value={ind.id}>
+                            {ind.name}
+                          </option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 text-[10px]">▼</div>
                     </div>
@@ -651,12 +722,11 @@ export default function SolutionsPage() {
                         defaultValue=""
                       >
                         <option value="" disabled>Select capability tier...</option>
-                        <option value="ai-digitalization">AI, Digitalisation & Data</option>
-                        <option value="firefighting">Tactical Response Fleet Systems</option>
-                        <option value="gas-detection">Fire & Gas Topology Loops</option>
-                        <option value="suppression">Extinguishing & Simulator Skids</option>
-                        <option value="wireless">Industrial Wireless Mesh Networks</option>
-                        <option value="services">Specialised Field Services</option>
+                        {pageConfig.solutionScopeOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 text-[10px]">▼</div>
                     </div>
@@ -679,7 +749,7 @@ export default function SolutionsPage() {
                     type="submit"
                     className="w-full sm:w-auto py-3.5 px-10 text-xs font-bold uppercase tracking-wider text-white bg-[#c22026] hover:bg-[#1e3e8f] rounded-full inline-flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer font-mono"
                   >
-                    Submit Request
+                    {pageConfig.submitButtonText}
                     <span className="font-bold">→</span>
                   </button>
                 </div>

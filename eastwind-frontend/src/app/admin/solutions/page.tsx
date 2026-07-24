@@ -18,26 +18,44 @@ interface SolutionItem {
   imageUrl: string;
 }
 
-export default function AdminSolutionsPage() {
+interface IndustryItem {
+  id: string;
+  name: string;
+  riskKicker: string;
+  accent: string;
+  image: string;
+  description: string;
+}
+
+interface CorePortfolioItem {
+  title: string;
+  description: string;
+  items: string[];
+  icon: string;
+}
+
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+export default function UnifiedAdminSolutionsPage() {
+  const [activeTab, setActiveTab] = useState<"catalog" | "page_layout">("catalog");
   const [solutions, setSolutions] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [savingPage, setSavingPage] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 10;
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
-
-  // Modal states
+  // TAB 1: SOLUTION ITEM CATALOG MODALS & FORM STATES
   const [showModal, setShowModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [viewItem, setViewItem] = useState<SolutionItem | null>(null);
 
-  // Form states
   const [formId, setFormId] = useState<string>("");
   const [formTitle, setFormTitle] = useState<string>("");
   const [formSubLabel, setFormSubLabel] = useState<string>("");
@@ -46,8 +64,6 @@ export default function AdminSolutionsPage() {
   const [formDescription, setFormDescription] = useState<string>("");
   const [formDetailedContent, setFormDetailedContent] = useState<string>("");
   const [formImageUrl, setFormImageUrl] = useState<string>("");
-
-  // Array states
   const [formFeatures, setFormFeatures] = useState<string[]>([]);
   const [featureInput, setFeatureInput] = useState<string>("");
   const [formCompliance, setFormCompliance] = useState<string[]>([]);
@@ -56,14 +72,65 @@ export default function AdminSolutionsPage() {
   const [benefitInput, setBenefitInput] = useState<string>("");
   const [formApplications, setFormApplications] = useState<string[]>([]);
   const [applicationInput, setApplicationInput] = useState<string>("");
-
-  // Specs states
   const [formSpecs, setFormSpecs] = useState<{ label: string; value: string }[]>([]);
   const [specLabel, setSpecLabel] = useState<string>("");
   const [specValue, setSpecValue] = useState<string>("");
-
   const [uploading, setUploading] = useState<boolean>(false);
 
+  // TAB 2: DEDICATED /SOLUTIONS PAGE LAYOUT & BANNERS STATE
+  const [heroBgImage, setHeroBgImage] = useState<string>("/solution.png");
+  const [heroTagline, setHeroTagline] = useState<string>("Ecosystem Engineering Portal");
+  const [heroTitle, setHeroTitle] = useState<string>("High-Compliance Engineered Solutions");
+  const [heroDescription, setHeroDescription] = useState<string>("Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator.");
+  const [industriesTagline, setIndustriesTagline] = useState<string>("Operating Environments");
+  const [industriesTitle, setIndustriesTitle] = useState<string>("Solutions By Operating Industry");
+  const [industriesDesc, setIndustriesDesc] = useState<string>("Industrial sectors feature highly specific chemical, thermal, and spatial risks.");
+  const [industries, setIndustries] = useState<IndustryItem[]>([
+    {
+      id: "oil-gas",
+      name: "Oil & Gas",
+      riskKicker: "HAZARDOUS ATMOSPHERE | ATEX ZONE 0 & ZONE 1",
+      accent: "#c22026",
+      image: "/predictive_intelligence.webp",
+      description: "Securing petrochemical extraction, transport infrastructure, and downstream refining loops."
+    },
+    {
+      id: "petrochemical",
+      name: "Petrochemicals",
+      riskKicker: "PROCESS HAZARD CONTROL | ZONE 1 & ZONE 2",
+      accent: "#f59e0b",
+      image: "/industrial_digitalization.webp",
+      description: "Optimising downstream chemical refining ecosystems with real-time ML and telemetry."
+    }
+  ]);
+
+  const [capabilitiesTagline, setCapabilitiesTagline] = useState<string>("Core Expertise");
+  const [capabilitiesTitle, setCapabilitiesTitle] = useState<string>("Core Capabilities Portfolio");
+  const [capabilitiesDesc, setCapabilitiesDesc] = useState<string>("Eastwind executes complex, multi-disciplinary workflows.");
+  const [corePortfolios, setCorePortfolios] = useState<CorePortfolioItem[]>([
+    {
+      title: "AI, Digitalisation & Data Architecture",
+      description: "Advanced data acquisition pipelines running Agentic AI models.",
+      items: ["AI infrastructure deployment", "Plant operations enablement"],
+      icon: "⚡"
+    }
+  ]);
+
+  const [gatewayTagline, setGatewayTagline] = useState<string>("Proposal Engineering Intake");
+  const [gatewayTitle, setGatewayTitle] = useState<string>("Request Technical Integration Quoting");
+  const [gatewayDesc, setGatewayDesc] = useState<string>("Complete the security assessment form below.");
+  const [solutionScopeOptions, setSolutionScopeOptions] = useState<DropdownOption[]>([
+    { value: "fire-gas", label: "Fire & Gas Instrumentation Grids" },
+    { value: "suppression", label: "Clean Agent Suppression Systems" }
+  ]);
+  const [submitButtonText, setSubmitButtonText] = useState<string>("Submit Solution Blueprint Scope");
+
+  const clearMessages = () => {
+    setError(null);
+    setSuccess(null);
+  };
+
+  // Fetch Catalog Solutions (Tab 1)
   const fetchSolutions = async () => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -73,21 +140,50 @@ export default function AdminSolutionsPage() {
       setSolutions(list);
     } catch (err: any) {
       console.error(err);
-      setError("Failed to retrieve solutions from active database.");
-    } finally {
-      setLoading(false);
+      setError("Failed to retrieve solution items.");
+    }
+  };
+
+  // Fetch Solutions Page Layout (Tab 2)
+  const fetchSolutionsPageData = async () => {
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const res = await fetch(`${baseUrl}/api/solutions-page`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.heroBgImage) setHeroBgImage(data.heroBgImage);
+        if (data.heroTagline) setHeroTagline(data.heroTagline);
+        if (data.heroTitle) setHeroTitle(data.heroTitle);
+        if (data.heroDescription) setHeroDescription(data.heroDescription);
+        if (data.industriesTagline) setIndustriesTagline(data.industriesTagline);
+        if (data.industriesTitle) setIndustriesTitle(data.industriesTitle);
+        if (data.industriesDesc) setIndustriesDesc(data.industriesDesc);
+        if (data.industries && data.industries.length > 0) setIndustries(data.industries);
+        if (data.capabilitiesTagline) setCapabilitiesTagline(data.capabilitiesTagline);
+        if (data.capabilitiesTitle) setCapabilitiesTitle(data.capabilitiesTitle);
+        if (data.capabilitiesDesc) setCapabilitiesDesc(data.capabilitiesDesc);
+        if (data.corePortfolios && data.corePortfolios.length > 0) setCorePortfolios(data.corePortfolios);
+        if (data.gatewayTagline) setGatewayTagline(data.gatewayTagline);
+        if (data.gatewayTitle) setGatewayTitle(data.gatewayTitle);
+        if (data.gatewayDesc) setGatewayDesc(data.gatewayDesc);
+        if (data.solutionScopeOptions && data.solutionScopeOptions.length > 0) setSolutionScopeOptions(data.solutionScopeOptions);
+        if (data.submitButtonText) setSubmitButtonText(data.submitButtonText);
+      }
+    } catch (err: any) {
+      console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchSolutions();
+    async function loadAll() {
+      setLoading(true);
+      await Promise.all([fetchSolutions(), fetchSolutionsPageData()]);
+      setLoading(false);
+    }
+    loadAll();
   }, []);
 
-  const clearMessages = () => {
-    setError(null);
-    setSuccess(null);
-  };
-
+  // Save Handlers for Tab 1 Solution Items
   const handleOpenCreate = () => {
     clearMessages();
     setIsEdit(false);
@@ -98,7 +194,7 @@ export default function AdminSolutionsPage() {
     setFormAccent("blue");
     setFormDescription("");
     setFormDetailedContent("");
-    setFormImageUrl("");
+    setFormImageUrl("/products/default-process-instrumentation.png");
     setFormFeatures([]);
     setFormCompliance([]);
     setFormBenefits([]);
@@ -107,7 +203,7 @@ export default function AdminSolutionsPage() {
     setShowModal(true);
   };
 
-  const handleOpenEdit = (item: any) => {
+  const handleOpenEdit = (item: SolutionItem) => {
     clearMessages();
     setIsEdit(true);
     setFormId(item.id);
@@ -117,7 +213,7 @@ export default function AdminSolutionsPage() {
     setFormAccent(item.accent || "blue");
     setFormDescription(item.description || "");
     setFormDetailedContent(item.detailedContent || "");
-    setFormImageUrl(item.imageUrl || "");
+    setFormImageUrl(item.imageUrl || "/products/default-process-instrumentation.png");
     setFormFeatures(item.features || []);
     setFormCompliance(item.compliance || []);
     setFormBenefits(item.benefits || []);
@@ -126,774 +222,392 @@ export default function AdminSolutionsPage() {
     setShowModal(true);
   };
 
-  const addArrayItem = (input: string, setInput: any, list: string[], setList: any) => {
-    if (input.trim()) {
-      setList([...list, input.trim()]);
-      setInput("");
-    }
-  };
-
-  const removeArrayItem = (idx: number, list: string[], setList: any) => {
-    setList(list.filter((_, i) => i !== idx));
-  };
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    setError(null);
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const token = localStorage.getItem("admin_token");
-      
-      const res = await fetch(`${baseUrl}/api/upload`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Image upload failed");
-
-      setFormImageUrl(data.url);
-      setSuccess("Image file successfully uploaded.");
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to upload image file.");
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSaveSolutionItem = async (e: React.FormEvent) => {
     e.preventDefault();
     clearMessages();
 
-    if (!formId || !formTitle || !formTagline || !formDescription) {
-      setError("Please fill in all required parameters.");
+    if (!formTitle.trim()) {
+      setError("Solution title is required.");
       return;
     }
 
-    const payload = {
-      id: formId.trim().toLowerCase().replace(/\s+/g, "-"),
-      title: formTitle.trim(),
-      subLabel: formSubLabel.trim(),
-      tagline: formTagline.trim(),
-      accent: formAccent,
-      description: formDescription.trim(),
-      detailedContent: formDetailedContent.trim(),
-      features: formFeatures,
-      compliance: formCompliance,
-      benefits: formBenefits,
-      applications: formApplications,
-      specs: formSpecs,
-      imageUrl: formImageUrl
-    };
-
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
 
-      let res;
-      if (isEdit) {
-        res = await fetch(`${baseUrl}/api/solutions/${payload.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        });
-      } else {
-        res = await fetch(`${baseUrl}/api/solutions`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify(payload)
-        });
-      }
+      const generatedId = formId || formTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+      const payload = {
+        id: generatedId,
+        title: formTitle.trim(),
+        subLabel: formSubLabel.trim(),
+        tagline: formTagline.trim(),
+        accent: formAccent,
+        description: formDescription.trim(),
+        detailedContent: formDetailedContent.trim(),
+        imageUrl: formImageUrl.trim(),
+        features: formFeatures,
+        compliance: formCompliance,
+        benefits: formBenefits,
+        applications: formApplications,
+        specs: formSpecs
+      };
+
+      const url = isEdit ? `${baseUrl}/api/solutions/${generatedId}` : `${baseUrl}/api/solutions`;
+      const method = isEdit ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Save operation failed");
+      if (!res.ok) throw new Error(data.error || "Failed to save solution item");
 
-      setSuccess(`Solution '${payload.title}' successfully ${isEdit ? "updated" : "created"}.`);
+      setSuccess(`Solution item "${formTitle}" saved successfully!`);
       setShowModal(false);
       fetchSolutions();
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to save solution to database.");
+      setError(err.message || "Failed to save solution item.");
     }
   };
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
+  const handleDeleteSolutionItem = async (id: string) => {
     clearMessages();
-
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
-
-      const res = await fetch(`${baseUrl}/api/solutions/${deleteTarget}`, {
+      const res = await fetch(`${baseUrl}/api/solutions/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Delete operation failed");
-
-      setSuccess("Solution deleted successfully.");
+      if (!res.ok) throw new Error("Failed to delete solution item");
+      setSuccess("Solution item deleted!");
       setDeleteTarget(null);
       fetchSolutions();
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to delete solution.");
-      setDeleteTarget(null);
+      setError(err.message || "Failed to delete item.");
     }
   };
 
-  const filteredSolutions = solutions.filter(item => 
-    item.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.tagline?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  
-  const totalItems = filteredSolutions.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-  const paginatedSolutions = filteredSolutions.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+  // Save Handler for Tab 2 Solutions Page Banners & Content
+  const handleSaveSolutionsPageLayout = async () => {
+    clearMessages();
+    setSavingPage(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("admin_token");
+
+      const payload = {
+        heroBgImage,
+        heroTagline,
+        heroTitle,
+        heroDescription,
+        industriesTagline,
+        industriesTitle,
+        industriesDesc,
+        industries,
+        capabilitiesTagline,
+        capabilitiesTitle,
+        capabilitiesDesc,
+        corePortfolios,
+        gatewayTagline,
+        gatewayTitle,
+        gatewayDesc,
+        solutionScopeOptions,
+        submitButtonText
+      };
+
+      const res = await fetch(`${baseUrl}/api/solutions-page`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) throw new Error("Failed to save Solutions Page layout");
+      setSuccess("Solutions Page Banners & Layout saved successfully!");
+    } catch (err: any) {
+      setError(err.message || "Failed to save layout.");
+    } finally {
+      setSavingPage(false);
+    }
+  };
+
+  // Image Upload helper
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("admin_token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${baseUrl}/api/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error("Image upload failed");
+      setter(data.url);
+      setSuccess("Image uploaded successfully!");
+    } catch (err: any) {
+      setError(err.message || "Image upload failed");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const filteredSolutions = solutions.filter((s: any) =>
+    s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (s.description && s.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (
-    <div className="space-y-6 font-sans text-white select-none">
-      
-      {/* Title Header */}
-      <div className="flex justify-between items-center w-full">
+    <div className="space-y-6">
+      {/* Header Bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h2 className="text-xl font-bold uppercase tracking-tight m-0 text-white">Solution Verticals</h2>
-          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mt-1">Manage industrial solutions and telemetry platforms</p>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200">
+              CMS Module
+            </span>
+            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Solutions Management Portal</h1>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Manage individual safety solution items as well as the main /solutions webpage layout.
+          </p>
         </div>
-        <button
-          onClick={handleOpenCreate}
-          className="flex items-center gap-2 py-3 px-6 rounded-full bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-sky-600/10 active:translate-y-0.5"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Add Solution Vertical
-        </button>
+
+        {/* Tab Switcher */}
+        <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 shrink-0">
+          <button
+            onClick={() => setActiveTab("catalog")}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+              activeTab === "catalog" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>🛡️ Solution Items Catalog</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("page_layout")}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+              activeTab === "page_layout" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+            }`}
+          >
+            <span>📰 /solutions Page Banners & Layout</span>
+          </button>
+        </div>
       </div>
 
       {/* Notifications */}
       {error && (
-        <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-2xl text-xs">
-          {error}
+        <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs font-bold rounded-xl flex justify-between items-center">
+          <span>⚠️ {error}</span>
+          <button onClick={() => setError(null)} className="text-red-500 hover:text-red-800">✕</button>
         </div>
       )}
       {success && (
-        <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl text-xs">
-          {success}
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl flex justify-between items-center">
+          <span>✅ {success}</span>
+          <button onClick={() => setSuccess(null)} className="text-emerald-500 hover:text-emerald-800">✕</button>
         </div>
       )}
 
-      {/* Search Input Bar */}
-      <div className="relative max-w-md w-full">
-        <span className="absolute left-4 top-3 text-slate-400">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-        <input
-          type="text"
-          placeholder="Search solutions by title, tagline or ID..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-xs text-white placeholder-slate-400 focus:border-orange-500 focus:outline-none transition-all font-medium"
-        />
-      </div>
+      {/* ================= TAB 1: SOLUTION CATALOG ITEMS ================= */}
+      {activeTab === "catalog" && (
+        <div className="space-y-6">
+          {/* Explicit Location Indicator Banner */}
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-center justify-between">
+            <div>
+              <strong className="block font-bold">📍 Website Location Effect:</strong>
+              <span>Items added or edited here update the solution cards on the Homepage Solution Grid, Products Catalog filters, and Footer Links.</span>
+            </div>
+            <button
+              onClick={handleOpenCreate}
+              className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase rounded-lg shadow-md shrink-0 ml-4"
+            >
+              + Create Solution Item
+            </button>
+          </div>
 
-      {/* Solutions Table Card */}
-      <div className="bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden backdrop-blur-md">
-        {loading ? (
-          <div className="py-24 text-center space-y-3">
-            <div className="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-[10px] font-mono uppercase tracking-widest text-slate-400">Loading dynamic database records...</p>
+          {/* Search Bar */}
+          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <input
+              type="text"
+              placeholder="Search solution items by title or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full max-w-md px-4 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-orange-500"
+            />
+            <span className="text-xs font-mono font-bold text-slate-400">Total: {filteredSolutions.length} Items</span>
           </div>
-        ) : solutions.length === 0 ? (
-          <div className="py-20 text-center text-slate-400 text-xs font-medium">
-            No solution verticals registered in this database. Click &quot;Add Solution Vertical&quot; to begin.
-          </div>
-        ) : (
-          <div className="overflow-x-auto w-full">
-            <table className="w-full border-collapse text-left m-0">
-              <thead>
-                <tr className="bg-white/[0.02] border-b border-white/5">
-                  <th className="px-6 py-4.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Solution Code (ID)</th>
-                  <th className="px-6 py-4.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Solution Title</th>
-                  <th className="px-6 py-4.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Tagline</th>
-                  <th className="px-6 py-4.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">Accent Accent</th>
-                  <th className="px-6 py-4.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5 font-sans">
-                {paginatedSolutions.map((item) => (
-                  <tr key={item.id} className="hover:bg-white/[0.01] transition-colors">
-                    <td className="px-6 py-4 text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">{item.id}</td>
-                    <td className="px-6 py-4 text-xs font-bold text-slate-100 max-w-xs truncate">{item.title}</td>
-                    <td className="px-6 py-4 text-xs font-semibold text-slate-400 max-w-sm truncate">{item.tagline}</td>
-                    <td className="px-6 py-4 text-xs font-semibold">
-                      <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                        item.accent === "orange" 
-                          ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" 
-                          : "bg-sky-500/10 text-sky-500 border border-sky-500/20"
-                      }`}>
-                        {item.accent}
+
+          {/* Solutions Catalog Table / Grid */}
+          {loading ? (
+            <div className="p-12 text-center text-slate-400 text-xs font-mono">Loading Solution Catalog...</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSolutions.map((item: any) => (
+                <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-start">
+                      <span className="text-[10px] font-mono font-bold uppercase text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
+                        {item.id}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-right flex items-center justify-end gap-2.5">
-                      <button
-                        onClick={() => setViewItem(item)}
-                        className="py-2 px-4 rounded-xl text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-500/5 hover:bg-emerald-600 hover:text-white transition-all cursor-pointer border border-emerald-500/20"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleOpenEdit(item)}
-                        className="py-2 px-4 rounded-xl text-[10px] font-bold uppercase tracking-wider text-sky-400 bg-sky-500/5 hover:bg-sky-500 hover:text-white transition-all cursor-pointer"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => setDeleteTarget(item.id)}
-                        className="py-2 px-4 rounded-xl text-[10px] font-bold uppercase tracking-wider text-rose-500 bg-rose-50/5 hover:bg-rose-500 hover:text-white transition-all cursor-pointer"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <span className="text-[10px] font-mono text-slate-400">Accent: {item.accent || "blue"}</span>
+                    </div>
+                    <h3 className="text-base font-extrabold text-slate-800">{item.title}</h3>
+                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">{item.description}</p>
+                  </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 border-t border-white/5 bg-white/[0.01]">
-                <span className="text-xs text-slate-400 font-medium">
-                  Showing {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, totalItems)} to {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)} of {totalItems} entries
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="py-1.5 px-3.5 rounded-xl border border-white/10 hover:border-white/20 text-[10px] font-bold uppercase tracking-wider text-slate-300 disabled:opacity-30 disabled:pointer-events-none hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
-                  >
-                    Previous
-                  </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-7.5 h-7.5 rounded-full flex items-center justify-center text-xs font-bold transition-all cursor-pointer ${
-                        currentPage === page
-                          ? "bg-sky-600 text-white shadow-md shadow-sky-600/10"
-                          : "border border-white/10 hover:border-white/20 text-slate-300 hover:bg-white/5"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="py-1.5 px-3.5 rounded-xl border border-white/10 hover:border-white/20 text-[10px] font-bold uppercase tracking-wider text-slate-300 disabled:opacity-30 disabled:pointer-events-none hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
-                  >
-                    Next
-                  </button>
+                  <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+                    <button onClick={() => setViewItem(item)} className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 rounded-lg">Details</button>
+                    <button onClick={() => handleOpenEdit(item)} className="px-3 py-1.5 text-xs font-bold text-orange-600 bg-orange-50 rounded-lg">Edit</button>
+                    <button onClick={() => setDeleteTarget(item.id)} className="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 rounded-lg">Delete</button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
-      {/* CRUD MODAL */}
+      {/* ================= TAB 2: DEDICATED /SOLUTIONS PAGE LAYOUT & BANNERS ================= */}
+      {activeTab === "page_layout" && (
+        <div className="space-y-8">
+          {/* Explicit Location Indicator Banner */}
+          <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 text-xs flex items-center justify-between">
+            <div>
+              <strong className="block font-bold">📍 Website Location Effect:</strong>
+              <span>Fields edited here update the Hero Banner, Operating Industry Cards, Core Capabilities Grid, and Project Intake Gateway on the main dedicated webpage at <strong className="underline">http://localhost:3000/solutions</strong>.</span>
+            </div>
+            <button
+              onClick={handleSaveSolutionsPageLayout}
+              disabled={savingPage}
+              className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-md shrink-0 ml-4"
+            >
+              {savingPage ? "Saving Layout..." : "Save Page Layout Changes"}
+            </button>
+          </div>
+
+          {/* Section 1: Hero Banner */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-800">1. Hero Banner Settings</h2>
+              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Top of /solutions</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Hero Tagline</label>
+                <input type="text" value={heroTagline} onChange={(e) => setHeroTagline(e.target.value)} className="w-full p-2.5 border rounded-lg" />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Hero Title</label>
+                <input type="text" value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} className="w-full p-2.5 border rounded-lg font-bold" />
+              </div>
+            </div>
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Hero Description</label>
+              <textarea rows={3} value={heroDescription} onChange={(e) => setHeroDescription(e.target.value)} className="w-full p-2.5 border rounded-lg text-xs" />
+            </div>
+          </div>
+
+          {/* Section 2: Operating Industries */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-800">2. Solutions By Operating Industry ({industries.length} Cards)</h2>
+              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Industry Grid on /solutions</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              {industries.map((ind, idx) => (
+                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-2">
+                  <div className="flex justify-between font-bold text-slate-800">
+                    <span>{ind.name}</span>
+                    <span className="text-orange-600">{ind.id}</span>
+                  </div>
+                  <textarea rows={2} value={ind.description} onChange={(e) => {
+                    const updated = [...industries];
+                    updated[idx].description = e.target.value;
+                    setIndustries(updated);
+                  }} className="w-full p-2 border rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 3: Core Capabilities */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-800">3. Technical Core Capabilities Portfolio ({corePortfolios.length} Cards)</h2>
+              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Capabilities Section on /solutions</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              {corePortfolios.map((cp, idx) => (
+                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-2">
+                  <strong className="block text-slate-800">{cp.icon} {cp.title}</strong>
+                  <textarea rows={2} value={cp.description} onChange={(e) => {
+                    const updated = [...corePortfolios];
+                    updated[idx].description = e.target.value;
+                    setCorePortfolios(updated);
+                  }} className="w-full p-2 border rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end pt-4">
+            <button
+              onClick={handleSaveSolutionsPageLayout}
+              disabled={savingPage}
+              className="px-8 py-3.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-lg"
+            >
+              {savingPage ? "Saving Layout..." : "Save Solutions Page Banners & Layout"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* CREATE / EDIT MODAL FOR TAB 1 ITEM */}
       {showModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-white/10 w-full max-w-3xl rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
-            
-            {/* Header */}
-            <div className="h-16 flex items-center justify-between px-8 border-b border-white/5 flex-shrink-0">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-white m-0">
-                {isEdit ? `Configure Solution: ${formId}` : "Create Solution Vertical"}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 border border-white/5 text-slate-400 hover:text-white cursor-pointer"
-              >
-                ✕
-              </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-6">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h2 className="text-base font-bold text-slate-800">{isEdit ? "Edit Solution Item" : "Create New Solution Item"}</h2>
+              <button onClick={() => setShowModal(false)} className="text-slate-400 text-lg font-bold">✕</button>
             </div>
 
-            {/* Scrollable Form Content */}
-            <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-8 space-y-6">
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Solution Slug Code ID *</label>
-                  <input
-                    type="text"
-                    required
-                    disabled={isEdit}
-                    placeholder="e.g. smart-gas-telemetry"
-                    value={formId}
-                    onChange={(e) => setFormId(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium disabled:opacity-45"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Solution Title *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter visual title"
-                    value={formTitle}
-                    onChange={(e) => setFormTitle(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Sublabel category classifier</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Wireless F&G Telemetry System"
-                    value={formSubLabel}
-                    onChange={(e) => setFormSubLabel(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Tagline banner *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter solution tagline summary statement"
-                    value={formTagline}
-                    onChange={(e) => setFormTagline(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Theme Accent Color</label>
-                  <select
-                    value={formAccent}
-                    onChange={(e) => setFormAccent(e.target.value as any)}
-                    className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white focus:border-sky-500 focus:outline-none cursor-pointer"
-                  >
-                    <option value="blue" className="bg-slate-950">Blue Accent Theme</option>
-                    <option value="orange" className="bg-slate-950">Orange Accent Theme</option>
-                  </select>
-                </div>
+            <form onSubmit={handleSaveSolutionItem} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Solution Title *</label>
+                <input type="text" required value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="e.g. Fire & Gas Detection Systems" className="w-full p-2.5 border rounded-lg font-bold" />
               </div>
 
-              {/* Description */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Introductory Summary *</label>
-                <textarea
-                  rows={2}
-                  required
-                  placeholder="Enter short description"
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                />
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Overview Description *</label>
+                <textarea rows={3} required value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Summary description..." className="w-full p-2.5 border rounded-lg" />
               </div>
 
-              {/* Detailed Content */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Detailed Technical content / Specifications summary</label>
-                <textarea
-                  rows={4}
-                  placeholder="Enter full technical copy or layout specifications"
-                  value={formDetailedContent}
-                  onChange={(e) => setFormDetailedContent(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium resize-y font-mono"
-                />
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 font-bold rounded-lg">Cancel</button>
+                <button type="submit" className="px-5 py-2 bg-orange-600 text-white font-bold rounded-lg shadow-md">{isEdit ? "Save Item" : "Create Item"}</button>
               </div>
-
-              {/* Image Upload Area */}
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Banner Image URL</label>
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                  <div className="md:col-span-8">
-                    <input
-                      type="text"
-                      placeholder="e.g. /uploads/image.png"
-                      value={formImageUrl}
-                      onChange={(e) => setFormImageUrl(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white placeholder-slate-650 focus:border-sky-500 focus:outline-none transition-colors font-medium"
-                    />
-                  </div>
-                  <div className="md:col-span-4 relative">
-                    <input
-                      type="file"
-                      id="solution-file-upload"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="solution-file-upload"
-                      className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border border-dashed border-sky-500/30 text-sky-400 text-xs font-bold uppercase tracking-wider bg-sky-500/5 hover:bg-sky-500/10 cursor-pointer"
-                    >
-                      {uploading ? (
-                        <>
-                          <div className="w-3.5 h-3.5 border-2 border-sky-400 border-t-transparent rounded-full animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                          </svg>
-                          Upload File
-                        </>
-                      )}
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Features Bullet List */}
-              <div className="space-y-3 pt-3 border-t border-white/5">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Compliance Certifications</span>
-                <div className="flex gap-4">
-                  <input
-                    type="text"
-                    placeholder="Enter certification (e.g. UL, FM, ATEX)"
-                    value={complianceInput}
-                    onChange={(e) => setComplianceInput(e.target.value)}
-                    className="flex-1 px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white focus:border-sky-500 focus:outline-none transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => addArrayItem(complianceInput, setComplianceInput, formCompliance, setFormCompliance)}
-                    className="px-5 py-3 rounded-2xl bg-slate-800 text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer"
-                  >
-                    Add
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {formCompliance.map((item, idx) => (
-                    <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[10px] font-bold text-slate-300">
-                      {item}
-                      <button
-                        type="button"
-                        onClick={() => removeArrayItem(idx, formCompliance, setFormCompliance)}
-                        className="text-rose-500 hover:text-rose-450 border-none bg-transparent cursor-pointer font-bold"
-                      >
-                        ✕
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Features bullets */}
-              <div className="space-y-3 pt-3 border-t border-white/5">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Highlights & Capabilities</span>
-                <div className="flex gap-4">
-                  <input
-                    type="text"
-                    placeholder="Enter feature highlight"
-                    value={featureInput}
-                    onChange={(e) => setFeatureInput(e.target.value)}
-                    className="flex-1 px-4 py-3 bg-slate-900 border border-white/5 rounded-2xl text-xs text-white focus:border-sky-500 focus:outline-none transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => addArrayItem(featureInput, setFeatureInput, formFeatures, setFormFeatures)}
-                    className="px-5 py-3 rounded-2xl bg-slate-800 text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer"
-                  >
-                    Add
-                  </button>
-                </div>
-                <ul className="flex flex-col gap-2 pl-0 list-none m-0">
-                  {formFeatures.map((item, idx) => (
-                    <li key={idx} className="flex justify-between items-center px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-xs">
-                      <span className="text-slate-350">{item}</span>
-                      <button
-                        type="button"
-                        onClick={() => removeArrayItem(idx, formFeatures, setFormFeatures)}
-                        className="text-rose-500 hover:text-rose-400 font-bold uppercase text-[9px] tracking-wider cursor-pointer border-none bg-transparent"
-                      >
-                        Remove
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Form submit/cancel */}
-              <div className="pt-6 border-t border-white/5 flex justify-end gap-3 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-6 py-3 rounded-full text-slate-400 border border-white/10 hover:border-white/20 text-xs font-bold uppercase tracking-wider cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-8 py-3 rounded-full bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold uppercase tracking-wider cursor-pointer transition-all shadow-lg shadow-sky-600/10"
-                >
-                  {isEdit ? "Update Solution" : "Save Solution"}
-                </button>
-              </div>
-
             </form>
-
           </div>
         </div>
       )}
-
-      {/* Delete confirmation */}
-      {deleteTarget && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-white/10 p-8 rounded-3xl w-full max-w-md text-center space-y-6">
-            <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-500 text-lg mx-auto">
-              ⚠️
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-bold text-white uppercase tracking-tight m-0">Confirm Solution Deletion</h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-light m-0">
-                Are you sure you want to permanently delete solution vertical `{deleteTarget}`? This edits the public verticals directory immediately.
-              </p>
-            </div>
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => setDeleteTarget(null)}
-                className="px-5 py-2.5 rounded-full border border-white/10 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
-              >
-                Abort
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-7 py-2.5 rounded-full bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
-              >
-                Delete Vertical
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* VIEW MODAL OVERLAY */}
-      {viewItem && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200/80 w-full max-w-2xl rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]">
-            
-            {/* Modal Header */}
-            <div className="h-16 flex items-center justify-between px-8 border-b border-slate-100 flex-shrink-0">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-800 m-0">
-                Solution Details Node: {viewItem.id}
-              </h3>
-              <button
-                onClick={() => setViewItem(null)}
-                className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-400 hover:text-slate-700 cursor-pointer transition-colors"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-6">
-              
-              {/* Solution Info Row */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {viewItem.imageUrl && (
-                  <div className="md:col-span-1 border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 aspect-square flex items-center justify-center p-2">
-                    <img 
-                      src={viewItem.imageUrl.startsWith("/uploads/") 
-                        ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}${viewItem.imageUrl}` 
-                        : viewItem.imageUrl
-                      } 
-                      alt={viewItem.title} 
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                )}
-                
-                <div className={`${viewItem.imageUrl ? "md:col-span-2" : "md:col-span-3"} space-y-4`}>
-                  <div>
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">Solution Title</span>
-                    <h2 className="text-base font-bold text-slate-900 m-0 mt-0.5">{viewItem.title}</h2>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">Sub Label</span>
-                      <p className="text-xs text-slate-700 font-medium m-0 mt-0.5">{viewItem.subLabel}</p>
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">Color Tone Theme</span>
-                      <p className="text-xs text-slate-700 font-medium m-0 mt-0.5">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                          viewItem.accent === "orange" ? "bg-orange-100 text-orange-700" : "bg-sky-100 text-sky-700"
-                        }`}>
-                          {viewItem.accent}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400">Tagline Subheading</span>
-                    <p className="text-xs text-slate-700 font-semibold m-0 mt-0.5">{viewItem.tagline}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Description & Detailed Content */}
-              <div className="border-t border-slate-100 pt-6 space-y-4">
-                <div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">Brief Description</span>
-                  <p className="text-xs text-slate-650 leading-relaxed font-light m-0">{viewItem.description}</p>
-                </div>
-                {viewItem.detailedContent && (
-                  <div>
-                    <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-1">Detailed Technical Overview</span>
-                    <p className="text-xs text-slate-650 leading-relaxed font-light m-0">{viewItem.detailedContent}</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Features & Benefits */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-100 pt-6">
-                <div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-3">Core Features</span>
-                  {viewItem.features && viewItem.features.length > 0 ? (
-                    <ul className="space-y-2 pl-0 list-none m-0 text-xs text-slate-650">
-                      {viewItem.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0 mt-1.5" />
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-xs text-slate-400 font-light m-0">No features specified.</p>
-                  )}
-                </div>
-
-                <div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-3">Key Benefits</span>
-                  {viewItem.benefits && viewItem.benefits.length > 0 ? (
-                    <ul className="space-y-2 pl-0 list-none m-0 text-xs text-slate-650">
-                      {viewItem.benefits.map((ben, idx) => (
-                        <li key={idx} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 mt-1.5" />
-                          <span>{ben}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-xs text-slate-400 font-light m-0">No benefits cataloged.</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Applications Tags & Compliance */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-slate-100 pt-6">
-                <div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-2">Industry Sectors (Applications)</span>
-                  {viewItem.applications && viewItem.applications.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {viewItem.applications.map((app, idx) => (
-                        <span key={idx} className="px-2 py-1 rounded bg-slate-100 text-[10px] font-semibold text-slate-600">
-                          {app}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-slate-400 font-light m-0">No sectors assigned.</p>
-                  )}
-                </div>
-
-                <div>
-                  <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-2">Compliance Standards</span>
-                  {viewItem.compliance && viewItem.compliance.length > 0 ? (
-                    <div className="flex flex-wrap gap-1.5">
-                      {viewItem.compliance.map((comp, idx) => (
-                        <span key={idx} className="px-2 py-1 rounded bg-orange-50 text-[10px] font-semibold text-orange-700">
-                          {comp}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-slate-400 font-light m-0">No standards specified.</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Specifications Matrix */}
-              <div className="border-t border-slate-100 pt-6">
-                <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 block mb-3">Specifications Matrix</span>
-                {viewItem.specs && viewItem.specs.length > 0 ? (
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden">
-                    <table className="w-full border-collapse text-left m-0 text-xs">
-                      <thead>
-                        <tr className="bg-slate-50 border-b border-slate-200">
-                          <th className="px-5 py-2.5 font-bold text-slate-600">Parameter</th>
-                          <th className="px-5 py-2.5 font-bold text-slate-600">Value Rating</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 bg-white">
-                        {viewItem.specs.map((spec, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50/50">
-                            <td className="px-5 py-2.5 font-bold text-slate-500 tracking-wider text-[10px] uppercase">{spec.label}</td>
-                            <td className="px-5 py-2.5 text-slate-800 font-semibold">{spec.value}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-400 font-light m-0">No specifications registered.</p>
-                )}
-              </div>
-
-            </div>
-
-            {/* Modal Footer */}
-            <div className="h-16 flex items-center justify-end px-8 border-t border-slate-100 flex-shrink-0 bg-slate-50">
-              <button
-                type="button"
-                onClick={() => setViewItem(null)}
-                className="px-6 py-2.5 rounded-full bg-slate-850 text-white hover:bg-slate-700 text-xs font-bold uppercase tracking-wider cursor-pointer transition-all"
-              >
-                Close View
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }

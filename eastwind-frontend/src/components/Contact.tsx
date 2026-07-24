@@ -1,9 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+interface ContactInfoData {
+  hqTitle: string;
+  hqAddress: string;
+  hubTitle: string;
+  hubAddress: string;
+  telephone: string;
+  email: string;
+  workingHours: string;
+  gatewayText: string;
+  gatewayStatus: string;
+}
+
+interface HomeContactData {
+  tagline: string;
+  title: string;
+  description: string;
+  operationalSectors: DropdownOption[];
+  submitButtonText: string;
+  successTitle: string;
+  successMessage: string;
+}
+
+const defaultContactInfo: ContactInfoData = {
+  hqTitle: "Al Khobar Headquarters",
+  hqAddress: "King Faisal West Road, Bandariyah District,\nAl Khobar, Kingdom of Saudi Arabia",
+  hubTitle: "Riyadh Technology Hub",
+  hubAddress: "Olaya District, Riyadh,\nKingdom of Saudi Arabia",
+  telephone: "+966 13 889 XXXX",
+  email: "info@eastwindsafety.com",
+  workingHours: "Sunday – Thursday | 08:00 – 17:00 AST",
+  gatewayText: "SECURE REGIONAL GATEWAY",
+  gatewayStatus: "ONLINE",
+};
+
+const defaultHomeContact: HomeContactData = {
+  tagline: "Get In Touch",
+  title: "Contact Engineering",
+  description: "Have a project requirement or need technical details? Coordinate with our estimating and engineering teams based in Al Khobar and Riyadh.",
+  operationalSectors: [
+    { value: "oil-gas", label: "Oil & Gas Infrastructure" },
+    { value: "petrochemical", label: "Petrochemical Operations" },
+    { value: "civil-defense", label: "Civil Defense Command" },
+    { value: "marine", label: "Marine & Offshore Platforms" },
+    { value: "utility-power", label: "Utility & Electrical Grids" }
+  ],
+  submitButtonText: "Transmit Encrypted Request //",
+  successTitle: "Message Transmitted",
+  successMessage: "Thank you. Your layout constraints and details have been securely logged. An application engineer will contact you shortly."
+};
+
 export default function Contact() {
+  const [contactInfo, setContactInfo] = useState<ContactInfoData>(defaultContactInfo);
+  const [homeContact, setHomeContact] = useState<HomeContactData>(defaultHomeContact);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,18 +71,61 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  useEffect(() => {
+    const fetchContactSettings = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const [infoRes, homeRes] = await Promise.all([
+          fetch(`${baseUrl}/api/contact-settings/contact_info`, { cache: "no-store" }),
+          fetch(`${baseUrl}/api/contact-settings/home_contact`, { cache: "no-store" })
+        ]);
+
+        if (infoRes.ok) {
+          const json = await infoRes.json();
+          setContactInfo({
+            hqTitle: json.hqTitle || defaultContactInfo.hqTitle,
+            hqAddress: json.hqAddress || defaultContactInfo.hqAddress,
+            hubTitle: json.hubTitle || defaultContactInfo.hubTitle,
+            hubAddress: json.hubAddress || defaultContactInfo.hubAddress,
+            telephone: json.telephone || defaultContactInfo.telephone,
+            email: json.email || defaultContactInfo.email,
+            workingHours: json.workingHours || defaultContactInfo.workingHours,
+            gatewayText: json.gatewayText || defaultContactInfo.gatewayText,
+            gatewayStatus: json.gatewayStatus || defaultContactInfo.gatewayStatus,
+          });
+        }
+
+        if (homeRes.ok) {
+          const json = await homeRes.json();
+          setHomeContact({
+            tagline: json.tagline || defaultHomeContact.tagline,
+            title: json.title || defaultHomeContact.title,
+            description: json.description || defaultHomeContact.description,
+            operationalSectors: json.operationalSectors && json.operationalSectors.length > 0 ? json.operationalSectors : defaultHomeContact.operationalSectors,
+            submitButtonText: json.submitButtonText || defaultHomeContact.submitButtonText,
+            successTitle: json.successTitle || defaultHomeContact.successTitle,
+            successMessage: json.successMessage || defaultHomeContact.successMessage,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic contact settings:", err);
+      }
+    };
+
+    fetchContactSettings();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API request
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitSuccess(true);
       setTimeout(() => {
         setSubmitSuccess(false);
         setFormData({ name: "", email: "", industry: "", scope: "" });
-      }, 3000);
-    }, 1500);
+      }, 4000);
+    }, 1200);
   };
 
   return (
@@ -62,13 +163,13 @@ export default function Contact() {
         {/* Section Header */}
         <div className="mb-16 max-w-[800px]">
           <span className="block text-[0.8rem] uppercase tracking-[0.25em] text-[#c22026] mb-4 font-bold">
-            Get In Touch
+            {homeContact.tagline}
           </span>
           <h2 className="text-[3.2rem] max-sm:text-[2.4rem] text-slate-900 mb-5 uppercase tracking-tight font-extrabold leading-none">
-            Contact Engineering
+            {homeContact.title}
           </h2>
           <p className="text-[1.1rem] text-slate-600 leading-relaxed font-light">
-            Have a project requirement or need technical details? Coordinate with our estimating and engineering teams based in Al Khobar and Riyadh.
+            {homeContact.description}
           </p>
         </div>
 
@@ -97,10 +198,9 @@ export default function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">Al Khobar Headquarters</h4>
-                  <p className="text-[0.88rem] text-slate-500 leading-relaxed font-light m-0">
-                    King Faisal West Road, Bandariyah District,<br />
-                    Al Khobar, Kingdom of Saudi Arabia
+                  <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">{contactInfo.hqTitle}</h4>
+                  <p className="text-[0.88rem] text-slate-500 leading-relaxed font-light m-0 whitespace-pre-line">
+                    {contactInfo.hqAddress}
                   </p>
                 </div>
               </div>
@@ -114,10 +214,9 @@ export default function Contact() {
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">Riyadh Technology Hub</h4>
-                  <p className="text-[0.88rem] text-slate-500 leading-relaxed font-light m-0">
-                    Olaya District, Riyadh,<br />
-                    Kingdom of Saudi Arabia
+                  <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">{contactInfo.hubTitle}</h4>
+                  <p className="text-[0.88rem] text-slate-500 leading-relaxed font-light m-0 whitespace-pre-line">
+                    {contactInfo.hubAddress}
                   </p>
                 </div>
               </div>
@@ -132,8 +231,8 @@ export default function Contact() {
                 <div>
                   <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-1">Direct Contacts</h4>
                   <p className="text-[0.88rem] text-slate-500 leading-relaxed font-light m-0">
-                    Secure Tel: +966 13 889 XXXX<br />
-                    Email: <a href="mailto:info@eastwindsafety.com" className="text-[#c22026] hover:text-[#1e3e8f] transition-all duration-200 font-semibold">info@eastwindsafety.com</a>
+                    Secure Tel: {contactInfo.telephone}<br />
+                    Email: <a href={`mailto:${contactInfo.email}`} className="text-[#c22026] hover:text-[#1e3e8f] transition-all duration-200 font-semibold">{contactInfo.email}</a>
                   </p>
                 </div>
               </div>
@@ -142,10 +241,10 @@ export default function Contact() {
 
             {/* Bottom active telemetry status */}
             <div className="pt-8 mt-10 border-t border-slate-200/60 font-mono text-[10px] text-slate-400 flex justify-between items-center">
-              <span>SECURE REGIONAL GATEWAY</span>
+              <span>{contactInfo.gatewayText}</span>
               <span className="flex items-center gap-1.5 font-semibold text-emerald-600">
                 <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                ONLINE
+                {contactInfo.gatewayStatus}
               </span>
             </div>
 
@@ -174,9 +273,9 @@ export default function Contact() {
                   <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 text-3xl font-bold mb-5 shadow-xs">
                     ✓
                   </div>
-                  <h3 className="text-xl font-extrabold text-slate-900 uppercase tracking-tight mb-2">Message Transmitted</h3>
+                  <h3 className="text-xl font-extrabold text-slate-900 uppercase tracking-tight mb-2">{homeContact.successTitle}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed font-normal max-w-sm m-0">
-                    Thank you. Your layout constraints and details have been securely logged. An application engineer will contact you shortly.
+                    {homeContact.successMessage}
                   </p>
                 </motion.div>
               ) : (
@@ -220,11 +319,11 @@ export default function Contact() {
                         className="w-full min-h-[46px] px-4 rounded-xl bg-white border border-slate-200 text-slate-650 font-sans text-xs focus:outline-none focus:border-[#1e3e8f] focus:ring-1 focus:ring-[#1e3e8f] transition-all appearance-none cursor-pointer"
                       >
                         <option value="" disabled>Select sector classification...</option>
-                        <option value="oil-gas">Oil & Gas Infrastructure</option>
-                        <option value="petrochemical">Petrochemical Operations</option>
-                        <option value="civil-defense">Civil Defense Command</option>
-                        <option value="marine">Marine & Offshore Platforms</option>
-                        <option value="utility-power">Utility & Electrical Grids</option>
+                        {homeContact.operationalSectors.map((sec) => (
+                          <option key={sec.value} value={sec.value}>
+                            {sec.label}
+                          </option>
+                        ))}
                       </select>
                       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400 text-xs">▼</div>
                     </div>
@@ -247,7 +346,7 @@ export default function Contact() {
                     disabled={isSubmitting}
                     className="w-full min-h-[48px] bg-slate-900 hover:bg-[#c22026] text-white text-xs font-mono uppercase tracking-widest rounded-full transition-all duration-300 cursor-pointer active:scale-[0.99] disabled:opacity-50"
                   >
-                    {isSubmitting ? "TRANSMITTING..." : "Transmit Encrypted Request //"}
+                    {isSubmitting ? "TRANSMITTING..." : homeContact.submitButtonText}
                   </button>
                 </motion.form>
               )}

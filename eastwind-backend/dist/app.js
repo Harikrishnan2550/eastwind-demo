@@ -11,6 +11,10 @@ import applicationsRouter from "./routes/applications.js";
 import servicesRouter from "./routes/services.js";
 import uploadRouter from "./routes/upload.js";
 import authRouter from "./routes/auth.js";
+import aboutRouter from "./routes/about.js";
+import contactSettingsRouter from "./routes/contactSettings.js";
+import solutionsPageRouter from "./routes/solutionsPage.js";
+import { EnquiryController } from "./controllers/enquiry.controller.js";
 const app = express();
 // 1. Logger (executes first for all routes)
 app.use(requestLogger);
@@ -32,8 +36,12 @@ app.use("/api/products", productsRouter);
 app.use("/api/solutions", solutionsRouter);
 app.use("/api/applications", applicationsRouter);
 app.use("/api/services", servicesRouter);
+app.use("/api/about", aboutRouter);
+app.use("/api/contact-settings", contactSettingsRouter);
+app.use("/api/solutions-page", solutionsPageRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/auth", authRouter);
+app.post("/api/enquiry", EnquiryController.submitEnquiry);
 // 5. Fallback 404 handler
 app.use((req, res, next) => {
     res.status(404).json({ error: "Endpoint not found" });

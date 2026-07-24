@@ -12,6 +12,9 @@ interface DbSchema {
   solutions: any[];
   applications: any[];
   services: any[];
+  about?: any[];
+  contactSettings?: any[];
+  solutions_page?: any[];
 }
 
 function initializeDb(): DbSchema {
@@ -205,6 +208,90 @@ export const db = {
       const idx = data.services.findIndex((s) => s.id === id);
       if (idx === -1) throw new Error(`Service with ID ${id} not found`);
       const removed = data.services.splice(idx, 1)[0];
+      saveDb(data);
+      return removed;
+    },
+  },
+
+  about: {
+    getAll: () => getDb().about || [],
+    getBySection: (section: string) => (getDb().about || []).find((a) => a.id === section),
+    upsertSection: (section: string, updates: any) => {
+      const data = getDb();
+      if (!data.about) data.about = [];
+      const idx = data.about.findIndex((a) => a.id === section);
+      if (idx === -1) {
+        const item = { ...updates, id: section };
+        data.about.push(item);
+        saveDb(data);
+        return item;
+      } else {
+        data.about[idx] = { ...data.about[idx], ...updates, id: section };
+        saveDb(data);
+        return data.about[idx];
+      }
+    },
+  },
+
+  contactSettings: {
+    getAll: () => getDb().contactSettings || [],
+    getBySection: (section: string) => (getDb().contactSettings || []).find((c) => c.id === section),
+    upsertSection: (section: string, updates: any) => {
+      const data = getDb();
+      if (!data.contactSettings) data.contactSettings = [];
+      const idx = data.contactSettings.findIndex((c) => c.id === section);
+      if (idx === -1) {
+        const item = { ...updates, id: section };
+        data.contactSettings.push(item);
+        saveDb(data);
+        return item;
+      } else {
+        data.contactSettings[idx] = { ...data.contactSettings[idx], ...updates, id: section };
+        saveDb(data);
+        return data.contactSettings[idx];
+      }
+    },
+  },
+
+  solutionPage: {
+    get: () => (getDb().solutions_page || [])[0] || null,
+    update: (updates: any) => {
+      const data = getDb();
+      if (!data.solutions_page) data.solutions_page = [];
+      data.solutions_page[0] = { ...data.solutions_page[0], ...updates, id: "solutions_page" };
+      saveDb(data);
+      return data.solutions_page[0];
+    },
+  },
+
+  brands: {
+    getAll: () => (getDb() as any).brands || [],
+    getById: (id: string) => ((getDb() as any).brands || []).find((b: any) => b.id === id),
+    create: (item: any) => {
+      const data = getDb() as any;
+      if (!data.brands) data.brands = [];
+      if (data.brands.some((b: any) => b.id === item.id)) {
+        throw new Error(`Brand with ID ${item.id} already exists`);
+      }
+      data.brands.push(item);
+      saveDb(data);
+      return item;
+    },
+    update: (id: string, updates: any) => {
+      const data = getDb() as any;
+      if (!data.brands) data.brands = [];
+      const idx = data.brands.findIndex((b: any) => b.id === id);
+      if (idx === -1) throw new Error(`Brand with ID ${id} not found`);
+      data.brands[idx] = { ...data.brands[idx], ...updates, id };
+      saveDb(data);
+      return data.brands[idx];
+    },
+    delete: (id: string) => {
+      const data = getDb() as any;
+      if (!data.brands) data.brands = [];
+      const idx = data.brands.findIndex((b: any) => b.id === id);
+      if (idx === -1) throw new Error(`Brand with ID ${id} not found`);
+      const removed = data.brands.splice(idx, 1)[0];
       saveDb(data);
       return removed;
     },

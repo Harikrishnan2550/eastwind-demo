@@ -3722,5 +3722,564 @@
       "passwordHash": "5670844eca72a109c3e980599405f04eade799c792475e02ce7f98e49d94ca3ee0a44f7bd344daa40e592d7cc2bcd285ce107ab35bc687478f7259734cc3f800",
       "salt": "0cb312f7707a67cc6d7b6890376779ea"
     }
+  ],
+  "about": [
+    {
+      "id": "home",
+      "imageUrl": "/about.png",
+      "title": "Sustaining Regional Safety Infrastructure",
+      "overviewText": "East Wind operates as a regional, end-to-end safety solutions provider delivering the complete lifecycle of safety projects across mission-critical infrastructure segments.",
+      "secondaryText": "Our core strength centers on adopting and implementing the latest safety technologies to solve complex, high-risk challenges—improving safety performance while reducing total cost of ownership (TCO) for our clients.",
+      "metrics": [
+        {
+          "value": "70%",
+          "label": "Technical Functions Weight",
+          "desc": "Dedicated to application engineering, cross-disciplinary integration, workshops, and instrument field services."
+        },
+        {
+          "value": "10+",
+          "label": "Certified Personnel Scale",
+          "desc": "Housing internal multi-disciplinary functions spanning mechanical, electrical, and functional safety architecture."
+        }
+      ],
+      "lifecycleSteps": [
+        "Concept Studies & Solution Selection",
+        "Safety Systems Integration",
+        "Manufacturing & Assembly",
+        "Installation & Commissioning",
+        "Project Management Leadership",
+        "Long-Term After-Sales Support"
+      ]
+    },
+    {
+      "id": "about_page",
+      "heroBgImage": "/about_hero_bg.png?v=3",
+      "heroTagline": "Company Overview",
+      "heroTitle": "Mission-Critical Safety Infrastructure",
+      "heroDescription": "East Wind is a specialized safety solutions provider in Saudi Arabia, delivering the entire lifecycle of engineered projects.",
+      "mandateBadge": "Operational Strength",
+      "mandateTitle": "Our Core Safety Mandate",
+      "mandateParagraph1": "East Wind operates with a core strength centered on implementing advanced, cyber-physical safety technologies to address high-risk industrial safety challenges. We take full regional ownership of engineered packages, ensuring that refinery control rooms, offshore platforms, and hazardous factories are protected against thermal, kinetic, and chemical events.",
+      "mandateParagraph2": "By integrating smart IoT sensors, intrinsically safe Zone 1 mobile devices, and physics-informed neural network analytics, we help major industrial plants shift from reactive emergency firefighting to proactive, automated safety control loops. This unified approach drastically lowers client Total Cost of Ownership (TCO) while guaranteeing absolute safety compliance.",
+      "facilityImage": "/analyzer_shelter.webp",
+      "facilityCode": "SYS.FACILITY.IMG.01",
+      "positioning": [
+        {
+          "title": "Regional Safety Leader",
+          "text": "Recognized as one of the region’s premier providers of high-end, complex industrial safety systems."
+        },
+        {
+          "title": "HCIS Standard Authority",
+          "text": "Trusted engineering partner executing projects certified to SAF-01, SAF-12, and SASO directives."
+        },
+        {
+          "title": "Lifecycle Ownership",
+          "text": "We take full responsibility from early conceptual hazard studies to system integration and lifetime support."
+        }
+      ],
+      "metrics": [
+        {
+          "value": "70%",
+          "label": "Technical Functions Weight",
+          "desc": "Applications engineering, hardware assembly projects, instrument service, and predictive AI loops.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "value": "10+",
+          "label": "Engineers & Technicians",
+          "desc": "Highly trained, certified local technical workforce executing complex regional deployments.",
+          "accent": "#c22026"
+        },
+        {
+          "value": "KSA",
+          "label": "Central Integration Facilities",
+          "desc": "Based in Dammam, featuring engineering office rooms, assembly workshops, and calibration labs.",
+          "accent": "#1e3e8f"
+        }
+      ],
+      "disciplines": [
+        {
+          "title": "Project Management",
+          "desc": "Rigorous execution, delivery leadership, and interface coordination across multi-vendor networks.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "title": "QA/QC & Compliance",
+          "desc": "Assuring design safety factors, testing verification logs, and international standard conformance.",
+          "accent": "#c22026"
+        },
+        {
+          "title": "Structural Engineering",
+          "desc": "Blast deflection modeling and thermal isolation calculations for heavy protective enclosures.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "title": "Instrumentation Engineering",
+          "desc": "Loop diagrams, calibration parameters, and field transmitter mesh networks alignment.",
+          "accent": "#c22026"
+        },
+        {
+          "title": "Electrical Engineering",
+          "desc": "Hazardous area classifications, load calculations, and electrical protection wiring.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "title": "Fire & Gas Engineering",
+          "desc": "Wired and wireless SIL-rated detection loop mapping, warning alarms, and telemetry integration.",
+          "accent": "#c22026"
+        },
+        {
+          "title": "HVAC Engineering",
+          "desc": "Overpressure control dampers, automated gas isolation loops, and explosion-proof air cooling.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "title": "Safety Engineering",
+          "desc": "Functional safety analysis, hazard mapping, and toxic refuge atmosphere maintenance loops.",
+          "accent": "#c22026"
+        },
+        {
+          "title": "Telecommunications",
+          "desc": "Multi-hop mesh radio telemetry, emergency call routing, and inter-agency gateway bridges.",
+          "accent": "#1e3e8f"
+        },
+        {
+          "title": "HSE Engineering",
+          "desc": "Comprehensive site safety programs, Zone 1 mobile permitted checklists, and HSE consultancy.",
+          "accent": "#c22026"
+        }
+      ],
+      "ctaTitle": "Partner with East Wind Arabia",
+      "ctaDescription": "Ready to draft a safety layout or request an onsite calibration analysis? Speak directly to our integration team at Dammam to outline your project scope.",
+      "ctaButtonText": "Consult an Engineer"
+    }
+  ],
+  "contact_settings": [
+    {
+      "id": "contact_info",
+      "hqTitle": "Al Khobar Headquarters",
+      "hqAddress": "King Faisal West Road, Bandariyah District, Al Khobar, Kingdom of Saudi Arabia",
+      "hubTitle": "Riyadh Technology Hub",
+      "hubAddress": "Olaya District, Riyadh, Kingdom of Saudi Arabia",
+      "telephone": "+966 13 889 XXXX",
+      "email": "info@eastwindsafety.com",
+      "workingHours": "Sunday – Thursday | 08:00 – 17:00 AST",
+      "gatewayText": "SECURE REGIONAL GATEWAY",
+      "gatewayStatus": "ONLINE"
+    },
+    {
+      "id": "home_contact",
+      "tagline": "Get In Touch",
+      "title": "Contact Engineering",
+      "description": "Have a project requirement or need technical details? Coordinate with our estimating and engineering teams based in Al Khobar and Riyadh.",
+      "operationalSectors": [
+        { "value": "oil-gas", "label": "Oil & Gas Infrastructure" },
+        { "value": "petrochemical", "label": "Petrochemical Operations" },
+        { "value": "civil-defense", "label": "Civil Defense Command" },
+        { "value": "marine", "label": "Marine & Offshore Platforms" },
+        { "value": "utility-power", "label": "Utility & Electrical Grids" }
+      ],
+      "submitButtonText": "Transmit Encrypted Request //",
+      "successTitle": "Message Transmitted",
+      "successMessage": "Thank you. Your layout constraints and details have been securely logged. An application engineer will contact you shortly."
+    },
+    {
+      "id": "contact_page",
+      "heroBgImage": "/contact_hero.png",
+      "heroTagline": "Global Procurement Channels",
+      "heroTitle": "Connect With Our Engineers",
+      "heroDescription": "Initiate technical scoping, request custom hardware estimations, or schedule compliance architecture audits with our Dammam team.",
+      "communicationsTagline": "Communications Log",
+      "communicationsTitle": "Primary Operation Hubs",
+      "communicationsDesc": "Direct routing channels across our regional estimating centers, specialized equipment workshop cells, and corporate headquarters.",
+      "formSubHeaderTagline": "Project Registration",
+      "formSubHeaderTitle": "Blueprint Specifications Intake",
+      "marketSegments": [
+        { "value": "oil-gas", "label": "Onshore / Offshore Oil & Gas" },
+        { "value": "petrochemical", "label": "Downstream Petrochemical Infrastructure" },
+        { "value": "civil-defense", "label": "Civil Defense / Public Safety" },
+        { "value": "power-utilities", "label": "Utility Systems & Smart Energy Grids" },
+        { "value": "marine-offshore", "label": "Marine Engineering & Fleet Operations" }
+      ],
+      "submitButtonText": "Transmit Integration File",
+      "successTitle": "Transmission Complete",
+      "successMessage": "Your infrastructure profile has been successfully parsed and channeled to our technical estimating group in Dammam. A specialist will follow up within 24 business hours."
+    },
+    {
+      "id": "enquiry_page",
+      "enquiryTagline": "Regional Proposal Intake",
+      "enquiryTitle": "Request Technical Integration Quoting",
+      "enquiryDescription": "Complete the security assessment form below. Our estimation group will process your scope and respond with preliminary blueprints.",
+      "applicationPurposes": [
+        { "value": "house", "label": "Residential (House)" },
+        { "value": "company", "label": "Corporate Office (Company)" },
+        { "value": "hospital", "label": "Healthcare Facility (Hospital)" },
+        { "value": "refinery", "label": "Industrial Refinery / Plant" },
+        { "value": "commercial", "label": "Commercial Hub / Hotel" },
+        { "value": "other", "label": "Other / Custom Infrastructure" }
+      ],
+      "submitButtonText": "Submit Solution Enquiry",
+      "successTitle": "Enquiry Dispatched",
+      "successMessage": "Thank you. Your proposal request and structural application scope details have been forwarded directly to our engineering coordinators at harik2021a@gmail.com."
+    }
+  ],
+  "solutions_page": [
+    {
+      "id": "solutions_page",
+      "heroBgImage": "/solution.png",
+      "heroTagline": "Ecosystem Engineering Portal",
+      "heroTitle": "High-Compliance Engineered Solutions",
+      "heroDescription": "Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator. We formulate high-risk protective frameworks that isolate hazards, guarantee regional operational safety, and structurally reduce asset TCO.",
+      "industriesTagline": "Operating Environments",
+      "industriesTitle": "Solutions By Operating Industry",
+      "industriesDesc": "Industrial sectors feature highly specific chemical, thermal, and spatial risks. We build multi-layered mitigation loops engineered to perform reliably inside harsh conditions.",
+      "industries": [
+        {
+          "id": "oil-gas",
+          "name": "Oil & Gas",
+          "riskKicker": "HAZARDOUS ATMOSPHERE | ATEX ZONE 0 & ZONE 1",
+          "accent": "#c22026",
+          "image": "/predictive_intelligence.webp",
+          "description": "Securing petrochemical extraction, transport infrastructure, and downstream refining loops through intrinsically safe telemetry, explosion isolation, and toxic gas environment management."
+        },
+        {
+          "id": "petrochemical",
+          "name": "Petrochemicals",
+          "riskKicker": "PROCESS HAZARD CONTROL | ZONE 1 & ZONE 2",
+          "accent": "#f59e0b",
+          "image": "/industrial_digitalization.webp",
+          "description": "Optimising downstream chemical refining ecosystems with real-time Physics-Informed ML, predictive anomaly diagnostics, and high-fidelity wireless telemetry layers."
+        },
+        {
+          "id": "civil-defense",
+          "name": "Civil Defense",
+          "riskKicker": "TACTICAL EMERGENCY INCIDENT COMMAND",
+          "accent": "#ef4444",
+          "image": "/emergency_vehicle.webp",
+          "description": "Equipping public safety, civil protection, and regional defense forces with heavy tactical command apparatus, specialized life-support vehicles, and optimized foam suppression networks."
+        },
+        {
+          "id": "marine",
+          "name": "Marine & Offshore",
+          "riskKicker": "OFFSHORE ARCHITECTURE | ABS & DNV COMPLIANT",
+          "accent": "#1e3e8f",
+          "image": "/thermal_ehouse.webp",
+          "description": "Providing deepwater infrastructure defense, automated hull breach stabilization tracking, and extreme salt-atmosphere corrosive protection systems."
+        },
+        {
+          "id": "utility-power",
+          "name": "Utility & Power",
+          "riskKicker": "CRITICAL GRID SAFETY MARGIN | IEEE & IEC CERTIFIED",
+          "accent": "#10b981",
+          "image": "/wireless_monitoring.webp",
+          "description": "Hardening continental power distribution grids, high-output electrical substations, and water transformation architectures through high-noise immune telemetry and physical containment monitoring."
+        }
+      ],
+      "capabilitiesTagline": "Core Expertise",
+      "capabilitiesTitle": "Core Capabilities Portfolio",
+      "capabilitiesDesc": "Eastwind executes complex, multi-disciplinary workflows through structural, instrumentation, and fire safety engineering domains to assure unified system performance.",
+      "corePortfolios": [
+        {
+          "title": "AI, Digitalisation & Data Architecture",
+          "description": "Advanced data acquisition pipelines running Agentic AI models to enable automated predictive asset diagnostics.",
+          "items": [
+            "AI infrastructure deployment for volatile processing contexts",
+            "Plant operations enablement utilizing operational Agentic AI",
+            "Process parameter optimization and predictive engineering analysis",
+            "Data acquisition topologies facilitating rapid AI framework execution"
+          ],
+          "icon": "⚡"
+        },
+        {
+          "title": "Tactical Response Integration",
+          "description": "Complete design engineering, manufacturing, and systems calibration for highly tailored safety fleets.",
+          "items": [
+            "Heavy emergency industrial fire trucks and fluid tanker units",
+            "SCBA mobile compressed air cylinder recharging trucks",
+            "Rapid intervention vehicles (RIV) for tactical site access",
+            "Amphibious extreme-terrain safety equipment and clinical units"
+          ],
+          "icon": "⚙️"
+        },
+        {
+          "title": "Fire & Gas Detection Topologies",
+          "description": "Intelligent field instrumentation grids built to pass strict SIL 2 and SIL 3 risk parameters.",
+          "items": [
+            "Fixed and portable multi-point toxic gas detection infrastructure",
+            "Visual and acoustic emergency alerting networks",
+            "Multi-spectrum optical flame monitoring instruments",
+            "Linear thermal cables and localized smoke detection arrays"
+          ],
+          "icon": "👁️"
+        },
+        {
+          "title": "Extinguishing & Lifecycle Simulation",
+          "description": "Clean agent containment systems paired with high-fidelity operator training platforms.",
+          "items": [
+            "Novec 1230, CO2, and Inergen absolute suppression setups",
+            "Virtual reality and kinetic hot-fire training simulator modules",
+            "High-capacity automated foam concentrate skid engineering",
+            "Underground energy pipeline physical protection systems"
+          ],
+          "icon": "🛡️"
+        },
+        {
+          "title": "Industrial Wireless Environments",
+          "description": "Eliminating hazardous civil field cabling through robust, self-healing mesh communication paths.",
+          "items": [
+            "SIL 2 capable self-configuring wireless data radio fields",
+            "Wireless tracking loops for dense field instrumentation systems",
+            "ATEX Zone 0 certified radio transmitter configurations",
+            "Multi-hop WirelessHART & ISA100 structural mesh routing"
+          ],
+          "icon": "🛰️"
+        },
+        {
+          "title": "Specialised Lifecycles & Field Services",
+          "description": "Multi-disciplinary lifecycle management from conceptual studies to laboratory field calibrations.",
+          "items": [
+            "Concept development, system design layouts, and HSE consulting",
+            "Comprehensive H2S fleet rental assets and breathing air packs",
+            "Operational operator certifications tailored to client locations",
+            "Torque, pressure, thermal, and electrical field calibration loops"
+          ],
+          "icon": "🔬"
+        }
+      ],
+      "partnersTagline": "Global Integration",
+      "partnersTitle": "Integrated Technology Partners",
+      "partnersDesc": "We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.",
+      "partners": [
+        "Dräger", "Empel", "Nardi", "Mimes", "One Seven", "Sieon", "Xshielder",
+        "Nittan", "FlamePro", "E2S", "Schneider", "CRI", "CEJN", "Polyhose",
+        "Keiconnections", "Leader", "Tridiagonal", "Phoenix", "Pepperl+Fuchs",
+        "Guttor", "Paratech", "Panam", "Atexxor", "Thermocable"
+      ],
+      "gatewayTagline": "Enquiry Gateway",
+      "gatewayTitle": "Initiate Solution Proposal Request",
+      "gatewayDesc": "Our regional infrastructure engineering office coordinates directly with technical site operators to map out field constraints, balance topologies, and deploy high-compliance certified safety systems.",
+      "solutionScopeOptions": [
+        { "value": "ai-digitalization", "label": "AI, Digitalisation & Data" },
+        { "value": "firefighting", "label": "Tactical Response Fleet Systems" },
+        { "value": "gas-detection", "label": "Fire & Gas Topology Loops" },
+        { "value": "suppression", "label": "Extinguishing & Simulator Skids" },
+        { "value": "wireless", "label": "Industrial Wireless Mesh Networks" },
+        { "value": "services", "label": "Specialised Field Services" }
+      ],
+      "submitButtonText": "Submit Request"
+    }
+  ],
+  "brands": [
+    {
+      "id": "one-seven",
+      "name": "One Seven",
+      "tagline": "Compressed Air Foam Extinguishing Systems",
+      "solutionId": "tactical-fire-fighting",
+      "solutionName": "Vehicle Fire Fighting",
+      "description": "Global leader in high-expansion Compressed Air Foam Systems (CAFS) slashed water usage up to 90% in heavy industrial blazes.",
+      "logoUrl": "/products/default-fire-fighting-rescue.png",
+      "accent": "orange",
+      "products": [
+        { "id": "os-1", "name": "One Seven CAFS Skid Unit", "category": "CAF Systems", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "High-energy compressed air foam generator skid." },
+        { "id": "os-2", "name": "OS Foam Concentrate Matrix", "category": "Foam Solution", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Class A and Class B hydrocarbon foam concentrate." },
+        { "id": "os-3", "name": "OS Heavy Fire Truck Skid", "category": "Tactical Response", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Integrated foam pump panel for industrial fire trucks." },
+        { "id": "os-4", "name": "OS Compressed Air Proportioner", "category": "Foam Equipment", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Electronic high-accuracy foam dosing feedback loop." },
+        { "id": "os-5", "name": "OS High Expansion Nozzle", "category": "Suppression Hardware", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Heavy-duty discharge nozzle for hydrocarbon suppression." }
+      ]
+    },
+    {
+      "id": "sione",
+      "name": "SIONE",
+      "tagline": "Structural Fire Suites & Thermal Hoods",
+      "solutionId": "respiratory-protection",
+      "solutionName": "Respiratory & Personal Protection",
+      "description": "High-compliance firefighter turnout gear, structural fire suites, micro-toxin barrier hoods, and thermal protective equipment.",
+      "logoUrl": "/products/sione-hood.png",
+      "accent": "red",
+      "products": [
+        { "id": "sn-1", "name": "SIONE Structural Fire Suit", "category": "Fire Suites", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Nomex turnout apparel with internal moisture barrier." },
+        { "id": "sn-2", "name": "SIONE Particulate Fire Hood", "category": "Protective Hoods", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/sione-hood.png", "description": "99.9% particulate block nanolayer fire hood." },
+        { "id": "sn-3", "name": "SIONE Thermal Safety Boots", "category": "Firefighter Boots", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Steel-toe puncture resistant thermal leather boots." },
+        { "id": "sn-4", "name": "SIONE Close-Proximity Gloves", "category": "Safety Gloves", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Multi-layer aramid heat resistant gloves." },
+        { "id": "sn-5", "name": "SIONE Fire Helmet Shell", "category": "Head Protection", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "High-impact composite helmet with gold visor." }
+      ]
+    },
+    {
+      "id": "partech",
+      "name": "Partech",
+      "tagline": "Damage Control & Hull Stabilization Items",
+      "solutionId": "damage-control",
+      "solutionName": "Damage Control & Rescue Application",
+      "description": "Marine damage control kits, emergency pipe repair clamps, leak sealing plugs, and rapid hull stabilization systems.",
+      "logoUrl": "/products/default-damage-control.png",
+      "accent": "blue",
+      "products": [
+        { "id": "pt-1", "name": "Partech Emergency Leak Seal Kit", "category": "Damage Control", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Rapid pneumatic pipe leak containment plug set." },
+        { "id": "pt-2", "name": "Partech Hull Breach Shoring Kit", "category": "Rescue Systems", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Aluminium telescopic mechanical shoring struts." },
+        { "id": "pt-3", "name": "Partech High-Pressure Pipe Clamp", "category": "Pipe Repair", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Stainless steel emergency pipeline containment clamp." },
+        { "id": "pt-4", "name": "Partech Submersible Dewatering Pump", "category": "Marine Drainage", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "High-flow explosion-proof bilge pump." },
+        { "id": "pt-5", "name": "Partech Magnetic Patch Sealer", "category": "Hull Maintenance", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Neodymium magnetic patch for steel hull fractures." }
+      ]
+    },
+    {
+      "id": "nardi",
+      "name": "Nardi Compressor",
+      "tagline": "High-Pressure Breathing Air & Gas Compressors",
+      "solutionId": "breathing-air",
+      "solutionName": "Breathing Air Cascade Systems",
+      "description": "Multi-stage breathing air compressors, cascade cylinder banks, and toxic gas purification units for desert operating conditions.",
+      "logoUrl": "/products/default-respiratory-protection.png",
+      "accent": "orange",
+      "products": [
+        { "id": "nd-1", "name": "Nardi Pacific 350 Bar Compressor", "category": "High Pressure Compressors", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "350 Bar multi-stage oil-free air compressor." },
+        { "id": "nd-2", "name": "Nardi Cascade Recharging Rack", "category": "Cascade Systems", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "4-Cylinder 300 Bar SCBA cascade charging manifold." },
+        { "id": "nd-3", "name": "Nardi Air Quality Monitor Panel", "category": "Purification", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Real-time CO/CO2/Moisture active purity sensor." },
+        { "id": "nd-4", "name": "Nardi Portable Field Compressor", "category": "Mobile Breathing Air", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Compact gas engine powered breathing air charging unit." },
+        { "id": "nd-5", "name": "Nardi Auto Purge Condensate Trap", "category": "Compressor Accessories", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Automated moisture discharge drainage assembly." }
+      ]
+    },
+    {
+      "id": "xshielder",
+      "name": "Xshielder",
+      "tagline": "ATEX Zone 0 Mobile & Intrinsically Safe Devices",
+      "solutionId": "explosion-proof-mobility",
+      "solutionName": "Explosion Proof Mobility",
+      "description": "ATEX and IECEx certified explosion-proof smartphones, field tablets, and wearable telemetry devices for volatile chemical plants.",
+      "logoUrl": "/products/xshielder-phone.png",
+      "accent": "blue",
+      "products": [
+        { "id": "xs-1", "name": "Xshielder Ex-Proof Smartphone", "category": "Mobile Solutions", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Zone 0/21 rugged LTE smartphone with lone-worker SOS." },
+        { "id": "xs-2", "name": "Xshielder Hazardous Area Tablet", "category": "Ex Tablets", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "10-inch ATEX Zone 1 Windows/Android industrial tablet." },
+        { "id": "xs-3", "name": "Xshielder Wireless Headset System", "category": "Ex Audio", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Noise-cancelling Bluetooth communication headset." },
+        { "id": "xs-4", "name": "Xshielder Thermal Imaging Camera", "category": "Field Vision", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Intrinsically safe IR thermography inspection camera." },
+        { "id": "xs-5", "name": "Xshielder RFID Asset Reader", "category": "Field Scanners", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Zone 0 handheld UHF barcode and RFID tag scanner." }
+      ]
+    },
+    {
+      "id": "mimes",
+      "name": "Mimes",
+      "tagline": "Wireless Gas & Fire Topologies",
+      "solutionId": "wireless-gas-detection",
+      "solutionName": "Wireless Gas Detection Systems",
+      "description": "Self-healing mesh radio transmitters, multi-gas optical detectors, sounders, and beacons for toxic refinery environments.",
+      "logoUrl": "/products/gas-detector.png",
+      "accent": "blue",
+      "products": [
+        { "id": "mm-1", "name": "Mimes Wireless Toxic Gas Detector", "category": "Wireless Gas Detection", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "ISA100.11a multi-gas optical sensor node." },
+        { "id": "mm-2", "name": "Mimes Wireless Flame Detector", "category": "Flame Detection", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "Triple IR optical flame detection transmitter." },
+        { "id": "mm-3", "name": "Mimes Ex-Proof Alarm Beacon", "category": "Beacons & Sounders", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "115dB xenom strobe beacon sounder assembly." },
+        { "id": "mm-4", "name": "Mimes Manual Call Point (MCP)", "category": "Manual Alarm", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "ATEX Zone 0 glass break wireless call point." },
+        { "id": "mm-5", "name": "Mimes Gateway Receiver Station", "category": "Data Gateway", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "Central SCADA interface router gateway link." }
+      ]
+    },
+    {
+      "id": "atexor",
+      "name": "Atexor",
+      "tagline": "Explosion Proof Lighting Systems",
+      "solutionId": "explosion-proof-lighting",
+      "solutionName": "Explosion Proof Products",
+      "description": "ATEX Zone 0/1 floodlights, temporary work lights, tank inspection lamps, and linear LED fittings for volatile gas atmospheres.",
+      "logoUrl": "/products/default-explosion-proof-products.png",
+      "accent": "orange",
+      "products": [
+        { "id": "ax-1", "name": "Atexor Slam Tank LED Light", "category": "Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Low-voltage portable LED work light for tank cleaning." },
+        { "id": "ax-2", "name": "Atexor Ex High-Bay Floodlight", "category": "Industrial Lighting", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "15,000 Lumen ATEX Zone 1 refinery floodlight." },
+        { "id": "ax-3", "name": "Atexor Emergency LED Fitting", "category": "Linear Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Battery backup linear emergency escape luminaire." },
+        { "id": "ax-4", "name": "Atexor Ex Handheld Inspection Lamp", "category": "Hand Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Rechargeable Zone 0 safety flashlight." },
+        { "id": "ax-5", "name": "Atexor Ex Distribution Transformer", "category": "Power Distribution", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Portable 110V/24V hazardous area transformer box." }
+      ]
+    },
+    {
+      "id": "polyhose",
+      "name": "Polyhose",
+      "tagline": "High & Low Pressure Breathing Air Hoses",
+      "solutionId": "breathing-protection",
+      "solutionName": "Breathing Protection & Air Lines",
+      "description": "Thermoplastic and rubber breathing air hoses, ultra-high pressure lines, pneumatic hoses, and chemical transfer assemblies.",
+      "logoUrl": "/products/default-respiratory-protection.png",
+      "accent": "blue",
+      "products": [
+        { "id": "ph-1", "name": "Polyhose High Pressure Air Line", "category": "Breathing Air Hose", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Flexible 300 Bar high pressure SCBA air supply hose." },
+        { "id": "ph-2", "name": "Polyhose Chemical Transfer Hose", "category": "Chemical Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "PTFE lined acid and solvent transfer hose." },
+        { "id": "ph-3", "name": "Polyhose Pneumatic Control Hose", "category": "Pneumatic Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Polyurethane recoil pneumatic air loop hose." },
+        { "id": "ph-4", "name": "Polyhose Anti-Static Air Line", "category": "Anti-Static Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Conductive grounding rubber air supply line." },
+        { "id": "ph-5", "name": "Polyhose Fire Resistant Sleeve Hose", "category": "Thermal Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Silicone glass-fiber fire shield protected hose." }
+      ]
+    },
+    {
+      "id": "cejn",
+      "name": "CEJN",
+      "tagline": "Smart Fittings & Quick Coupling Hardware",
+      "solutionId": "process-instrumentation",
+      "solutionName": "Process & Instrumentation",
+      "description": "Ultra-safe quick disconnect couplings, pneumatic fittings, breathing air nipples, and hydraulic fluid connectors.",
+      "logoUrl": "/products/default-process-instrumentation.png",
+      "accent": "orange",
+      "products": [
+        { "id": "cj-1", "name": "CEJN Breathing Air Quick Coupling", "category": "Smart Fittings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Safety locking quick disconnect coupling for air lines." },
+        { "id": "cj-2", "name": "CEJN High Pressure Hydraulic Nipple", "category": "Hydraulic Fittings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "700 Bar ultra-high pressure hydraulic connector." },
+        { "id": "cj-3", "name": "CEJN Non-Drip Fluid Connector", "category": "Fluid Couplings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Flat-face spill free chemical fluid coupling." },
+        { "id": "cj-4", "name": "CEJN Compressed Air Blowgun", "category": "Air Tools", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "OSHA compliant ergonomic safety blowgun." },
+        { "id": "cj-5", "name": "CEJN Hose Reel Enclosure", "category": "Hose Reels", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Automatic retractable air hose reel assembly." }
+      ]
+    },
+    {
+      "id": "thermocable",
+      "name": "Thermo Cable",
+      "tagline": "Linear Heat & Thermal Detection Cables",
+      "solutionId": "fire-gas-mapping",
+      "solutionName": "Fire & Gas Detection Systems",
+      "description": "Digital linear heat detection (LHD) cables, analogue thermal sensor cables, and high-temperature fire detection loops.",
+      "logoUrl": "/products/default-process-instrumentation.png",
+      "accent": "red",
+      "products": [
+        { "id": "tc-1", "name": "Thermo Cable Digital LHD Cable", "category": "Linear Heat Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "68°C digital alarm trigger linear heat detection cable." },
+        { "id": "tc-2", "name": "Thermo Cable Analogue Thermal Sensor", "category": "Thermal Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "Continuous temperature monitoring sensor cable." },
+        { "id": "tc-4", "name": "Thermo Cable End of Line Box", "category": "LHD Modules", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "Zone monitoring interface and test box." },
+        { "id": "tc-5", "name": "Thermo Cable High Temp 105°C LHD", "category": "High Temp Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "105°C fixed temperature alarm linear sensor loop." }
+      ]
+    }
+  ],
+  "success_stories": [
+    {
+      "id": "story-1",
+      "title": "One Seven CAFS Deployment for Petrochemical Storage Depot",
+      "client": "Major Energy Terminal, Jubail",
+      "category": "Fire Suppression",
+      "summary": "Engineered and commissioned a heavy-duty Compressed Air Foam System (CAFS) protecting high-value hydrocarbon storage tanks against extreme thermal events while slashing water consumption by 90%.",
+      "imageUrl": "/emergency_vehicle.webp",
+      "date": "October 2025",
+      "year": "2025"
+    },
+    {
+      "id": "story-2",
+      "title": "ATEX Zone 0 Mobile & Wireless Gas Mesh Implementation",
+      "client": "Refinery Complex, Yanbu",
+      "category": "Wireless Safety",
+      "summary": "Deployed intrinsically safe Xshielder mobile terminals and Mimes wireless self-healing gas detection nodes across refinery turnarounds for zero-wiring continuous personnel protection.",
+      "imageUrl": "/wireless_monitoring.webp",
+      "date": "July 2025",
+      "year": "2025"
+    },
+    {
+      "id": "story-3",
+      "title": "High-Pressure Respiratory Charging & Protection Hub",
+      "client": "Industrial Offshore Fleet, Dammam",
+      "category": "Breathing Systems",
+      "summary": "Installed Nardi 350 Bar heavy breathing air cascade recharging stations and Polyhose safety lines for offshore vessel crews requiring continuous EN12021 compliant breathing air.",
+      "imageUrl": "/emergency_response.webp",
+      "date": "March 2025",
+      "year": "2025"
+    },
+    {
+      "id": "story-4",
+      "title": "Hazardous Area Industrial Digitalization & Asset Tracking",
+      "client": "Chemical Processing Hub, Ras Tanura",
+      "category": "Industrial Digitalization",
+      "summary": "Integrated Ex-proof telemetry sensors and predictive analytics control loops across high-risk processing shelters to ensure zero unscheduled downtime.",
+      "imageUrl": "/industrial_digitalization.webp",
+      "date": "November 2024",
+      "year": "2024"
+    }
   ]
 }

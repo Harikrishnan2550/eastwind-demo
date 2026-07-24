@@ -1,16 +1,75 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
-export default function About() {
-  const lifecycleSteps = useMemo(() => [
+interface MetricItem {
+  value: string;
+  label: string;
+  desc: string;
+}
+
+interface HomeAboutData {
+  imageUrl: string;
+  title: string;
+  overviewText: string;
+  secondaryText: string;
+  metrics: MetricItem[];
+  lifecycleSteps: string[];
+}
+
+const defaultData: HomeAboutData = {
+  imageUrl: "/about.png",
+  title: "Sustaining Regional Safety Infrastructure",
+  overviewText: "East Wind operates as a regional, end-to-end safety solutions provider delivering the complete lifecycle of safety projects across mission-critical infrastructure segments.",
+  secondaryText: "Our core strength centers on adopting and implementing the latest safety technologies to solve complex, high-risk challenges—improving safety performance while reducing total cost of ownership (TCO) for our clients.",
+  metrics: [
+    {
+      value: "70%",
+      label: "Technical Functions Weight",
+      desc: "Dedicated to application engineering, cross-disciplinary integration, workshops, and instrument field services."
+    },
+    {
+      value: "10+",
+      label: "Certified Personnel Scale",
+      desc: "Housing internal multi-disciplinary functions spanning mechanical, electrical, and functional safety architecture."
+    }
+  ],
+  lifecycleSteps: [
     "Concept Studies & Solution Selection",
     "Safety Systems Integration",
     "Manufacturing & Assembly",
     "Installation & Commissioning",
     "Project Management Leadership",
     "Long-Term After-Sales Support"
-  ], []);
+  ]
+};
+
+export default function About() {
+  const [data, setData] = useState<HomeAboutData>(defaultData);
+
+  useEffect(() => {
+    const fetchHomeAbout = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${baseUrl}/api/about/home`, { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          setData({
+            imageUrl: json.imageUrl || defaultData.imageUrl,
+            title: json.title || defaultData.title,
+            overviewText: json.overviewText || defaultData.overviewText,
+            secondaryText: json.secondaryText || defaultData.secondaryText,
+            metrics: json.metrics && json.metrics.length > 0 ? json.metrics : defaultData.metrics,
+            lifecycleSteps: json.lifecycleSteps && json.lifecycleSteps.length > 0 ? json.lifecycleSteps : defaultData.lifecycleSteps,
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic home about section:", err);
+      }
+    };
+
+    fetchHomeAbout();
+  }, []);
 
   return (
     <section 
@@ -31,8 +90,8 @@ export default function About() {
         <div className="lg:col-span-5 flex flex-col relative group">
           <div className="relative w-full h-full min-h-[480px] max-lg:min-h-[320px] overflow-hidden rounded-[28px] border border-slate-200/60 shadow-2xl bg-slate-950/10">
             <img
-              src="/about.png"
-              alt="East Wind Infrastructure Engineering Center"
+              src={data.imageUrl}
+              alt={data.title}
               className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-101 select-none pointer-events-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent pointer-events-none" />
@@ -45,13 +104,13 @@ export default function About() {
           {/* Narrative Overview Panel */}
           <div className="spatial-panel bg-white/80 backdrop-blur-2xl border border-white/75 rounded-[32px] max-md:rounded-2xl p-10 max-sm:p-6 flex flex-col justify-center shadow-lg text-black flex-grow">
             <h2 className="text-[2.6rem] max-md:text-[2rem] max-sm:text-[1.65rem] font-black tracking-tight uppercase leading-[1.1] mb-6 text-black">
-              Sustaining Regional Safety Infrastructure
+              {data.title}
             </h2>
             <p className="text-[1.05rem] max-sm:text-sm text-black leading-relaxed font-normal mb-6">
-              East Wind operates as a regional, end-to-end safety solutions provider delivering the complete lifecycle of safety projects across mission-critical infrastructure segments.
+              {data.overviewText}
             </p>
             <p className="text-sm max-sm:text-xs text-black leading-relaxed font-light opacity-90">
-              Our core strength centers on adopting and implementing the latest safety technologies to solve complex, high-risk challenges—improving safety performance while reducing total cost of ownership (TCO) for our clients.
+              {data.secondaryText}
             </p>
           </div>
 
@@ -60,16 +119,19 @@ export default function About() {
             
             {/* Quantitative Data Grid */}
             <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 mb-8 border-b border-slate-200/60 pb-8">
-              <div className="flex flex-col">
-                <span className="text-4xl max-sm:text-3xl font-black font-mono text-[#1e3e8f]">70%</span>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-black mt-1">Technical Functions Weight</span>
-                <span className="text-[11px] text-black leading-tight mt-1 opacity-90">Dedicated to application engineering, cross-disciplinary integration, workshops, and instrument field services.</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-4xl max-sm:text-3xl font-black font-mono text-[#ff2228]">10+</span>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-black mt-1">Certified Personnel Scale</span>
-                <span className="text-[11px] text-black leading-tight mt-1 opacity-90">Housing internal multi-disciplinary functions spanning mechanical, electrical, and functional safety architecture.</span>
-              </div>
+              {data.metrics.map((metric, idx) => (
+                <div key={idx} className="flex flex-col">
+                  <span className={`text-4xl max-sm:text-3xl font-black font-mono ${idx % 2 === 0 ? "text-[#1e3e8f]" : "text-[#ff2228]"}`}>
+                    {metric.value}
+                  </span>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-black mt-1">
+                    {metric.label}
+                  </span>
+                  <span className="text-[11px] text-black leading-tight mt-1 opacity-90">
+                    {metric.desc}
+                  </span>
+                </div>
+              ))}
             </div>
 
             {/* Matrix Deliverables Section */}
@@ -77,7 +139,7 @@ export default function About() {
               Turnkey Project Lifecycle Delivery Scope:
             </span>
             <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-3">
-              {lifecycleSteps.map((step) => (
+              {data.lifecycleSteps.map((step) => (
                 <div 
                   key={step} 
                   className="flex items-center gap-2.5 py-2.5 px-4 bg-white/60 border border-slate-200/50 rounded-xl text-xs font-bold text-black shadow-3xs"

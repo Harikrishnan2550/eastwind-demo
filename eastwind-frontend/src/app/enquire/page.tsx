@@ -12,6 +12,38 @@ const poppins = Poppins({
   display: "swap",
 });
 
+interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+interface EnquiryPageSettings {
+  enquiryTagline: string;
+  enquiryTitle: string;
+  enquiryDescription: string;
+  applicationPurposes: DropdownOption[];
+  submitButtonText: string;
+  successTitle: string;
+  successMessage: string;
+}
+
+const defaultEnquirySettings: EnquiryPageSettings = {
+  enquiryTagline: "Regional Proposal Intake",
+  enquiryTitle: "Request Technical Integration Quoting",
+  enquiryDescription: "Complete the security assessment form below. Our estimation group will process your scope and respond with preliminary blueprints.",
+  applicationPurposes: [
+    { value: "house", label: "Residential (House)" },
+    { value: "company", label: "Corporate Office (Company)" },
+    { value: "hospital", label: "Healthcare Facility (Hospital)" },
+    { value: "refinery", label: "Industrial Refinery / Plant" },
+    { value: "commercial", label: "Commercial Hub / Hotel" },
+    { value: "other", label: "Other / Custom Infrastructure" }
+  ],
+  submitButtonText: "Submit Solution Enquiry",
+  successTitle: "Enquiry Dispatched",
+  successMessage: "Thank you. Your proposal request and structural application scope details have been forwarded directly to our engineering coordinators at harik2021a@gmail.com."
+};
+
 function EnquiryFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,36 +56,52 @@ function EnquiryFormContent() {
   const [selectedSolution, setSelectedSolution] = useState("");
   const [message, setMessage] = useState("");
   
-  // Loading & state control
+  // Settings & solutions state
+  const [settings, setSettings] = useState<EnquiryPageSettings>(defaultEnquirySettings);
   const [solutions, setSolutions] = useState<any[]>([]);
   const [loadingSolutions, setLoadingSolutions] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load solutions from database
+  // Load solutions & page settings from database
   useEffect(() => {
-    async function loadSolutions() {
+    async function loadData() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const res = await fetch(`${baseUrl}/api/solutions`);
-        if (res.ok) {
-          const data = await res.json();
+        
+        // Fetch enquiry settings
+        const settingsRes = await fetch(`${baseUrl}/api/contact-settings/enquiry_page`, { cache: "no-store" });
+        if (settingsRes.ok) {
+          const json = await settingsRes.json();
+          setSettings({
+            enquiryTagline: json.enquiryTagline || defaultEnquirySettings.enquiryTagline,
+            enquiryTitle: json.enquiryTitle || defaultEnquirySettings.enquiryTitle,
+            enquiryDescription: json.enquiryDescription || defaultEnquirySettings.enquiryDescription,
+            applicationPurposes: json.applicationPurposes && json.applicationPurposes.length > 0 ? json.applicationPurposes : defaultEnquirySettings.applicationPurposes,
+            submitButtonText: json.submitButtonText || defaultEnquirySettings.submitButtonText,
+            successTitle: json.successTitle || defaultEnquirySettings.successTitle,
+            successMessage: json.successMessage || defaultEnquirySettings.successMessage,
+          });
+        }
+
+        // Fetch solutions
+        const solRes = await fetch(`${baseUrl}/api/solutions`);
+        if (solRes.ok) {
+          const data = await solRes.json();
           setSolutions(data);
           
-          // Pre-fill solution if provided in query string
           const querySol = searchParams.get("solution");
           if (querySol) {
             setSelectedSolution(querySol);
           }
         }
       } catch (err) {
-        console.error("Failed to load solutions for dropdown:", err);
-      } finally {
-        setLoadingSolutions(false);
+        console.error("Failed to load enquiry data:", err);
       }
+      setLoadingSolutions(false);
     }
-    loadSolutions();
+    loadData();
   }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,9 +148,9 @@ function EnquiryFormContent() {
           ✓
         </div>
         <div className="space-y-3">
-          <h3 className="text-2xl font-extrabold text-slate-900 uppercase tracking-tight m-0">Enquiry Dispatched</h3>
+          <h3 className="text-2xl font-extrabold text-slate-900 uppercase tracking-tight m-0">{settings.successTitle}</h3>
           <p className="text-sm text-slate-500 leading-relaxed font-normal m-0">
-            Thank you. Your proposal request and structural application scope details have been forwarded directly to our engineering coordinators at <strong className="text-slate-800">harik2021a@gmail.com</strong>.
+            {settings.successMessage}
           </p>
         </div>
         <button
@@ -120,13 +168,13 @@ function EnquiryFormContent() {
       
       <div className="space-y-3 max-w-xl">
         <span className="block text-xs font-bold text-[#c22026] uppercase tracking-[0.25em]">
-          Regional Proposal Intake
+          {settings.enquiryTagline}
         </span>
         <h2 className="text-[2rem] max-md:text-[1.7rem] max-sm:text-[1.4rem] font-extrabold uppercase text-slate-900 tracking-tight leading-none m-0">
-          Request Technical Integration Quoting
+          {settings.enquiryTitle}
         </h2>
         <p className="text-sm max-sm:text-xs text-slate-500 font-normal leading-relaxed m-0">
-          Complete the security assessment form below. Our estimation group will process your scope and respond with preliminary blueprints.
+          {settings.enquiryDescription}
         </p>
       </div>
 
@@ -195,13 +243,12 @@ function EnquiryFormContent() {
               onChange={(e) => setPurpose(e.target.value)}
               className="w-full h-12 px-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-[#c22026] transition-all cursor-pointer focus:bg-white"
             >
-              <option value="" disabled>Select sector purpose...</option>
-              <option value="house">Residential (House)</option>
-              <option value="company">Corporate Office (Company)</option>
-              <option value="hospital">Healthcare Facility (Hospital)</option>
-              <option value="refinery">Industrial Refinery / Plant</option>
-              <option value="commercial">Commercial Hub / Hotel</option>
-              <option value="other">Other / Custom Infrastructure</option>
+              <option value="" disabled>Select application purpose...</option>
+              {settings.applicationPurposes.map((purp) => (
+                <option key={purp.value} value={purp.value}>
+                  {purp.label}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -253,7 +300,7 @@ function EnquiryFormContent() {
             </>
           ) : (
             <>
-              Submit Solution Enquiry
+              {settings.submitButtonText}
               <span>→</span>
             </>
           )}

@@ -11,6 +11,15 @@ interface NavItem {
   href: string;
 }
 
+interface SolutionCategory {
+  id: string;
+  name: string;
+  href: string;
+  description: string;
+  accent: string;
+  items: { name: string; href: string }[];
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const isHomepage = pathname === "/";
@@ -94,14 +103,97 @@ export default function Navbar() {
     }));
   };
 
-  // Mapped dynamically to Solutions by Industry (Page 1)
-  const [solutionsList, setSolutionsList] = useState<NavItem[]>([
-    { name: "Oil & Gas Industry", href: "/solutions/oil-and-gas" },
-    { name: "Petrochemical Infrastructure", href: "/solutions/petrochemicals" },
-    { name: "Civil Defense & Military", href: "/solutions/civil-defense" },
-    { name: "Marine & Offshore Platforms", href: "/solutions/marine-offshore" },
-    { name: "Utility & Power Grids", href: "/solutions/utility-power" },
+  // 6 Solution Categories & their associated products/sub-solutions
+  const [categoriesList, setCategoriesList] = useState<SolutionCategory[]>([
+    {
+      id: "oil-gas",
+      name: "Oil & Gas Industry",
+      href: "/solutions/oil-and-gas",
+      description: "Intelligent Hydrocarbon Operations & Intrinsic Wireless Systems",
+      accent: "#1e3e8f",
+      items: [
+        { name: "End-End ISA 100 Wireless Gas Detection", href: "/solutions/oil-and-gas" },
+        { name: "Plant Operations (Plant OPS)", href: "/solutions/oil-and-gas" },
+        { name: "TGR (Temporary Refuge Chamber)", href: "/solutions/oil-and-gas" },
+        { name: "Tank Farm Fire Fighting", href: "/solutions/oil-and-gas" },
+        { name: "LER & Analyzer Shelters", href: "/solutions/oil-and-gas" },
+        { name: "Digital Mobility-X Shielder", href: "/solutions/oil-and-gas" },
+      ],
+    },
+    {
+      id: "marine-offshore",
+      name: "Marine Operations",
+      href: "/solutions/marine-offshore",
+      description: "Harsh Deepwater Infrastructure Resilience & Damage Control",
+      accent: "#b45309",
+      items: [
+        { name: "Damage Control Systems", href: "/solutions/marine-offshore" },
+        { name: "Wireless Data Acquisition", href: "/solutions/marine-offshore" },
+        { name: "H2S Shelter Rental & Air Loops", href: "/solutions/marine-offshore" },
+        { name: "Temporary Refuge Chambers (TGR)", href: "/solutions/marine-offshore" },
+        { name: "Decompression Chambers", href: "/solutions/marine-offshore" },
+        { name: "Air Loops & Breathing Air Cascades", href: "/solutions/marine-offshore" },
+      ],
+    },
+    {
+      id: "utilities-power",
+      name: "Utilities & Power",
+      href: "/solutions/utility-power",
+      description: "Critical Grid Asset Safeguarding & Thermal Monitoring",
+      accent: "#1e3e8f",
+      items: [
+        { name: "Sampling Systems (SWAS)", href: "/solutions/utility-power" },
+        { name: "Wireless Infrastructure", href: "/solutions/utility-power" },
+        { name: "Smart Facilities", href: "/solutions/utility-power" },
+        { name: "Digital Mobility (Xshielder)", href: "/solutions/utility-power" },
+      ],
+    },
+    {
+      id: "defense-security",
+      name: "Defense & Border Security",
+      href: "/solutions/civil-defense",
+      description: "National Level Security & Blast-Resistant Modules",
+      accent: "#b45309",
+      items: [
+        { name: "Secure Wireless Telemetry", href: "/solutions/civil-defense" },
+        { name: "Blast-Resistant Guard Shelters", href: "/solutions/civil-defense" },
+        { name: "Tactical Cyber Defense", href: "/solutions/civil-defense" },
+        { name: "HCIS Approved Fencing", href: "/solutions/civil-defense" },
+      ],
+    },
+    {
+      id: "civil-defense",
+      name: "Civil Defense",
+      href: "/solutions/civil-defense",
+      description: "Metropolitan Safety Infrastructure & Emergency Vehicles",
+      accent: "#c22026",
+      items: [
+        { name: "Asset Management Systems", href: "/solutions/civil-defense" },
+        { name: "Rescue Intervention Vehicles (RIV)", href: "/solutions/civil-defense" },
+        { name: "CAFS Systems", href: "/solutions/civil-defense" },
+        { name: "SCBA Support Trucks", href: "/solutions/civil-defense" },
+        { name: "CBRN Emergency Response Systems", href: "/solutions/civil-defense" },
+      ],
+    },
+    {
+      id: "smart-facilities",
+      name: "Smart Industrial Facilities",
+      href: "/solutions/petrochemicals",
+      description: "Automated Facility Health & Process Reliability Diagnostics",
+      accent: "#c22026",
+      items: [
+        { name: "Smart Factories", href: "/solutions/petrochemicals" },
+        { name: "Plant AI Diagnostics", href: "/solutions/petrochemicals" },
+        { name: "Wireless Data Acquisition", href: "/solutions/petrochemicals" },
+        { name: "SIL2 Wireless Gas Detection", href: "/solutions/petrochemicals" },
+        { name: "Wireless Systems (ISA100, LoRa)", href: "/solutions/petrochemicals" },
+        { name: "Emergency Response Solutions", href: "/solutions/petrochemicals" },
+      ],
+    },
   ]);
+
+  const [hoveredCategoryIdx, setHoveredCategoryIdx] = useState<number | null>(null);
+  const [mobileSubAccordion, setMobileSubAccordion] = useState<string | null>(null);
 
   // Mapped dynamically to Technical Applications (Page 2)
   const [applicationsList, setApplicationsList] = useState<NavItem[]>([
@@ -126,23 +218,6 @@ export default function Navbar() {
   useEffect(() => {
     async function fetchNavbarData() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      
-      // Fetch solutions
-      try {
-        const res = await fetch(`${baseUrl}/api/solutions`);
-        if (res.ok) {
-          const list = await res.json();
-          const mapped = list.map((item: any) => ({
-            name: item.title,
-            href: `/solutions/${item.id}`,
-          }));
-          if (mapped.length > 0) {
-            setSolutionsList(mapped);
-          }
-        }
-      } catch (err) {
-        console.error("Navbar failed to fetch solutions:", err);
-      }
 
       // Fetch applications
       try {
@@ -178,7 +253,7 @@ export default function Navbar() {
         console.error("Navbar failed to fetch services:", err);
       }
     }
-    
+
     fetchNavbarData();
   }, []);
 
@@ -243,29 +318,18 @@ export default function Navbar() {
               }`
         }`}
       >
-        <Link href="/" className={`brand-link inline-flex items-center gap-2.5 no-underline ${showTransparent ? "text-white" : "text-[#1e3e8f]"}`}>
-          <span className={`brand-mark w-[38px] h-[38px] grid place-items-center rounded-xl border shadow-sm transition-colors ${
-            showTransparent ? "bg-slate-900/60 border-white/10" : "bg-white/95 border-white/80"
+        <Link href="/" className="brand-link inline-flex items-center no-underline shrink-0">
+          <div className={`transition-all duration-300 ${
+            showTransparent
+              ? "bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/80 shadow-md"
+              : "bg-transparent"
           }`}>
-            <svg width="28" height="28" viewBox="0 0 100 100" fill="none">
-              <path d="M35 15C20 25 10 45 10 65c0 13 8 20 15 20-5-10-7-25-2-40 5-15 12-25 12-30Z" fill="#1E3E8F" />
-              <path d="M52 20C37 30 27 50 27 70c0 10 5 15 10 15-5-7-7-20 0-35 7-15 15-25 15-30Z" fill="#C22026" />
-            </svg>
-          </span>
-          <span className="brand-copy flex flex-col justify-center gap-0.5 relative">
-            <span className={`brand-name text-[0.98rem] font-black leading-none ${showTransparent ? "text-white" : "text-[#1e3e8f]"}`}>
-              East Wind
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className={`brand-subtitle text-[0.58rem] font-bold leading-none tracking-[0.14em] uppercase ${showTransparent ? "text-white/80" : "text-[#c22026]"}`}>
-                Safety Arabia
-              </span>
-              <span className="relative flex h-1.5 w-1.5">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`}></span>
-                <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${showTransparent ? "bg-white/90" : "bg-[#c22026]"}`}></span>
-              </span>
-            </span>
-          </span>
+            <img
+              src="/logo.png"
+              alt="East Wind Energy Arabia"
+              className="h-9 sm:h-11 w-auto max-w-[150px] sm:max-w-none object-contain shrink-0"
+            />
+          </div>
         </Link>
 
         {/* Desktop Navigation Link Cluster */}
@@ -290,14 +354,13 @@ export default function Navbar() {
             <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
           </Link>
 
-          {/* Solutions Dropdown - Operating Industries served */}
+          {/* Solutions Dropdown - 6 Solution Categories with hoverable products list */}
           <div className="nav-dropdown relative group/nav">
             <button
               type="button"
               onClick={() => {
                 const next = activeDropdown === "solutions" ? null : "solutions";
                 setActiveDropdown(next);
-                if (!next) setSolutionsExpanded(false);
               }}
               className={`nav-link-dropdown inline-flex items-center gap-1.25 px-3.5 py-2 text-[0.76rem] font-extrabold uppercase tracking-wider rounded-full transition-all duration-200 cursor-pointer ${
                 showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
@@ -306,41 +369,144 @@ export default function Navbar() {
               Solutions {renderChevron(activeDropdown === "solutions")}
             </button>
             {activeDropdown === "solutions" && (
-              solutionsExpanded ? (
-                <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 p-6 bg-white/95 border border-slate-200/80 rounded-[28px] shadow-2xl z-[150] backdrop-blur-xl transition-all duration-300 flex flex-col gap-4 w-max">
-                  <div className="flex gap-6 items-stretch">
-                    {Array.from({ length: Math.ceil(solutionsList.length / 10) }).map((_, colIdx) => {
-                      const chunk = solutionsList.slice(colIdx * 10, (colIdx + 1) * 10);
-                      return (
-                        <div key={colIdx} className="w-56 flex flex-col gap-1">
-                          {renderDropdownLinks(chunk)}
+              <div
+                onMouseLeave={() => setHoveredCategoryIdx(null)}
+                className={`dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 bg-white/95 border border-slate-200/80 rounded-[28px] shadow-2xl z-[150] backdrop-blur-xl transition-all duration-300 overflow-hidden p-4 ${
+                  hoveredCategoryIdx !== null ? "w-[640px] max-w-[90vw]" : "w-[280px]"
+                }`}
+              >
+                {hoveredCategoryIdx === null ? (
+                  /* Compact View: 6 Categories Only (No blank space) */
+                  <div className="flex flex-col gap-1 w-full">
+                    <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-1.5 px-2">
+                      Solution Domains (6)
+                    </span>
+                    {categoriesList.map((cat, idx) => (
+                      <Link
+                        key={cat.id}
+                        href={cat.href}
+                        onMouseEnter={() => setHoveredCategoryIdx(idx)}
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          setHoveredCategoryIdx(null);
+                          setMobileMenuOpen(false);
+                        }}
+                        className="group/cat min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl no-underline text-slate-700 hover:bg-slate-100 hover:text-[#1e3e8f] transition-all duration-200"
+                      >
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[0.82rem] font-extrabold leading-tight truncate">
+                            {cat.name}
+                          </span>
+                          <span className="text-[0.64rem] font-medium text-slate-400 truncate">
+                            {cat.items.length} Products & Solutions
+                          </span>
                         </div>
-                      );
-                    })}
+                        <span className="text-[0.9rem] font-bold text-slate-300 group-hover/cat:text-[#c22026] group-hover/cat:translate-x-1 transition-all">
+                          ›
+                        </span>
+                      </Link>
+                    ))}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setSolutionsExpanded(false)}
-                    className="self-end py-1.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-650 rounded-lg text-[0.72rem] font-extrabold uppercase cursor-pointer transition-colors border border-slate-200/60"
-                  >
-                    Show Less
-                  </button>
-                </div>
-              ) : (
-                <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-64 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
-                  <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-2.5">Operating Industries</span>
-                  {renderDropdownLinks(solutionsList.slice(0, 10))}
-                  {solutionsList.length > 10 && (
-                    <button
-                      type="button"
-                      onClick={() => setSolutionsExpanded(true)}
-                      className="w-full mt-2.5 py-2 px-3 border border-dashed border-orange-500/30 hover:border-orange-500 rounded-xl text-orange-650 hover:bg-orange-50/50 text-[0.76rem] font-bold text-center cursor-pointer transition-all"
-                    >
-                      + More Solutions
-                    </button>
-                  )}
-                </div>
-              )
+                ) : (
+                  /* Expanded View: Categories on Left, Products on Right */
+                  <div className="grid grid-cols-12 gap-3 items-stretch w-full">
+                    {/* Left Column: 6 Categories */}
+                    <div className="col-span-5 border-r border-slate-100 pr-2 flex flex-col gap-1">
+                      <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-1.5 px-2">
+                        Solution Domains (6)
+                      </span>
+                      {categoriesList.map((cat, idx) => {
+                        const isHovered = hoveredCategoryIdx === idx;
+                        return (
+                          <Link
+                            key={cat.id}
+                            href={cat.href}
+                            onMouseEnter={() => setHoveredCategoryIdx(idx)}
+                            onClick={() => {
+                              setActiveDropdown(null);
+                              setHoveredCategoryIdx(null);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`group/cat min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl no-underline transition-all duration-200 ${
+                              isHovered
+                                ? "bg-slate-100 text-[#1e3e8f] shadow-sm"
+                                : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                            }`}
+                          >
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-[0.82rem] font-extrabold leading-tight truncate">
+                                {cat.name}
+                              </span>
+                              <span className="text-[0.64rem] font-medium text-slate-400 truncate">
+                                {cat.items.length} Products & Solutions
+                              </span>
+                            </div>
+                            <span
+                              className={`text-[0.9rem] font-bold transition-transform duration-200 ${
+                                isHovered ? "text-[#c22026] translate-x-1" : "text-slate-300 group-hover/cat:text-slate-400"
+                              }`}
+                            >
+                              ›
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+
+                    {/* Right Column: Associated Products */}
+                    <div className="col-span-7 pl-2 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-[0.62rem] font-bold tracking-wider uppercase text-slate-400">
+                              Category Products
+                            </span>
+                            <span className="text-[0.88rem] font-black text-[#1e3e8f] truncate">
+                              {categoriesList[hoveredCategoryIdx]?.name}
+                            </span>
+                          </div>
+                          <Link
+                            href={categoriesList[hoveredCategoryIdx]?.href || "#"}
+                            onClick={() => {
+                              setActiveDropdown(null);
+                              setHoveredCategoryIdx(null);
+                              setMobileMenuOpen(false);
+                            }}
+                            className="text-[0.68rem] font-bold text-[#c22026] hover:underline whitespace-nowrap ml-2"
+                          >
+                            Overview →
+                          </Link>
+                        </div>
+
+                        <div className="flex flex-col gap-1 max-h-[250px] overflow-y-auto pr-1">
+                          {categoriesList[hoveredCategoryIdx]?.items.map((item, itemIdx) => (
+                            <Link
+                              key={itemIdx}
+                              href={item.href}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setHoveredCategoryIdx(null);
+                                setMobileMenuOpen(false);
+                              }}
+                              className="group/subitem flex items-center justify-between p-2 rounded-lg text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-50 no-underline transition-all duration-200"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/subitem:bg-[#c22026] transition-colors flex-shrink-0" />
+                                <span className="text-[0.78rem] font-bold leading-tight truncate">
+                                  {item.name}
+                                </span>
+                              </div>
+                              <span className="text-slate-300 text-[0.8rem] group-hover/subitem:text-[#c22026] group-hover/subitem:translate-x-0.5 transition-all flex-shrink-0">
+                                ›
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -460,17 +626,45 @@ export default function Navbar() {
                 {renderChevron(mobileAccordions.solutions)}
               </button>
               {mobileAccordions.solutions && (
-                <div className="flex flex-col gap-1 mt-1.5 p-2 border border-slate-200/40 rounded-xl bg-white/70 shadow-inner">
-                  {solutionsList.map((item) => (
-                    <Link 
-                      key={item.name} 
-                      href={item.href} 
-                      onClick={() => setMobileMenuOpen(false)} 
-                      className="min-h-[36px] flex items-center px-3 rounded-lg text-slate-600 no-underline text-[0.82rem] font-semibold"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
+                <div className="flex flex-col gap-2 mt-1.5 p-2 border border-slate-200/40 rounded-xl bg-white/70 shadow-inner">
+                  {categoriesList.map((cat) => {
+                    const isSubOpen = mobileSubAccordion === cat.id;
+                    return (
+                      <div key={cat.id} className="flex flex-col border border-slate-100 rounded-lg overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setMobileSubAccordion(isSubOpen ? null : cat.id)}
+                          className="w-full min-h-[38px] flex items-center justify-between px-3 bg-slate-50/90 text-slate-800 text-[0.82rem] font-bold cursor-pointer"
+                        >
+                          <span>{cat.name}</span>
+                          <span className={`text-[0.7rem] transition-transform ${isSubOpen ? "rotate-90 text-[#c22026]" : "text-slate-400"}`}>
+                            ▶
+                          </span>
+                        </button>
+                        {isSubOpen && (
+                          <div className="flex flex-col gap-1 p-2 bg-white">
+                            <Link
+                              href={cat.href}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="px-2 py-1 text-[0.76rem] font-bold text-[#c22026] hover:underline"
+                            >
+                              Overview Page →
+                            </Link>
+                            {cat.items.map((item, i) => (
+                              <Link
+                                key={i}
+                                href={item.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="min-h-[32px] flex items-center px-2.5 rounded text-slate-600 no-underline text-[0.78rem] font-medium hover:text-[#1e3e8f] hover:bg-slate-50"
+                              >
+                                • {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
