@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PRODUCT_BRANDS, PRODUCT_CATEGORIES, ProductItem } from "@/data/productsData";
+import { formatImageUrl } from "@/utils/image";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
@@ -134,35 +135,60 @@ export default function AdminProductsPage() {
     if (!file) return;
 
     setUploading(true);
-    setError(null);
+    clearMessages();
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("image", file);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (!event.target?.result) {
+        setUploading(false);
+        return;
+      }
+      const rawUrl = event.target.result as string;
 
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const token = localStorage.getItem("admin_token");
-      
-      const res = await fetch(`${baseUrl}/api/upload`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      });
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Image upload failed");
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
 
-      setFormImageUrl(data.imageUrl || data.url);
-      setSuccess("Image file successfully uploaded and locked on disk.");
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Failed to upload image file.");
-    } finally {
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.82);
+          setFormImageUrl(compressedDataUrl);
+          setSuccess(`Product image '${file.name}' attached and ready to save!`);
+        } else {
+          setFormImageUrl(rawUrl);
+        }
+        setUploading(false);
+      };
+      img.onerror = () => {
+        setFormImageUrl(rawUrl);
+        setUploading(false);
+      };
+      img.src = rawUrl;
+    };
+    reader.onerror = () => {
+      setError("Failed to process image file. Please try another PNG or JPG photo.");
       setUploading(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   // Handle form Save
@@ -510,9 +536,35 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Image Upload Area */}
-              <div className="space-y-1.5">
+              {/* Image Upload & Preview Area */}
+              <div className="space-y-2">
                 <label className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block pl-1">Product Visual Image</label>
+                
+                <div className="h-40 w-full bg-slate-900 rounded-2xl overflow-hidden flex items-center justify-center p-2 border border-white/10 relative">
+                  {formImageUrl && formImageUrl.trim() !== "" ? (
+                    <img
+                      key={formImageUrl}
+                      src={formatImageUrl(formImageUrl)}
+                      alt="Product Preview"
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
+                        }
+                      }}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : null}
+                  <div
+                    style={{ display: formImageUrl && formImageUrl.trim() !== "" ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-500"
+                  >
+                    <span className="text-xl">📷</span>
+                    <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                   <div className="md:col-span-8">
                     <input
@@ -535,19 +587,7 @@ export default function AdminProductsPage() {
                       htmlFor="product-file-upload"
                       className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border border-dashed border-sky-500/30 text-sky-400 text-xs font-bold uppercase tracking-wider bg-sky-500/5 hover:bg-sky-500/10 transition-all cursor-pointer"
                     >
-                      {uploading ? (
-                        <>
-                          <div className="w-3.5 h-3.5 border-2 border-sky-400 border-t-transparent rounded-full animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                          </svg>
-                          Upload File
-                        </>
-                      )}
+                      {uploading ? "Processing..." : "Upload File"}
                     </label>
                   </div>
                 </div>
@@ -724,18 +764,30 @@ export default function AdminProductsPage() {
               
               {/* Product Info Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {viewItem.imageUrl && (
-                  <div className="md:col-span-1 border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 aspect-square flex items-center justify-center p-2">
+                <div className="md:col-span-1 border border-slate-200 rounded-2xl overflow-hidden bg-slate-50 aspect-square flex items-center justify-center p-2 relative">
+                  {viewItem.imageUrl && viewItem.imageUrl.trim() !== "" ? (
                     <img 
-                      src={viewItem.imageUrl.startsWith("/uploads/") 
-                        ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}${viewItem.imageUrl}` 
-                        : viewItem.imageUrl
-                      } 
+                      key={viewItem.imageUrl}
+                      src={formatImageUrl(viewItem.imageUrl)} 
                       alt={viewItem.name} 
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
+                        }
+                      }}
                       className="max-h-full max-w-full object-contain"
                     />
+                  ) : null}
+                  <div
+                    style={{ display: viewItem.imageUrl && viewItem.imageUrl.trim() !== "" ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+                  >
+                    <span className="text-xl">📷</span>
+                    <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
                   </div>
-                )}
+                </div>
                 
                 <div className={`${viewItem.imageUrl ? "md:col-span-2" : "md:col-span-3"} space-y-4`}>
                   <div>

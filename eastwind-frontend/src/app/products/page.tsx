@@ -465,14 +465,28 @@ function ProductsCatalogContent() {
                       <div>
                         {/* Product Image Display (UNCROPPED WHOLE IMAGE) */}
                         <div className="h-56 bg-slate-950 p-4 relative flex items-center justify-center border-b border-slate-800">
-                          <img
-                            src={formatImageUrl(product.imageUrl, "/products/default-process-instrumentation.png")}
-                            alt={product.name}
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = "/products/default-process-instrumentation.png";
-                            }}
-                            className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {product.imageUrl && product.imageUrl.trim() !== "" ? (
+                            <img
+                              key={product.imageUrl}
+                              src={formatImageUrl(product.imageUrl)}
+                              alt={product.name}
+                              onError={(e) => {
+                                const el = e.currentTarget as HTMLImageElement;
+                                el.style.display = "none";
+                                if (el.nextElementSibling) {
+                                  (el.nextElementSibling as HTMLElement).style.display = "flex";
+                                }
+                              }}
+                              className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : null}
+                          <div
+                            style={{ display: product.imageUrl && product.imageUrl.trim() !== "" ? "none" : "flex" }}
+                            className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+                          >
+                            <span className="text-xl">📷</span>
+                            <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+                          </div>
                           <div className="absolute top-3 left-3">
                             <span className="text-[10px] font-mono font-bold bg-white/95 text-slate-900 px-2.5 py-1 rounded-md shadow-sm border border-slate-200">
                               {product.brand}
@@ -566,15 +580,29 @@ function ProductsCatalogContent() {
               </div>
 
               {/* Image Frame (UNCROPPED WHOLE IMAGE) */}
-              <div className="h-64 sm:h-72 bg-slate-950 rounded-2xl p-6 flex items-center justify-center border border-slate-800">
-                <img
-                  src={formatImageUrl(selectedProduct.imageUrl, "/products/default-process-instrumentation.png")}
-                  alt={selectedProduct.name}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = "/products/default-process-instrumentation.png";
-                  }}
-                  className="max-h-full max-w-full object-contain filter drop-shadow-xl"
-                />
+              <div className="h-64 sm:h-72 bg-slate-950 rounded-2xl p-6 flex items-center justify-center border border-slate-800 relative">
+                {selectedProduct.imageUrl && selectedProduct.imageUrl.trim() !== "" ? (
+                  <img
+                    key={selectedProduct.imageUrl}
+                    src={formatImageUrl(selectedProduct.imageUrl)}
+                    alt={selectedProduct.name}
+                    onError={(e) => {
+                      const el = e.currentTarget as HTMLImageElement;
+                      el.style.display = "none";
+                      if (el.nextElementSibling) {
+                        (el.nextElementSibling as HTMLElement).style.display = "flex";
+                      }
+                    }}
+                    className="max-h-full max-w-full object-contain filter drop-shadow-xl"
+                  />
+                ) : null}
+                <div
+                  style={{ display: selectedProduct.imageUrl && selectedProduct.imageUrl.trim() !== "" ? "none" : "flex" }}
+                  className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+                >
+                  <span className="text-xl">📷</span>
+                  <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+                </div>
               </div>
 
               {/* Product Description */}
