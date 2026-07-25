@@ -362,43 +362,28 @@ export default function UnifiedAdminSolutionsPage() {
     setCorePortfolios(corePortfolios.filter((_, idx) => idx !== index));
   };
 
-  // Image Upload helper with Base64 fallback for 100% production reliability
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
+  // Image Upload helper (uses direct Data URL encoding for 100% production persistence across local & production hosts)
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setUploading(true);
-    try {
-      const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").trim();
-      const token = localStorage.getItem("admin_token");
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("image", file);
+    clearMessages();
 
-      const uploadUrl = baseUrl ? `${baseUrl.replace(/\/+$/, "")}/api/upload` : "/api/upload";
-
-      const res = await fetch(uploadUrl, {
-        method: "POST",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: formData
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Image upload failed");
-      setter(data.imageUrl || data.url);
-      setSuccess(`Image '${file.name}' uploaded successfully!`);
-    } catch (err: any) {
-      console.warn("Backend file upload failed or unreachable, converting to Base64 for 100% production persistence:", err);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setter(event.target.result as string);
-          setSuccess(`Image '${file.name}' attached successfully!`);
-        }
-      };
-      reader.readAsDataURL(file);
-    } finally {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        const dataUrl = event.target.result as string;
+        setter(dataUrl);
+        setSuccess(`Image '${file.name}' attached and ready to save!`);
+      }
       setUploading(false);
-    }
+    };
+    reader.onerror = () => {
+      setError("Failed to process image file. Please try another PNG or JPG photo.");
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
   };const getSolutionImage = (item: any): string => {
   if (item?.imageUrl && item.imageUrl.trim() !== "") {
     return formatImageUrl(item.imageUrl);
