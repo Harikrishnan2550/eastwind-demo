@@ -384,29 +384,7 @@ export default function UnifiedAdminSolutionsPage() {
       setUploading(false);
     };
     reader.readAsDataURL(file);
-  };const getSolutionImage = (item: any): string => {
-  if (item?.imageUrl && item.imageUrl.trim() !== "") {
-    return formatImageUrl(item.imageUrl);
-  }
-  
-  const defaultMap: Record<string, string> = {
-    "breathing-air-cascade-systems": "/emergency_response.webp",
-    "diving-chambers": "/critical_infrastructure.webp",
-    "diving-equipments": "/hazardous_mobility.webp",
-    "fire-simulators": "/wireless_monitoring.webp",
-    "flow-metering-skids": "/wireless_monitoring.webp",
-    "hipps": "/thermal_ehouse.webp",
-    "emergency-escape-breathing-device": "/wireless_monitoring.webp",
-    "tridiagonal": "/predictive_intelligence.webp",
-    "petrochemicals": "/analyzer_shelter.webp",
-    "civil-defense": "/emergency_vehicle.webp",
-    "oil-and-gas": "/wireless_monitoring.webp",
-    "marine-offshore": "/critical_infrastructure.webp",
-    "utility-power": "/thermal_ehouse.webp"
   };
-
-  return defaultMap[item?.id] || "/products/default-fire-fighting-rescue.png";
-};
 
   const filteredSolutions = solutions.filter((s: any) =>
     s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -514,16 +492,28 @@ export default function UnifiedAdminSolutionsPage() {
                 <div key={item.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between group hover:border-orange-500/50 transition-all">
                   {/* Photo Display Banner */}
                   <div className="h-44 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
-                    <img
-                      key={item.imageUrl || item.id}
-                      src={getSolutionImage(item)}
-                      alt={item.title}
-                      onError={(e) => {
-                        const el = e.currentTarget as HTMLImageElement;
-                        el.src = "/products/default-fire-fighting-rescue.png";
-                      }}
-                      className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
-                    />
+                    {item.imageUrl && item.imageUrl.trim() !== "" ? (
+                      <img
+                        key={item.imageUrl}
+                        src={formatImageUrl(item.imageUrl)}
+                        alt={item.title}
+                        onError={(e) => {
+                          const el = e.currentTarget as HTMLImageElement;
+                          el.style.display = "none";
+                          if (el.nextElementSibling) {
+                            (el.nextElementSibling as HTMLElement).style.display = "flex";
+                          }
+                        }}
+                        className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : null}
+                    <div
+                      style={{ display: item.imageUrl && item.imageUrl.trim() !== "" ? "none" : "flex" }}
+                      className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+                    >
+                      <span className="text-xl">📷</span>
+                      <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+                    </div>
                     <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-orange-600 bg-white/95 border border-orange-200 px-2.5 py-1 rounded-md shadow-sm">
                       {item.id}
                     </span>
@@ -665,26 +655,33 @@ export default function UnifiedAdminSolutionsPage() {
                     </div>
                   </div>
 
-                  {/* Industry Image & Upload */}
-                  <div className="space-y-1">
-                    <label className="block text-[11px] font-bold text-slate-600">Card Photo</label>
-                    {ind.image && (
-                      <div className="h-28 w-full bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center p-1 border">
-                        <img
-                          key={ind.image}
-                          src={formatImageUrl(ind.image, "/predictive_intelligence.webp")}
-                          alt={ind.name}
-                          onError={(e) => {
-                            const el = e.currentTarget as HTMLImageElement;
-                            if (!el.dataset.failed) {
-                              el.dataset.failed = "true";
-                              el.src = "/products/default-fire-fighting-rescue.png";
-                            }
-                          }}
-                          className="max-h-full max-w-full object-contain"
-                        />
+                    {/* Industry Image & Upload */}
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-600">Card Photo</label>
+                      <div className="h-28 w-full bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center p-1 border relative">
+                        {ind.image && ind.image.trim() !== "" ? (
+                          <img
+                            key={ind.image}
+                            src={formatImageUrl(ind.image)}
+                            alt={ind.name}
+                            onError={(e) => {
+                              const el = e.currentTarget as HTMLImageElement;
+                              el.style.display = "none";
+                              if (el.nextElementSibling) {
+                                (el.nextElementSibling as HTMLElement).style.display = "flex";
+                              }
+                            }}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                        ) : null}
+                        <div
+                          style={{ display: ind.image && ind.image.trim() !== "" ? "none" : "flex" }}
+                          className="flex flex-col items-center justify-center text-center p-2 space-y-0.5 text-slate-400"
+                        >
+                          <span className="text-lg">📷</span>
+                          <span className="text-[10px] font-mono font-medium text-slate-400">No Image Found</span>
+                        </div>
                       </div>
-                    )}
                     <div className="flex gap-2">
                       <input type="text" value={ind.image} onChange={(e) => {
                         const updated = [...industries];
@@ -814,23 +811,30 @@ export default function UnifiedAdminSolutionsPage() {
               {/* Solution Item Photo with Upload & Preview */}
               <div className="space-y-2">
                 <label className="block font-bold text-slate-700">Solution Photo / Equipment Image</label>
-                {formImageUrl && (
-                  <div className="h-40 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-2 border">
+                <div className="h-40 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-2 border relative">
+                  {formImageUrl && formImageUrl.trim() !== "" ? (
                     <img
                       key={formImageUrl}
-                      src={formatImageUrl(formImageUrl, "/predictive_intelligence.webp")}
+                      src={formatImageUrl(formImageUrl)}
                       alt="Solution Preview"
                       onError={(e) => {
                         const el = e.currentTarget as HTMLImageElement;
-                        if (!el.dataset.failed) {
-                          el.dataset.failed = "true";
-                          el.src = "/products/default-fire-fighting-rescue.png";
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
                         }
                       }}
                       className="max-h-full max-w-full object-contain"
                     />
+                  ) : null}
+                  <div
+                    style={{ display: formImageUrl && formImageUrl.trim() !== "" ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+                  >
+                    <span className="text-xl">📷</span>
+                    <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
                   </div>
-                )}
+                </div>
                 <div className="flex gap-2">
                   <input type="text" value={formImageUrl} onChange={(e) => setFormImageUrl(e.target.value)} className="w-full p-2.5 border rounded-lg font-mono text-[11px]" />
                   <label className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shrink-0">
@@ -885,20 +889,29 @@ export default function UnifiedAdminSolutionsPage() {
             </div>
 
             {/* Photo Banner */}
-            <div className="h-56 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-800 shrink-0">
-              <img
-                key={viewItem.imageUrl}
-                src={formatImageUrl(viewItem.imageUrl, "/products/default-fire-fighting-rescue.png")}
-                alt={viewItem.title}
-                onError={(e) => {
-                  const el = e.currentTarget as HTMLImageElement;
-                  if (!el.dataset.failed) {
-                    el.dataset.failed = "true";
-                    el.src = "/products/default-fire-fighting-rescue.png";
-                  }
-                }}
-                className="max-h-full max-w-full object-contain filter drop-shadow-md"
-              />
+            <div className="h-56 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-800 shrink-0 relative">
+              {viewItem.imageUrl && viewItem.imageUrl.trim() !== "" ? (
+                <img
+                  key={viewItem.imageUrl}
+                  src={formatImageUrl(viewItem.imageUrl)}
+                  alt={viewItem.title}
+                  onError={(e) => {
+                    const el = e.currentTarget as HTMLImageElement;
+                    el.style.display = "none";
+                    if (el.nextElementSibling) {
+                      (el.nextElementSibling as HTMLElement).style.display = "flex";
+                    }
+                  }}
+                  className="max-h-full max-w-full object-contain filter drop-shadow-md"
+                />
+              ) : null}
+              <div
+                style={{ display: viewItem.imageUrl && viewItem.imageUrl.trim() !== "" ? "none" : "flex" }}
+                className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
+              >
+                <span className="text-xl">📷</span>
+                <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+              </div>
             </div>
 
             <h2 className="text-lg font-extrabold text-slate-800">{viewItem.title}</h2>
