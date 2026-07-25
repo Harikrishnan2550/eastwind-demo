@@ -10,37 +10,34 @@ export function formatImageUrl(
     return trimmed;
   }
 
-  // 2. Smart base URL detection for local vs production
-  let baseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+  // 2. Base URL resolution for local vs production
+  let baseUrl = (process.env.NEXT_PUBLIC_API_URL || "").trim();
 
+  if (!baseUrl) {
+    if (typeof window !== "undefined") {
+      const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      baseUrl = isLocal ? "http://localhost:5000" : window.location.origin;
+    } else {
+      baseUrl = "http://localhost:5000";
+    }
+  }
+
+  // In production browser, if env contains localhost, fallback to current origin
   if (typeof window !== "undefined") {
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    
-    if (isLocal) {
-      // Local development fallback
-      baseUrl = baseUrl || "http://localhost:5000";
-    } else {
-      // Production deployment:
-      // If NEXT_PUBLIC_API_URL points to localhost or is empty, use relative path (/uploads/...)
-      // which seamlessly routes via Next.js proxy or production server domain
-      if (!baseUrl || baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1")) {
-        baseUrl = "";
-      }
-    }
-  } else {
-    if (!baseUrl || baseUrl.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
+    if (!isLocal && (baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1"))) {
+      baseUrl = window.location.origin;
     }
   }
 
   baseUrl = baseUrl.replace(/\/+$/, "");
 
   if (trimmed.startsWith("/uploads/")) {
-    return baseUrl ? `${baseUrl}${trimmed}` : trimmed;
+    return `${baseUrl}${trimmed}`;
   }
 
   if (trimmed.startsWith("uploads/")) {
-    return baseUrl ? `${baseUrl}/${trimmed}` : `/${trimmed}`;
+    return `${baseUrl}/${trimmed}`;
   }
 
   if (!trimmed.startsWith("/")) {
