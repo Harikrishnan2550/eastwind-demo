@@ -362,7 +362,7 @@ export default function UnifiedAdminSolutionsPage() {
     setCorePortfolios(corePortfolios.filter((_, idx) => idx !== index));
   };
 
-  // Image Upload helper (uses direct Data URL encoding for 100% production persistence across local & production hosts)
+  // Image Upload helper with HTML5 canvas compression to prevent 413 Payload Too Large errors
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -372,12 +372,51 @@ export default function UnifiedAdminSolutionsPage() {
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      if (event.target?.result) {
-        const dataUrl = event.target.result as string;
-        setter(dataUrl);
-        setSuccess(`Image '${file.name}' attached and ready to save!`);
+      if (!event.target?.result) {
+        setUploading(false);
+        return;
       }
-      setUploading(false);
+      const rawUrl = event.target.result as string;
+
+      // Compress image using HTML5 Canvas to keep payload light (<300KB)
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.82);
+          setter(compressedDataUrl);
+          setSuccess(`Image '${file.name}' compressed and attached successfully!`);
+        } else {
+          setter(rawUrl);
+        }
+        setUploading(false);
+      };
+      img.onerror = () => {
+        setter(rawUrl);
+        setUploading(false);
+      };
+      img.src = rawUrl;
     };
     reader.onerror = () => {
       setError("Failed to process image file. Please try another PNG or JPG photo.");
