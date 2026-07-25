@@ -314,10 +314,19 @@ function TelemetryHubVisual({
           {/* Hub inner accent ring */}
           <circle cx="300" cy="280" r="52" fill="none" stroke="rgba(30,62,143,0.07)" strokeWidth="1" strokeDasharray="3 5" />
 
-          {/* Hub labels */}
-          <text x="300" y="258" textAnchor="middle" fontSize="7.5" fontFamily="monospace" fontWeight="800" letterSpacing="2.5" fill="rgba(30,62,143,0.28)">INDUSTRIAL</text>
-          <text x="300" y="273" textAnchor="middle" fontSize="7.5" fontFamily="monospace" fontWeight="800" letterSpacing="2.5" fill="rgba(30,62,143,0.28)">INTELLIGENCE</text>
-          <text x="300" y="291" textAnchor="middle" fontSize="8" fontFamily="monospace" fontWeight="900" letterSpacing="3" fill="rgba(30,62,143,0.70)">PLATFORM</text>
+          {/* Hub label */}
+          <text
+            x="300"
+            y="285"
+            textAnchor="middle"
+            fontSize="14"
+            fontFamily="var(--font-sans), sans-serif"
+            fontWeight="900"
+            letterSpacing="3"
+            fill="#1e3e8f"
+          >
+            SOLUTIONS
+          </text>
 
           {/* Node circles */}
           {items.map((indItem, idx) => {

@@ -229,6 +229,7 @@ export default function AdminAboutPage() {
       const token = localStorage.getItem("admin_token");
 
       const formData = new FormData();
+      formData.append("file", file);
       formData.append("image", file);
 
       const res = await fetch(`${baseUrl}/api/upload`, {
@@ -242,7 +243,7 @@ export default function AdminAboutPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Image upload failed");
 
-      setter(data.imageUrl);
+      setter(data.imageUrl || data.url);
       setSuccess(`Image file '${file.name}' uploaded successfully.`);
     } catch (err: any) {
       console.error(err);

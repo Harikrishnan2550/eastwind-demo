@@ -138,6 +138,7 @@ export default function AdminSuccessStoriesPage() {
       const token = localStorage.getItem("admin_token");
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("image", file);
 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const res = await fetch(`${baseUrl}/api/upload`, {
@@ -151,7 +152,7 @@ export default function AdminSuccessStoriesPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Image upload failed");
 
-      setFormImageUrl(data.url);
+      setFormImageUrl(data.imageUrl || data.url);
       setSuccess("Image uploaded successfully!");
     } catch (err: any) {
       setError(err.message || "Failed to upload image");

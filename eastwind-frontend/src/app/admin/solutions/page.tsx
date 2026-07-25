@@ -361,7 +361,7 @@ export default function UnifiedAdminSolutionsPage() {
     setCorePortfolios(corePortfolios.filter((_, idx) => idx !== index));
   };
 
-  // Image Upload helper
+  // Image Upload helper (supports PNG, JPG, JPEG, WEBP)
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -370,6 +370,7 @@ export default function UnifiedAdminSolutionsPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
       const formData = new FormData();
+      formData.append("file", file);
       formData.append("image", file);
 
       const res = await fetch(`${baseUrl}/api/upload`, {
@@ -378,9 +379,9 @@ export default function UnifiedAdminSolutionsPage() {
         body: formData
       });
       const data = await res.json();
-      if (!res.ok) throw new Error("Image upload failed");
+      if (!res.ok) throw new Error(data.error || "Image upload failed");
       setter(data.imageUrl || data.url);
-      setSuccess("Image uploaded successfully!");
+      setSuccess(`Image '${file.name}' uploaded successfully!`);
     } catch (err: any) {
       setError(err.message || "Image upload failed");
     } finally {

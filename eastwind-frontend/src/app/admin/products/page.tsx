@@ -138,6 +138,7 @@ export default function AdminProductsPage() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("image", file);
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -154,7 +155,7 @@ export default function AdminProductsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Image upload failed");
 
-      setFormImageUrl(data.url);
+      setFormImageUrl(data.imageUrl || data.url);
       setSuccess("Image file successfully uploaded and locked on disk.");
     } catch (err: any) {
       console.error(err);

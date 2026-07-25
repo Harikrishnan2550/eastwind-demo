@@ -378,9 +378,6 @@ export default function Navbar() {
                 {hoveredCategoryIdx === null ? (
                   /* Compact View: 6 Categories Only (No blank space) */
                   <div className="flex flex-col gap-1 w-full">
-                    <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-1.5 px-2">
-                      Solution Domains (6)
-                    </span>
                     {categoriesList.map((cat, idx) => (
                       <Link
                         key={cat.id}
@@ -412,9 +409,6 @@ export default function Navbar() {
                   <div className="grid grid-cols-12 gap-3 items-stretch w-full">
                     {/* Left Column: 6 Categories */}
                     <div className="col-span-5 border-r border-slate-100 pr-2 flex flex-col gap-1">
-                      <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-1.5 px-2">
-                        Solution Domains (6)
-                      </span>
                       {categoriesList.map((cat, idx) => {
                         const isHovered = hoveredCategoryIdx === idx;
                         return (
@@ -523,7 +517,6 @@ export default function Navbar() {
             </button>
             {activeDropdown === "applications" && (
               <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-64 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
-                <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-2.5">Technical Scopes</span>
                 {renderDropdownLinks(applicationsList)}
               </div>
             )}
@@ -542,7 +535,6 @@ export default function Navbar() {
             </button>
             {activeDropdown === "services" && (
               <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-64 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
-                <span className="dropdown-section-title block text-[#c22026] text-[0.66rem] font-bold tracking-widest uppercase mb-2.5">Engineering Scopes</span>
                 {renderDropdownLinks(servicesList)}
               </div>
             )}

@@ -133,6 +133,7 @@ export default function AdminBrandsPage() {
       const token = localStorage.getItem("admin_token");
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("image", file);
 
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const res = await fetch(`${baseUrl}/api/upload`, {
@@ -145,11 +146,12 @@ export default function AdminBrandsPage() {
 
       if (!res.ok) throw new Error("File upload failed");
       const data = await res.json();
+      const uploadedUrl = data.imageUrl || data.url;
 
       if (isProductImage) {
-        setProdImageUrl(data.url);
+        setProdImageUrl(uploadedUrl);
       } else {
-        setFormLogoUrl(data.url);
+        setFormLogoUrl(uploadedUrl);
       }
       setSuccess("Asset uploaded successfully!");
     } catch (err: any) {
