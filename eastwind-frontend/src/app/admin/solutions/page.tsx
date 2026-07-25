@@ -399,7 +399,29 @@ export default function UnifiedAdminSolutionsPage() {
     } finally {
       setUploading(false);
     }
+  };const getSolutionImage = (item: any): string => {
+  if (item?.imageUrl && item.imageUrl.trim() !== "") {
+    return formatImageUrl(item.imageUrl);
+  }
+  
+  const defaultMap: Record<string, string> = {
+    "breathing-air-cascade-systems": "/emergency_response.webp",
+    "diving-chambers": "/critical_infrastructure.webp",
+    "diving-equipments": "/hazardous_mobility.webp",
+    "fire-simulators": "/wireless_monitoring.webp",
+    "flow-metering-skids": "/wireless_monitoring.webp",
+    "hipps": "/thermal_ehouse.webp",
+    "emergency-escape-breathing-device": "/wireless_monitoring.webp",
+    "tridiagonal": "/predictive_intelligence.webp",
+    "petrochemicals": "/analyzer_shelter.webp",
+    "civil-defense": "/emergency_vehicle.webp",
+    "oil-and-gas": "/wireless_monitoring.webp",
+    "marine-offshore": "/critical_infrastructure.webp",
+    "utility-power": "/thermal_ehouse.webp"
   };
+
+  return defaultMap[item?.id] || "/products/default-fire-fighting-rescue.png";
+};
 
   const filteredSolutions = solutions.filter((s: any) =>
     s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -407,7 +429,7 @@ export default function UnifiedAdminSolutionsPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans text-slate-800">
       {/* Header Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
@@ -422,35 +444,13 @@ export default function UnifiedAdminSolutionsPage() {
           </p>
         </div>
 
-        {/* Tab Switcher & Add Button */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200">
-            <button
-              onClick={() => setActiveTab("catalog")}
-              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
-                activeTab === "catalog" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <span>🛡️ Solution Catalog Items ({solutions.length})</span>
-            </button>
-            <button
-              onClick={() => setActiveTab("page_layout")}
-              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
-                activeTab === "page_layout" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              <span>📰 /solutions Page Banners & Photos</span>
-            </button>
-          </div>
-
-          {activeTab === "catalog" && (
-            <button
-              onClick={handleOpenCreate}
-              className="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer"
-            >
-              <span>+ Add New Solution</span>
-            </button>
-          )}
+        <div className="flex gap-2">
+          <button
+            onClick={handleOpenCreate}
+            className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-md cursor-pointer transition-all shrink-0"
+          >
+            + Add Solution Item
+          </button>
         </div>
       </div>
 
@@ -468,25 +468,46 @@ export default function UnifiedAdminSolutionsPage() {
         </div>
       )}
 
-      {/* ================= TAB 1: SOLUTION CATALOG ITEMS ================= */}
-      {activeTab === "catalog" && (
-        <div className="space-y-6">
-          {/* Action Helper Bar */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs">
-            <strong className="block font-bold mb-0.5">📍 Website Location Effect:</strong>
-            <span>Items added, edited, or deleted here update the Homepage Solution Grid, `/solutions` details, and `/products` sidebar filters.</span>
-          </div>
+      {/* TAB NAVIGATION */}
+      <div className="flex border-b border-slate-200 space-x-4">
+        <button
+          onClick={() => setActiveTab("catalog")}
+          className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
+            activeTab === "catalog"
+              ? "border-orange-600 text-orange-600"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          Manage Solution Items ({solutions.length})
+        </button>
+        <button
+          onClick={() => setActiveTab("page_layout")}
+          className={`pb-3 text-xs font-bold uppercase tracking-wider transition-all border-b-2 cursor-pointer ${
+            activeTab === "page_layout"
+              ? "border-orange-600 text-orange-600"
+              : "border-transparent text-slate-500 hover:text-slate-800"
+          }`}
+        >
+          Manage Solutions Page Banners & Layout
+        </button>
+      </div>
 
-          {/* Search Bar */}
-          <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-            <input
-              type="text"
-              placeholder="Search solution items by title..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full max-w-md px-4 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-orange-500"
-            />
-            <span className="text-xs font-mono font-bold text-slate-400">Total: {filteredSolutions.length} Solutions</span>
+      {activeTab === "catalog" ? (
+        <div className="space-y-6">
+          {/* Controls Bar */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+            <div className="w-full md:w-80">
+              <input
+                type="text"
+                placeholder="Search solutions by title..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+            <span className="text-xs text-slate-500 font-mono font-bold">
+              Showing {filteredSolutions.length} of {solutions.length} solution items
+            </span>
           </div>
 
           {/* Solutions Catalog Grid with View, Edit, Delete Actions */}
@@ -508,30 +529,16 @@ export default function UnifiedAdminSolutionsPage() {
                 <div key={item.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between group hover:border-orange-500/50 transition-all">
                   {/* Photo Display Banner */}
                   <div className="h-44 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
-                    {item.imageUrl && item.imageUrl.trim() !== "" ? (
-                      <img
-                        key={item.imageUrl}
-                        src={formatImageUrl(item.imageUrl)}
-                        alt={item.title}
-                        onError={(e) => {
-                          const el = e.currentTarget as HTMLImageElement;
-                          el.style.display = "none";
-                          if (el.nextElementSibling) {
-                            (el.nextElementSibling as HTMLElement).style.display = "flex";
-                          }
-                        }}
-                        className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : null}
-                    <div
-                      style={{ display: item.imageUrl && item.imageUrl.trim() !== "" ? "none" : "flex" }}
-                      className="flex flex-col items-center justify-center text-center p-4 space-y-1.5 text-slate-400"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-orange-500 font-bold text-base shadow-sm">
-                        🛡️
-                      </div>
-                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-medium">No Image Uploaded</span>
-                    </div>
+                    <img
+                      key={item.imageUrl || item.id}
+                      src={getSolutionImage(item)}
+                      alt={item.title}
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.src = "/products/default-fire-fighting-rescue.png";
+                      }}
+                      className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+                    />
                     <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-orange-600 bg-white/95 border border-orange-200 px-2.5 py-1 rounded-md shadow-sm">
                       {item.id}
                     </span>
@@ -576,10 +583,7 @@ export default function UnifiedAdminSolutionsPage() {
             </div>
           )}
         </div>
-      )}
-
-      {/* ================= TAB 2: DEDICATED /SOLUTIONS PAGE BANNERS & LAYOUT ================= */}
-      {activeTab === "page_layout" && (
+      ) : (
         <div className="space-y-8">
           <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 text-xs flex items-center justify-between">
             <div>
