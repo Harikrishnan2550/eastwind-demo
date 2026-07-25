@@ -789,10 +789,15 @@ export default function UnifiedAdminSolutionsPage() {
                 {formImageUrl && (
                   <div className="h-40 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-2 border">
                     <img
+                      key={formImageUrl}
                       src={formatImageUrl(formImageUrl, "/predictive_intelligence.webp")}
                       alt="Solution Preview"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                        const el = e.currentTarget as HTMLImageElement;
+                        if (!el.dataset.failed) {
+                          el.dataset.failed = "true";
+                          el.src = "/products/default-fire-fighting-rescue.png";
+                        }
                       }}
                       className="max-h-full max-w-full object-contain"
                     />
