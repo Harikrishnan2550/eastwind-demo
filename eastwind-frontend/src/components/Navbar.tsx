@@ -4,11 +4,22 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { formatImageUrl } from "@/utils/image";
+import { productsDb } from "@/data/productsData";
+
 type AccordionKey = "applications" | "services" | "solutions";
 
 interface NavItem {
   name: string;
   href: string;
+}
+
+interface SolutionItem {
+  name: string;
+  href: string;
+  imageUrl?: string;
+  brand?: string;
+  category?: string;
 }
 
 interface SolutionCategory {
@@ -17,7 +28,7 @@ interface SolutionCategory {
   href: string;
   description: string;
   accent: string;
-  items: { name: string; href: string }[];
+  items: SolutionItem[];
 }
 
 export default function Navbar() {
@@ -103,29 +114,97 @@ export default function Navbar() {
     }));
   };
 
-  // Dynamic Solution Categories from Admin CMS (/api/solutions-page)
+  // Dynamic Solution Categories & Category Products from Admin CMS & Products API
   useEffect(() => {
     async function fetchDynamicCategories() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        
+        // 1. Fetch products catalog (with static fallback)
+        let productsCatalog: any[] = [];
+        try {
+          const prodsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
+          if (prodsRes.ok) {
+            productsCatalog = await prodsRes.json();
+          }
+        } catch (e) {
+          console.warn("Failed to fetch products catalog for navbar:", e);
+        }
+
+        if (!Array.isArray(productsCatalog) || productsCatalog.length === 0) {
+          productsCatalog = productsDb;
+        }
+
+        // 2. Fetch solutions page configuration
         const res = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data && Array.isArray(data.industries) && data.industries.length > 0) {
             const dynamicCategories: SolutionCategory[] = data.industries.map((ind: any) => {
-              let catItems: { name: string; href: string }[] = [];
+              let catItems: SolutionItem[] = [];
+
+              // Extract custom sub-items or products from Admin
               if (Array.isArray(ind.items) && ind.items.length > 0) {
                 catItems = ind.items.map((itemObj: any) => {
                   if (typeof itemObj === "string") {
                     return { name: itemObj, href: `/solutions/${ind.id}` };
                   }
-                  return { name: itemObj.name || itemObj.title || "Category Product", href: itemObj.href || `/solutions/${ind.id}` };
+                  return {
+                    name: itemObj.name || itemObj.title || "Category Product",
+                    href: itemObj.href || `/solutions/${ind.id}`,
+                    imageUrl: itemObj.imageUrl || "",
+                    brand: itemObj.brand || ""
+                  };
                 });
               } else if (typeof ind.items === "string" && ind.items.trim()) {
                 catItems = ind.items.split(",").map((s: string) => ({ name: s.trim(), href: `/solutions/${ind.id}` }));
-              } else {
-                catItems = [{ name: `${ind.name} Core Systems`, href: `/solutions/${ind.id}` }];
               }
+
+              // Match real hardware products from productsCatalog by category or solution relevance
+              let matchingProds = productsCatalog.filter((p: any) => {
+                const catLower = (p.category || "").toLowerCase();
+                const nameLower = (p.name || "").toLowerCase();
+                const indId = (ind.id || "").toLowerCase();
+                const indName = (ind.name || "").toLowerCase();
+
+                if (indId.includes("oil") || indName.includes("oil")) {
+                  return catLower.includes("gas") || catLower.includes("instrumentation") || /gas|detector|transmitter|wireless|tank|foam/i.test(nameLower);
+                }
+                if (indId.includes("petro") || indName.includes("petro") || indId.includes("smart") || indName.includes("facilities")) {
+                  return catLower.includes("process") || catLower.includes("explosion") || /transmitter|flow|skid|analyzer|instrument|ai|smart|gas|detector/i.test(nameLower);
+                }
+                if (indId.includes("civil") || indName.includes("civil")) {
+                  return catLower.includes("fire") || catLower.includes("respiratory") || /truck|foam|cafs|suit|hood|scba|rescue|fire/i.test(nameLower);
+                }
+                if (indId.includes("marine") || indName.includes("marine")) {
+                  return catLower.includes("explosion") || catLower.includes("respiratory") || /leak|shoring|chamber|cascade|air|hull|marine/i.test(nameLower);
+                }
+                if (indId.includes("util") || indName.includes("power")) {
+                  return catLower.includes("process") || catLower.includes("wireless") || /swas|sampling|wireless|converter|power|grid/i.test(nameLower);
+                }
+                if (indId.includes("defense") || indName.includes("security")) {
+                  return catLower.includes("respiratory") || catLower.includes("fire") || /shelter|telemetry|cyber|guard|blast|cbrn/i.test(nameLower);
+                }
+                return false;
+              });
+
+              // Ensure at least 3-5 products per category
+              if (matchingProds.length < 3 && productsCatalog.length > 0) {
+                const extra = productsCatalog.filter((p: any) => !matchingProds.some((m: any) => m.id === p.id));
+                matchingProds = [...matchingProds, ...extra.slice(0, 4 - matchingProds.length)];
+              }
+
+              // Map matched products to SolutionItem format
+              const productItems: SolutionItem[] = matchingProds.map((p: any) => ({
+                name: p.name,
+                href: `/products?id=${encodeURIComponent(p.id)}`,
+                imageUrl: p.imageUrl,
+                brand: p.brand || p.category,
+                category: p.category
+              }));
+
+              const mergedItems = [...catItems, ...productItems];
+              const finalItems = mergedItems.length > 0 ? mergedItems : [{ name: `${ind.name} Core Systems`, href: `/solutions/${ind.id}` }];
 
               return {
                 id: ind.id,
@@ -133,9 +212,10 @@ export default function Navbar() {
                 href: `/solutions/${ind.id}`,
                 description: ind.description || ind.riskKicker || "High-compliance industry solution",
                 accent: ind.accent || "#1e3e8f",
-                items: catItems
+                items: finalItems
               };
             });
+
             setCategoriesList(dynamicCategories);
           }
         }
@@ -490,13 +570,13 @@ export default function Navbar() {
                       })}
                     </div>
 
-                    {/* Right Column: Associated Products */}
+                    {/* Right Column: Associated Category Products */}
                     <div className="col-span-7 pl-2 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
                           <div className="flex flex-col min-w-0">
                             <span className="text-[0.62rem] font-bold tracking-wider uppercase text-slate-400">
-                              Category Products
+                              Category Products & Hardware
                             </span>
                             <span className="text-[0.88rem] font-black text-[#1e3e8f] truncate">
                               {categoriesList[hoveredCategoryIdx]?.name}
@@ -511,11 +591,11 @@ export default function Navbar() {
                             }}
                             className="text-[0.68rem] font-bold text-[#c22026] hover:underline whitespace-nowrap ml-2"
                           >
-                            Overview →
+                            All Solutions →
                           </Link>
                         </div>
 
-                        <div className="flex flex-col gap-1 max-h-[250px] overflow-y-auto pr-1">
+                        <div className="flex flex-col gap-1 max-h-[280px] overflow-y-auto pr-1">
                           {categoriesList[hoveredCategoryIdx]?.items.map((item, itemIdx) => (
                             <Link
                               key={itemIdx}
@@ -528,12 +608,12 @@ export default function Navbar() {
                               className="group/subitem flex items-center justify-between p-2 rounded-lg text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-50 no-underline transition-all duration-200"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/subitem:bg-[#c22026] transition-colors flex-shrink-0" />
-                                <span className="text-[0.78rem] font-bold leading-tight truncate">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/subitem:bg-[#c22026] transition-colors shrink-0" />
+                                <span className="text-[0.78rem] font-extrabold leading-tight truncate">
                                   {item.name}
                                 </span>
                               </div>
-                              <span className="text-slate-300 text-[0.8rem] group-hover/subitem:text-[#c22026] group-hover/subitem:translate-x-0.5 transition-all flex-shrink-0">
+                              <span className="text-slate-300 text-[0.8rem] group-hover/subitem:text-[#c22026] group-hover/subitem:translate-x-0.5 transition-all shrink-0 font-bold">
                                 ›
                               </span>
                             </Link>
