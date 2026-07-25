@@ -498,10 +498,15 @@ export default function UnifiedAdminSolutionsPage() {
                   {/* Photo Display Banner */}
                   <div className="h-44 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
                     <img
-                      src={formatImageUrl(item.imageUrl, "/predictive_intelligence.webp")}
+                      key={item.imageUrl}
+                      src={formatImageUrl(item.imageUrl, "/products/default-fire-fighting-rescue.png")}
                       alt={item.title}
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                        const el = e.currentTarget as HTMLImageElement;
+                        if (!el.dataset.failed) {
+                          el.dataset.failed = "true";
+                          el.src = "/products/default-fire-fighting-rescue.png";
+                        }
                       }}
                       className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
                     />
@@ -654,7 +659,19 @@ export default function UnifiedAdminSolutionsPage() {
                     <label className="block text-[11px] font-bold text-slate-600">Card Photo</label>
                     {ind.image && (
                       <div className="h-28 w-full bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center p-1 border">
-                        <img src={ind.image} alt={ind.name} className="max-h-full max-w-full object-contain" />
+                        <img
+                          key={ind.image}
+                          src={formatImageUrl(ind.image, "/predictive_intelligence.webp")}
+                          alt={ind.name}
+                          onError={(e) => {
+                            const el = e.currentTarget as HTMLImageElement;
+                            if (!el.dataset.failed) {
+                              el.dataset.failed = "true";
+                              el.src = "/products/default-fire-fighting-rescue.png";
+                            }
+                          }}
+                          className="max-h-full max-w-full object-contain"
+                        />
                       </div>
                     )}
                     <div className="flex gap-2">
@@ -859,10 +876,15 @@ export default function UnifiedAdminSolutionsPage() {
             {/* Photo Banner */}
             <div className="h-56 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-800 shrink-0">
               <img
-                src={formatImageUrl(viewItem.imageUrl, "/predictive_intelligence.webp")}
+                key={viewItem.imageUrl}
+                src={formatImageUrl(viewItem.imageUrl, "/products/default-fire-fighting-rescue.png")}
                 alt={viewItem.title}
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                  const el = e.currentTarget as HTMLImageElement;
+                  if (!el.dataset.failed) {
+                    el.dataset.failed = "true";
+                    el.src = "/products/default-fire-fighting-rescue.png";
+                  }
                 }}
                 className="max-h-full max-w-full object-contain filter drop-shadow-md"
               />
