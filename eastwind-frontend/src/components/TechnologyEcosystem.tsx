@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatImageUrl } from "@/utils/image";
 
 export interface BrandProductItem {
   id: string;
@@ -39,7 +40,7 @@ const MASTER_BRAND_CATALOG: BrandPortfolioItem[] = [
     accentTone: "red",
     products: [
       { id: "sn-1", name: "SIONE Structural Fire Suit", imageUrl: "/products/default-respiratory-protection.png" },
-      { id: "sn-2", name: "SIONE Particulate Fire Hood", imageUrl: "/products/sione-hood.png" },
+      { id: "sn-2", name: "SIONE Particulate Fire Hood", imageUrl: "/products/default-respiratory-protection.png" },
       { id: "sn-3", name: "SIONE Thermal Safety Boots", imageUrl: "/products/default-respiratory-protection.png" },
       { id: "sn-4", name: "SIONE Close-Proximity Gloves", imageUrl: "/products/default-respiratory-protection.png" },
       { id: "sn-5", name: "SIONE Fire Helmet Shell", imageUrl: "/products/default-respiratory-protection.png" }
@@ -332,8 +333,11 @@ export default function TechnologyEcosystem() {
                         {/* 1. PRODUCT IMAGE */}
                         <div className="h-[230px] max-sm:h-[170px] flex items-center justify-center">
                           <img 
-                            src={currentProduct.imageUrl || "/products/default-fire-fighting-rescue.png"} 
-                            alt={currentProduct.name} 
+                            src={formatImageUrl(currentProduct?.imageUrl, "/products/default-fire-fighting-rescue.png")} 
+                            alt={currentProduct?.name || "Product Image"} 
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = "/products/default-fire-fighting-rescue.png";
+                            }}
                             className="max-h-full max-w-full object-contain filter drop-shadow-[0_12px_24px_rgba(30,62,143,0.18)] transition-transform duration-500 group-hover/card:scale-105 select-none"
                           />
                         </div>

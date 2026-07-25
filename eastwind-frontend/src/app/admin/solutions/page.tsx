@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatImageUrl } from "@/utils/image";
 
 interface SolutionItem {
   id: string;
@@ -497,8 +498,11 @@ export default function UnifiedAdminSolutionsPage() {
                   {/* Photo Display Banner */}
                   <div className="h-44 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
                     <img
-                      src={item.imageUrl || "/predictive_intelligence.webp"}
+                      src={formatImageUrl(item.imageUrl, "/predictive_intelligence.webp")}
                       alt={item.title}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                      }}
                       className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
                     />
                     <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-orange-600 bg-white/95 border border-orange-200 px-2.5 py-1 rounded-md shadow-sm">
@@ -575,7 +579,14 @@ export default function UnifiedAdminSolutionsPage() {
               <label className="block text-xs font-bold text-slate-700">Hero Background Image</label>
               {heroBgImage && (
                 <div className="h-44 w-full bg-slate-950 rounded-xl overflow-hidden relative border border-slate-200 flex items-center justify-center">
-                  <img src={heroBgImage} alt="Hero Background" className="max-h-full max-w-full object-contain" />
+                  <img
+                    src={formatImageUrl(heroBgImage, "/solution.png")}
+                    alt="Hero Background"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = "/solution.png";
+                    }}
+                    className="max-h-full max-w-full object-contain"
+                  />
                 </div>
               )}
               <div className="flex gap-2 items-center text-xs">
@@ -777,7 +788,14 @@ export default function UnifiedAdminSolutionsPage() {
                 <label className="block font-bold text-slate-700">Solution Photo / Equipment Image</label>
                 {formImageUrl && (
                   <div className="h-40 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-2 border">
-                    <img src={formImageUrl} alt="Solution Preview" className="max-h-full max-w-full object-contain" />
+                    <img
+                      src={formatImageUrl(formImageUrl, "/predictive_intelligence.webp")}
+                      alt="Solution Preview"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                      }}
+                      className="max-h-full max-w-full object-contain"
+                    />
                   </div>
                 )}
                 <div className="flex gap-2">
@@ -835,7 +853,14 @@ export default function UnifiedAdminSolutionsPage() {
 
             {/* Photo Banner */}
             <div className="h-56 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-800 shrink-0">
-              <img src={viewItem.imageUrl || "/predictive_intelligence.webp"} alt={viewItem.title} className="max-h-full max-w-full object-contain filter drop-shadow-md" />
+              <img
+                src={formatImageUrl(viewItem.imageUrl, "/predictive_intelligence.webp")}
+                alt={viewItem.title}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/predictive_intelligence.webp";
+                }}
+                className="max-h-full max-w-full object-contain filter drop-shadow-md"
+              />
             </div>
 
             <h2 className="text-lg font-extrabold text-slate-800">{viewItem.title}</h2>

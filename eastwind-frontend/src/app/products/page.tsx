@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatImageUrl } from "@/utils/image";
 
 export interface SpecItem {
   label: string;
@@ -465,8 +466,11 @@ function ProductsCatalogContent() {
                         {/* Product Image Display (UNCROPPED WHOLE IMAGE) */}
                         <div className="h-56 bg-slate-950 p-4 relative flex items-center justify-center border-b border-slate-800">
                           <img
-                            src={product.imageUrl || "/products/default-process-instrumentation.png"}
+                            src={formatImageUrl(product.imageUrl, "/products/default-process-instrumentation.png")}
                             alt={product.name}
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = "/products/default-process-instrumentation.png";
+                            }}
                             className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
                           />
                           <div className="absolute top-3 left-3">
@@ -564,8 +568,11 @@ function ProductsCatalogContent() {
               {/* Image Frame (UNCROPPED WHOLE IMAGE) */}
               <div className="h-64 sm:h-72 bg-slate-950 rounded-2xl p-6 flex items-center justify-center border border-slate-800">
                 <img
-                  src={selectedProduct.imageUrl || "/products/default-process-instrumentation.png"}
+                  src={formatImageUrl(selectedProduct.imageUrl, "/products/default-process-instrumentation.png")}
                   alt={selectedProduct.name}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/products/default-process-instrumentation.png";
+                  }}
                   className="max-h-full max-w-full object-contain filter drop-shadow-xl"
                 />
               </div>
