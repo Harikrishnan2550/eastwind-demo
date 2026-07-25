@@ -103,41 +103,40 @@ export default function Navbar() {
     }));
   };
 
-  // Dynamic Solution Categories from Admin CMS
+  // Dynamic Solution Categories from Admin CMS (/api/solutions-page)
   useEffect(() => {
-    async function fetchDynamicSolutions() {
+    async function fetchDynamicCategories() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const res = await fetch(`${baseUrl}/api/solutions`, { cache: "no-store" });
+        const res = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store" });
         if (res.ok) {
-          const solutionsData = await res.json();
-          if (Array.isArray(solutionsData) && solutionsData.length > 0) {
-            const dynamicCategories: SolutionCategory[] = solutionsData.map((sol: any) => ({
-              id: sol.id || sol.slug,
-              name: sol.title,
-              href: `/solutions/${sol.id || sol.slug}`,
-              description: sol.subLabel || sol.tagline || sol.description || "High-compliance engineered solution",
-              accent: sol.accent === "blue" ? "#1e3e8f" : "#c22026",
-              items: (sol.features || []).slice(0, 5).map((f: string) => ({
-                name: f,
-                href: `/solutions/${sol.id || sol.slug}`
-              }))
+          const data = await res.json();
+          if (data && Array.isArray(data.industries) && data.industries.length > 0) {
+            const dynamicCategories: SolutionCategory[] = data.industries.map((ind: any) => ({
+              id: ind.id,
+              name: ind.name,
+              href: `/solutions/${ind.id}`,
+              description: ind.description || ind.riskKicker || "High-compliance industry solution",
+              accent: ind.accent || "#1e3e8f",
+              items: [
+                { name: `${ind.name} Core Systems`, href: `/solutions/${ind.id}` }
+              ]
             }));
             setCategoriesList(dynamicCategories);
           }
         }
       } catch (err) {
-        console.warn("Failed to fetch dynamic navbar solution categories:", err);
+        console.warn("Failed to fetch dynamic navbar categories:", err);
       }
     }
-    fetchDynamicSolutions();
+    fetchDynamicCategories();
   }, []);
 
-  // 6 Solution Categories & their associated products/sub-solutions
+  // 6 Solution Categories matching website domain diagram:
   const [categoriesList, setCategoriesList] = useState<SolutionCategory[]>([
     {
       id: "oil-gas",
-      name: "Oil & Gas Industry",
+      name: "Oil & Gas",
       href: "/solutions/oil-and-gas",
       description: "Intelligent Hydrocarbon Operations & Intrinsic Wireless Systems",
       accent: "#1e3e8f",
