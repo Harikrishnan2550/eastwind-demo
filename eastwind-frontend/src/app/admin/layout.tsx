@@ -135,6 +135,15 @@ export default function AdminLayout({
       )
     },
     {
+      name: "Manage Hero Captions",
+      href: "/admin/hero",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v16M17 4v16M3 8h18M3 16h18" />
+        </svg>
+      )
+    },
+    {
       name: "Manage Products",
       href: "/admin/products",
       icon: (

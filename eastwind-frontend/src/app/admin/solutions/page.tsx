@@ -7,7 +7,7 @@ interface SolutionItem {
   title: string;
   subLabel: string;
   tagline: string;
-  accent: "blue" | "orange";
+  accent: "blue" | "orange" | "red" | "emerald";
   description: string;
   detailedContent: string;
   features: string[];
@@ -34,11 +34,6 @@ interface CorePortfolioItem {
   icon: string;
 }
 
-interface DropdownOption {
-  value: string;
-  label: string;
-}
-
 export default function UnifiedAdminSolutionsPage() {
   const [activeTab, setActiveTab] = useState<"catalog" | "page_layout">("catalog");
   const [solutions, setSolutions] = useState<any[]>([]);
@@ -47,8 +42,6 @@ export default function UnifiedAdminSolutionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const ITEMS_PER_PAGE = 10;
 
   // TAB 1: SOLUTION ITEM CATALOG MODALS & FORM STATES
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -60,21 +53,10 @@ export default function UnifiedAdminSolutionsPage() {
   const [formTitle, setFormTitle] = useState<string>("");
   const [formSubLabel, setFormSubLabel] = useState<string>("");
   const [formTagline, setFormTagline] = useState<string>("");
-  const [formAccent, setFormAccent] = useState<"blue" | "orange">("blue");
+  const [formAccent, setFormAccent] = useState<"blue" | "orange" | "red" | "emerald">("blue");
   const [formDescription, setFormDescription] = useState<string>("");
   const [formDetailedContent, setFormDetailedContent] = useState<string>("");
   const [formImageUrl, setFormImageUrl] = useState<string>("");
-  const [formFeatures, setFormFeatures] = useState<string[]>([]);
-  const [featureInput, setFeatureInput] = useState<string>("");
-  const [formCompliance, setFormCompliance] = useState<string[]>([]);
-  const [complianceInput, setComplianceInput] = useState<string>("");
-  const [formBenefits, setFormBenefits] = useState<string[]>([]);
-  const [benefitInput, setBenefitInput] = useState<string>("");
-  const [formApplications, setFormApplications] = useState<string[]>([]);
-  const [applicationInput, setApplicationInput] = useState<string>("");
-  const [formSpecs, setFormSpecs] = useState<{ label: string; value: string }[]>([]);
-  const [specLabel, setSpecLabel] = useState<string>("");
-  const [specValue, setSpecValue] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
 
   // TAB 2: DEDICATED /SOLUTIONS PAGE LAYOUT & BANNERS STATE
@@ -101,6 +83,30 @@ export default function UnifiedAdminSolutionsPage() {
       accent: "#f59e0b",
       image: "/industrial_digitalization.webp",
       description: "Optimising downstream chemical refining ecosystems with real-time ML and telemetry."
+    },
+    {
+      id: "civil-defense",
+      name: "Civil Defense",
+      riskKicker: "TACTICAL EMERGENCY INCIDENT COMMAND",
+      accent: "#ef4444",
+      image: "/emergency_vehicle.webp",
+      description: "Equipping public safety, civil protection, and regional defense forces."
+    },
+    {
+      id: "marine",
+      name: "Marine & Offshore",
+      riskKicker: "OFFSHORE ARCHITECTURE | ABS & DNV COMPLIANT",
+      accent: "#1e3e8f",
+      image: "/thermal_ehouse.webp",
+      description: "Providing deepwater infrastructure defense and automated hull breach tracking."
+    },
+    {
+      id: "utility-power",
+      name: "Utility & Power",
+      riskKicker: "CRITICAL GRID SAFETY MARGIN | IEEE & IEC CERTIFIED",
+      accent: "#10b981",
+      image: "/wireless_monitoring.webp",
+      description: "Hardening continental power distribution grids and substations."
     }
   ]);
 
@@ -119,10 +125,6 @@ export default function UnifiedAdminSolutionsPage() {
   const [gatewayTagline, setGatewayTagline] = useState<string>("Proposal Engineering Intake");
   const [gatewayTitle, setGatewayTitle] = useState<string>("Request Technical Integration Quoting");
   const [gatewayDesc, setGatewayDesc] = useState<string>("Complete the security assessment form below.");
-  const [solutionScopeOptions, setSolutionScopeOptions] = useState<DropdownOption[]>([
-    { value: "fire-gas", label: "Fire & Gas Instrumentation Grids" },
-    { value: "suppression", label: "Clean Agent Suppression Systems" }
-  ]);
   const [submitButtonText, setSubmitButtonText] = useState<string>("Submit Solution Blueprint Scope");
 
   const clearMessages = () => {
@@ -166,7 +168,6 @@ export default function UnifiedAdminSolutionsPage() {
         if (data.gatewayTagline) setGatewayTagline(data.gatewayTagline);
         if (data.gatewayTitle) setGatewayTitle(data.gatewayTitle);
         if (data.gatewayDesc) setGatewayDesc(data.gatewayDesc);
-        if (data.solutionScopeOptions && data.solutionScopeOptions.length > 0) setSolutionScopeOptions(data.solutionScopeOptions);
         if (data.submitButtonText) setSubmitButtonText(data.submitButtonText);
       }
     } catch (err: any) {
@@ -194,12 +195,7 @@ export default function UnifiedAdminSolutionsPage() {
     setFormAccent("blue");
     setFormDescription("");
     setFormDetailedContent("");
-    setFormImageUrl("/products/default-process-instrumentation.png");
-    setFormFeatures([]);
-    setFormCompliance([]);
-    setFormBenefits([]);
-    setFormApplications([]);
-    setFormSpecs([]);
+    setFormImageUrl("/predictive_intelligence.webp");
     setShowModal(true);
   };
 
@@ -213,12 +209,7 @@ export default function UnifiedAdminSolutionsPage() {
     setFormAccent(item.accent || "blue");
     setFormDescription(item.description || "");
     setFormDetailedContent(item.detailedContent || "");
-    setFormImageUrl(item.imageUrl || "/products/default-process-instrumentation.png");
-    setFormFeatures(item.features || []);
-    setFormCompliance(item.compliance || []);
-    setFormBenefits(item.benefits || []);
-    setFormApplications(item.applications || []);
-    setFormSpecs(item.specs || []);
+    setFormImageUrl(item.imageUrl || "/predictive_intelligence.webp");
     setShowModal(true);
   };
 
@@ -234,7 +225,6 @@ export default function UnifiedAdminSolutionsPage() {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
-
       const generatedId = formId || formTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
       const payload = {
@@ -245,12 +235,7 @@ export default function UnifiedAdminSolutionsPage() {
         accent: formAccent,
         description: formDescription.trim(),
         detailedContent: formDetailedContent.trim(),
-        imageUrl: formImageUrl.trim(),
-        features: formFeatures,
-        compliance: formCompliance,
-        benefits: formBenefits,
-        applications: formApplications,
-        specs: formSpecs
+        imageUrl: formImageUrl.trim()
       };
 
       const url = isEdit ? `${baseUrl}/api/solutions/${generatedId}` : `${baseUrl}/api/solutions`;
@@ -283,9 +268,7 @@ export default function UnifiedAdminSolutionsPage() {
       const token = localStorage.getItem("admin_token");
       const res = await fetch(`${baseUrl}/api/solutions/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error("Failed to delete solution item");
       setSuccess("Solution item deleted!");
@@ -320,7 +303,6 @@ export default function UnifiedAdminSolutionsPage() {
         gatewayTagline,
         gatewayTitle,
         gatewayDesc,
-        solutionScopeOptions,
         submitButtonText
       };
 
@@ -342,6 +324,43 @@ export default function UnifiedAdminSolutionsPage() {
     }
   };
 
+  // Add / Delete Industry Cards Helpers (Tab 2)
+  const handleAddIndustryCard = () => {
+    const newId = `industry-${Date.now()}`;
+    setIndustries([
+      ...industries,
+      {
+        id: newId,
+        name: "New Industry Sector",
+        riskKicker: "SAFETY COMPLIANCE HAZARD CONTROL",
+        accent: "#1e3e8f",
+        image: "/predictive_intelligence.webp",
+        description: "Comprehensive hazard mitigation and continuous safety telemetry integration."
+      }
+    ]);
+  };
+
+  const handleDeleteIndustryCard = (index: number) => {
+    setIndustries(industries.filter((_, idx) => idx !== index));
+  };
+
+  // Add / Delete Capability Cards Helpers (Tab 2)
+  const handleAddCapabilityCard = () => {
+    setCorePortfolios([
+      ...corePortfolios,
+      {
+        title: "New Technical Capability",
+        description: "Advanced engineering design and field calibration workflows.",
+        items: ["Multi-vendor interface leadership"],
+        icon: "🛡️"
+      }
+    ]);
+  };
+
+  const handleDeleteCapabilityCard = (index: number) => {
+    setCorePortfolios(corePortfolios.filter((_, idx) => idx !== index));
+  };
+
   // Image Upload helper
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
     const file = e.target.files?.[0];
@@ -351,7 +370,7 @@ export default function UnifiedAdminSolutionsPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("image", file);
 
       const res = await fetch(`${baseUrl}/api/upload`, {
         method: "POST",
@@ -360,7 +379,7 @@ export default function UnifiedAdminSolutionsPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error("Image upload failed");
-      setter(data.url);
+      setter(data.imageUrl || data.url);
       setSuccess("Image uploaded successfully!");
     } catch (err: any) {
       setError(err.message || "Image upload failed");
@@ -381,33 +400,44 @@ export default function UnifiedAdminSolutionsPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200">
-              CMS Module
+              Full Dynamic CMS
             </span>
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Solutions Management Portal</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Manage individual safety solution items as well as the main /solutions webpage layout.
+            Complete View, Add, Edit, and Delete controls for all solution items, photos, headings, and page sections.
           </p>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 shrink-0">
-          <button
-            onClick={() => setActiveTab("catalog")}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
-              activeTab === "catalog" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-            }`}
-          >
-            <span>🛡️ Solution Items Catalog</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("page_layout")}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
-              activeTab === "page_layout" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
-            }`}
-          >
-            <span>📰 /solutions Page Banners & Layout</span>
-          </button>
+        {/* Tab Switcher & Add Button */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+            <button
+              onClick={() => setActiveTab("catalog")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+                activeTab === "catalog" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>🛡️ Solution Catalog Items ({solutions.length})</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("page_layout")}
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-2 ${
+                activeTab === "page_layout" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>📰 /solutions Page Banners & Photos</span>
+            </button>
+          </div>
+
+          {activeTab === "catalog" && (
+            <button
+              onClick={handleOpenCreate}
+              className="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase rounded-xl shadow-md flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <span>+ Add New Solution</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -428,54 +458,86 @@ export default function UnifiedAdminSolutionsPage() {
       {/* ================= TAB 1: SOLUTION CATALOG ITEMS ================= */}
       {activeTab === "catalog" && (
         <div className="space-y-6">
-          {/* Explicit Location Indicator Banner */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs flex items-center justify-between">
-            <div>
-              <strong className="block font-bold">📍 Website Location Effect:</strong>
-              <span>Items added or edited here update the solution cards on the Homepage Solution Grid, Products Catalog filters, and Footer Links.</span>
-            </div>
-            <button
-              onClick={handleOpenCreate}
-              className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase rounded-lg shadow-md shrink-0 ml-4"
-            >
-              + Create Solution Item
-            </button>
+          {/* Action Helper Bar */}
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 text-xs">
+            <strong className="block font-bold mb-0.5">📍 Website Location Effect:</strong>
+            <span>Items added, edited, or deleted here update the Homepage Solution Grid, `/solutions` details, and `/products` sidebar filters.</span>
           </div>
 
           {/* Search Bar */}
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
             <input
               type="text"
-              placeholder="Search solution items by title or description..."
+              placeholder="Search solution items by title..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full max-w-md px-4 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-orange-500"
             />
-            <span className="text-xs font-mono font-bold text-slate-400">Total: {filteredSolutions.length} Items</span>
+            <span className="text-xs font-mono font-bold text-slate-400">Total: {filteredSolutions.length} Solutions</span>
           </div>
 
-          {/* Solutions Catalog Table / Grid */}
+          {/* Solutions Catalog Grid with View, Edit, Delete Actions */}
           {loading ? (
             <div className="p-12 text-center text-slate-400 text-xs font-mono">Loading Solution Catalog...</div>
+          ) : filteredSolutions.length === 0 ? (
+            <div className="p-12 bg-white rounded-2xl border border-slate-200 text-center space-y-3">
+              <p className="text-xs text-slate-500 font-medium">No solution items found. Click "+ Add Solution Item" to create one.</p>
+              <button
+                onClick={handleOpenCreate}
+                className="px-5 py-2.5 bg-orange-600 text-white font-bold text-xs rounded-xl shadow-md"
+              >
+                + Add Solution Item
+              </button>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredSolutions.map((item: any) => (
-                <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3 flex flex-col justify-between">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-start">
-                      <span className="text-[10px] font-mono font-bold uppercase text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200">
-                        {item.id}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400">Accent: {item.accent || "blue"}</span>
-                    </div>
-                    <h3 className="text-base font-extrabold text-slate-800">{item.title}</h3>
-                    <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed">{item.description}</p>
+                <div key={item.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between group hover:border-orange-500/50 transition-all">
+                  {/* Photo Display Banner */}
+                  <div className="h-44 bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
+                    <img
+                      src={item.imageUrl || "/predictive_intelligence.webp"}
+                      alt={item.title}
+                      className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <span className="absolute top-3 left-3 text-[10px] font-mono font-bold uppercase text-orange-600 bg-white/95 border border-orange-200 px-2.5 py-1 rounded-md shadow-sm">
+                      {item.id}
+                    </span>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
-                    <button onClick={() => setViewItem(item)} className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 rounded-lg">Details</button>
-                    <button onClick={() => handleOpenEdit(item)} className="px-3 py-1.5 text-xs font-bold text-orange-600 bg-orange-50 rounded-lg">Edit</button>
-                    <button onClick={() => setDeleteTarget(item.id)} className="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 rounded-lg">Delete</button>
+                  <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
+                    <div className="space-y-2">
+                      <h3 className="text-base font-extrabold text-slate-800 leading-snug">{item.title}</h3>
+                      <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">{item.description}</p>
+                    </div>
+
+                    {/* ACTION BUTTONS: VIEW, EDIT, DELETE */}
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setViewItem(item)}
+                        className="px-3 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                        title="View details"
+                      >
+                        <span>👁️</span>
+                        <span>View</span>
+                      </button>
+                      <button
+                        onClick={() => handleOpenEdit(item)}
+                        className="px-3 py-1.5 text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                        title="Edit solution item"
+                      >
+                        <span>✏️</span>
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => setDeleteTarget(item.id)}
+                        className="px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+                        title="Delete solution item"
+                      >
+                        <span>🗑️</span>
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -484,30 +546,46 @@ export default function UnifiedAdminSolutionsPage() {
         </div>
       )}
 
-      {/* ================= TAB 2: DEDICATED /SOLUTIONS PAGE LAYOUT & BANNERS ================= */}
+      {/* ================= TAB 2: DEDICATED /SOLUTIONS PAGE BANNERS & LAYOUT ================= */}
       {activeTab === "page_layout" && (
         <div className="space-y-8">
-          {/* Explicit Location Indicator Banner */}
           <div className="p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-950 text-xs flex items-center justify-between">
             <div>
-              <strong className="block font-bold">📍 Website Location Effect:</strong>
-              <span>Fields edited here update the Hero Banner, Operating Industry Cards, Core Capabilities Grid, and Project Intake Gateway on the main dedicated webpage at <strong className="underline">http://localhost:3000/solutions</strong>.</span>
+              <strong className="block font-bold">📍 Website Location:</strong>
+              <span>Edits all page banners, photos, headings, titles, descriptions, and intake text on <strong className="underline">http://localhost:3000/solutions</strong>.</span>
             </div>
             <button
               onClick={handleSaveSolutionsPageLayout}
               disabled={savingPage}
-              className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-md shrink-0 ml-4"
+              className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-md shrink-0 ml-4 cursor-pointer"
             >
-              {savingPage ? "Saving Layout..." : "Save Page Layout Changes"}
+              {savingPage ? "Saving Layout..." : "Save Solutions Page Banners & Photos"}
             </button>
           </div>
 
-          {/* Section 1: Hero Banner */}
+          {/* Section 1: Hero Banner Settings & Photo */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-800">1. Hero Banner Settings</h2>
-              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Top of /solutions</span>
+              <h2 className="text-base font-bold text-slate-800">1. Solutions Page Hero Banner & Background Photo</h2>
             </div>
+            
+            {/* Hero Background Photo Preview & Uploader */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700">Hero Background Image</label>
+              {heroBgImage && (
+                <div className="h-44 w-full bg-slate-950 rounded-xl overflow-hidden relative border border-slate-200 flex items-center justify-center">
+                  <img src={heroBgImage} alt="Hero Background" className="max-h-full max-w-full object-contain" />
+                </div>
+              )}
+              <div className="flex gap-2 items-center text-xs">
+                <input type="text" value={heroBgImage} onChange={(e) => setHeroBgImage(e.target.value)} className="w-full p-2.5 border rounded-lg font-mono text-[11px]" />
+                <label className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shrink-0">
+                  {uploading ? "Uploading..." : "Upload Photo"}
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setHeroBgImage)} className="hidden" />
+                </label>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Hero Tagline</label>
@@ -524,39 +602,125 @@ export default function UnifiedAdminSolutionsPage() {
             </div>
           </div>
 
-          {/* Section 2: Operating Industries */}
+          {/* Section 2: Operating Industries Cards with Add & Delete Controls */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-base font-bold text-slate-800">2. Solutions By Operating Industry ({industries.length} Cards)</h2>
-              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Industry Grid on /solutions</span>
+              <button
+                type="button"
+                onClick={handleAddIndustryCard}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm"
+              >
+                + Add Industry Card
+              </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
               {industries.map((ind, idx) => (
-                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-2">
-                  <div className="flex justify-between font-bold text-slate-800">
-                    <span>{ind.name}</span>
-                    <span className="text-orange-600">{ind.id}</span>
+                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-3 relative group">
+                  <div className="flex justify-between items-center font-bold text-slate-800 border-b pb-2">
+                    <input type="text" value={ind.name} onChange={(e) => {
+                      const updated = [...industries];
+                      updated[idx].name = e.target.value;
+                      setIndustries(updated);
+                    }} className="font-extrabold text-slate-800 bg-transparent border-b border-dashed" />
+                    
+                    <div className="flex items-center gap-2">
+                      <span className="text-orange-600 font-mono text-[11px]">{ind.id}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteIndustryCard(idx)}
+                        className="text-red-500 hover:text-red-700 font-bold text-xs cursor-pointer px-2 py-0.5 bg-red-50 rounded"
+                        title="Delete Card"
+                      >
+                        Delete 🗑️
+                      </button>
+                    </div>
                   </div>
-                  <textarea rows={2} value={ind.description} onChange={(e) => {
-                    const updated = [...industries];
-                    updated[idx].description = e.target.value;
-                    setIndustries(updated);
-                  }} className="w-full p-2 border rounded" />
+
+                  {/* Industry Image & Upload */}
+                  <div className="space-y-1">
+                    <label className="block text-[11px] font-bold text-slate-600">Card Photo</label>
+                    {ind.image && (
+                      <div className="h-28 w-full bg-slate-900 rounded-lg overflow-hidden flex items-center justify-center p-1 border">
+                        <img src={ind.image} alt={ind.name} className="max-h-full max-w-full object-contain" />
+                      </div>
+                    )}
+                    <div className="flex gap-2">
+                      <input type="text" value={ind.image} onChange={(e) => {
+                        const updated = [...industries];
+                        updated[idx].image = e.target.value;
+                        setIndustries(updated);
+                      }} className="w-full p-2 border rounded text-[10px] font-mono" />
+                      <label className="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded text-[10px] cursor-pointer shrink-0">
+                        Upload
+                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, (url) => {
+                          const updated = [...industries];
+                          updated[idx].image = url;
+                          setIndustries(updated);
+                        })} className="hidden" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Risk Kicker Tagline</label>
+                    <input type="text" value={ind.riskKicker} onChange={(e) => {
+                      const updated = [...industries];
+                      updated[idx].riskKicker = e.target.value;
+                      setIndustries(updated);
+                    }} className="w-full p-2 border rounded font-mono text-[10px]" />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Card Description</label>
+                    <textarea rows={2} value={ind.description} onChange={(e) => {
+                      const updated = [...industries];
+                      updated[idx].description = e.target.value;
+                      setIndustries(updated);
+                    }} className="w-full p-2 border rounded" />
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Section 3: Core Capabilities */}
+          {/* Section 3: Core Capabilities with Add & Delete Controls */}
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-base font-bold text-slate-800">3. Technical Core Capabilities Portfolio ({corePortfolios.length} Cards)</h2>
-              <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">Affects Capabilities Section on /solutions</span>
+              <button
+                type="button"
+                onClick={handleAddCapabilityCard}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm"
+              >
+                + Add Capability Card
+              </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               {corePortfolios.map((cp, idx) => (
-                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-2">
-                  <strong className="block text-slate-800">{cp.icon} {cp.title}</strong>
+                <div key={idx} className="p-4 border rounded-xl bg-slate-50 space-y-2 relative">
+                  <div className="flex items-center justify-between gap-2 border-b pb-2">
+                    <div className="flex items-center gap-2 flex-1">
+                      <input type="text" value={cp.icon} onChange={(e) => {
+                        const updated = [...corePortfolios];
+                        updated[idx].icon = e.target.value;
+                        setCorePortfolios(updated);
+                      }} className="w-10 p-1.5 border rounded text-center text-base" />
+                      <input type="text" value={cp.title} onChange={(e) => {
+                        const updated = [...corePortfolios];
+                        updated[idx].title = e.target.value;
+                        setCorePortfolios(updated);
+                      }} className="w-full p-1.5 border rounded font-bold" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteCapabilityCard(idx)}
+                      className="text-red-500 hover:text-red-700 font-bold text-xs cursor-pointer px-2 py-0.5 bg-red-50 rounded shrink-0"
+                      title="Delete Capability Card"
+                    >
+                      Delete 🗑️
+                    </button>
+                  </div>
                   <textarea rows={2} value={cp.description} onChange={(e) => {
                     const updated = [...corePortfolios];
                     updated[idx].description = e.target.value;
@@ -572,9 +736,9 @@ export default function UnifiedAdminSolutionsPage() {
             <button
               onClick={handleSaveSolutionsPageLayout}
               disabled={savingPage}
-              className="px-8 py-3.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-lg"
+              className="px-8 py-3.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase rounded-xl shadow-lg cursor-pointer"
             >
-              {savingPage ? "Saving Layout..." : "Save Solutions Page Banners & Layout"}
+              {savingPage ? "Saving Layout..." : "Save Solutions Page Banners & Photos"}
             </button>
           </div>
         </div>
@@ -582,11 +746,23 @@ export default function UnifiedAdminSolutionsPage() {
 
       {/* CREATE / EDIT MODAL FOR TAB 1 ITEM */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-6">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-800">{isEdit ? "Edit Solution Item" : "Create New Solution Item"}</h2>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 text-lg font-bold">✕</button>
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowModal(false);
+          }}
+          className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-slate-900/70 backdrop-blur-sm overflow-y-auto"
+        >
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl space-y-6 my-auto relative">
+            <div className="sticky top-0 bg-white pt-1 pb-3 z-10 border-b border-slate-100 flex justify-between items-center">
+              <h2 className="text-base font-bold text-slate-800">{isEdit ? "Edit Solution Item & Photo" : "Create New Solution Item"}</h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <span>Close</span>
+                <span className="text-sm font-black">✕</span>
+              </button>
             </div>
 
             <form onSubmit={handleSaveSolutionItem} className="space-y-4 text-xs">
@@ -595,19 +771,121 @@ export default function UnifiedAdminSolutionsPage() {
                 <input type="text" required value={formTitle} onChange={(e) => setFormTitle(e.target.value)} placeholder="e.g. Fire & Gas Detection Systems" className="w-full p-2.5 border rounded-lg font-bold" />
               </div>
 
+              {/* Solution Item Photo with Upload & Preview */}
+              <div className="space-y-2">
+                <label className="block font-bold text-slate-700">Solution Photo / Equipment Image</label>
+                {formImageUrl && (
+                  <div className="h-40 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-2 border">
+                    <img src={formImageUrl} alt="Solution Preview" className="max-h-full max-w-full object-contain" />
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <input type="text" value={formImageUrl} onChange={(e) => setFormImageUrl(e.target.value)} className="w-full p-2.5 border rounded-lg font-mono text-[11px]" />
+                  <label className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg cursor-pointer shrink-0">
+                    {uploading ? "Uploading..." : "Upload Photo"}
+                    <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setFormImageUrl)} className="hidden" />
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Overview Description *</label>
                 <textarea rows={3} required value={formDescription} onChange={(e) => setFormDescription(e.target.value)} placeholder="Summary description..." className="w-full p-2.5 border rounded-lg" />
               </div>
 
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Detailed Technical Content</label>
+                <textarea rows={4} value={formDetailedContent} onChange={(e) => setFormDetailedContent(e.target.value)} placeholder="Detailed technical specifications content..." className="w-full p-2.5 border rounded-lg" />
+              </div>
+
               <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 font-bold rounded-lg">Cancel</button>
-                <button type="submit" className="px-5 py-2 bg-orange-600 text-white font-bold rounded-lg shadow-md">{isEdit ? "Save Item" : "Create Item"}</button>
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-slate-100 font-bold text-xs rounded-lg cursor-pointer">Cancel</button>
+                <button type="submit" className="px-5 py-2 bg-orange-600 text-white font-bold text-xs rounded-lg shadow-md cursor-pointer">{isEdit ? "Save Solution Item & Photo" : "Create Solution Item"}</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* VIEW DETAILS MODAL (WITH STICKY CLOSE CONTROLS & SMOOTH SCROLLING) */}
+      {viewItem && (
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setViewItem(null);
+          }}
+          className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto"
+        >
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-xl w-full max-h-[85vh] overflow-y-auto p-6 shadow-2xl space-y-4 my-auto relative">
+            
+            {/* Sticky Header Close Control */}
+            <div className="sticky top-0 bg-white pt-1 pb-3 z-20 border-b border-slate-100 flex items-center justify-between">
+              <span className="text-xs font-mono font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200">
+                ID: {viewItem.id}
+              </span>
+              <button
+                type="button"
+                onClick={() => setViewItem(null)}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold rounded-xl shadow-md flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <span>Close</span>
+                <span className="text-sm font-black">✕</span>
+              </button>
+            </div>
+
+            {/* Photo Banner */}
+            <div className="h-56 w-full bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-800 shrink-0">
+              <img src={viewItem.imageUrl || "/predictive_intelligence.webp"} alt={viewItem.title} className="max-h-full max-w-full object-contain filter drop-shadow-md" />
+            </div>
+
+            <h2 className="text-lg font-extrabold text-slate-800">{viewItem.title}</h2>
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">{viewItem.description}</p>
+
+            {viewItem.detailedContent && (
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-1.5">
+                <strong className="block text-slate-800 font-bold">Detailed Specifications & Technical Content:</strong>
+                <p className="text-slate-600 leading-relaxed font-normal whitespace-pre-wrap">{viewItem.detailedContent}</p>
+              </div>
+            )}
+
+            {/* Sticky Footer Close Control */}
+            <div className="sticky bottom-0 bg-white/95 backdrop-blur-md pt-3 pb-1 border-t border-slate-100 flex justify-end z-20">
+              <button
+                type="button"
+                onClick={() => setViewItem(null)}
+                className="px-6 py-2.5 bg-slate-800 hover:bg-red-600 text-white text-xs font-extrabold rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
+              >
+                <span>Close Window</span>
+                <span className="font-mono text-sm">✕</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {deleteTarget && (
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setDeleteTarget(null);
+          }}
+          className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+        >
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center space-y-4 my-auto">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xl font-bold mx-auto">
+              ⚠️
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-800">Confirm Solution Deletion</h3>
+              <p className="text-xs text-slate-500 mt-1">Are you sure you want to delete solution "{deleteTarget}"?</p>
+            </div>
+            <div className="flex justify-center gap-3 pt-2">
+              <button onClick={() => setDeleteTarget(null)} className="px-4 py-2 bg-slate-100 font-bold text-xs rounded-lg cursor-pointer">Cancel</button>
+              <button onClick={() => handleDeleteSolutionItem(deleteTarget)} className="px-4 py-2 bg-red-600 text-white font-bold text-xs rounded-lg shadow-md cursor-pointer">Confirm Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -23,6 +23,43 @@ export default function Hero() {
   
   const [images, setImages] = useState<HTMLImageElement[]>([]);
 
+  // Dynamic Captions State
+  const [slide1Tagline, setSlide1Tagline] = useState<string>("Safety Arabia Infrastructure");
+  const [slide1Title, setSlide1Title] = useState<string>("Fusing Industry AI & Critical Safety");
+  const [slide1Desc, setSlide1Desc] = useState<string>("We engineer intelligent, cyber-physical safety systems. From explosion-proof IIoT mobility to predictive threat analytics, we safeguard heavy industrial infrastructure.");
+  const [slide1Btn1Text, setSlide1Btn1Text] = useState<string>("Operations Center");
+  const [slide1Btn2Text, setSlide1Btn2Text] = useState<string>("Our Capabilities");
+
+  const [slide2Tagline, setSlide2Tagline] = useState<string>("IIoT Data Telemetry Loops");
+  const [slide2Title, setSlide2Title] = useState<string>("Real-time Edge Acquisition");
+  const [slide2Desc, setSlide2Desc] = useState<string>("Deploying intrinsically safe wireless sensor webs inside explosive gas zones. Fusing critical network monitoring architecture protocols into a unified digital operations environment.");
+  const [slide2Btn1Text, setSlide2Btn1Text] = useState<string>("Explore MIMES Wireless");
+
+  useEffect(() => {
+    async function loadHeroData() {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${baseUrl}/api/hero`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.slide1Tagline) setSlide1Tagline(data.slide1Tagline);
+          if (data.slide1Title) setSlide1Title(data.slide1Title);
+          if (data.slide1Desc) setSlide1Desc(data.slide1Desc);
+          if (data.slide1Btn1Text) setSlide1Btn1Text(data.slide1Btn1Text);
+          if (data.slide1Btn2Text) setSlide1Btn2Text(data.slide1Btn2Text);
+
+          if (data.slide2Tagline) setSlide2Tagline(data.slide2Tagline);
+          if (data.slide2Title) setSlide2Title(data.slide2Title);
+          if (data.slide2Desc) setSlide2Desc(data.slide2Desc);
+          if (data.slide2Btn1Text) setSlide2Btn1Text(data.slide2Btn1Text);
+        }
+      } catch (err) {
+        console.error("Hero data fetch error:", err);
+      }
+    }
+    loadHeroData();
+  }, []);
+
   useEffect(() => {
     const imgArray: HTMLImageElement[] = [];
     const preloadImages = async () => {
@@ -149,20 +186,20 @@ export default function Hero() {
           <div className="relative h-[70vh] w-full max-w-[680px] flex flex-col justify-center">
             
             <div ref={frame1Ref} className="absolute top-1/2 left-0 w-full" style={{ opacity: 1, transform: "translate3d(0, -50%, 0)", pointerEvents: "auto" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/15 border border-amber-500/30 text-amber-500 text-[0.7rem] font-mono font-bold uppercase tracking-widest mb-6">Safety Arabia Infrastructure</div>
-              <h1 className="text-[3.5rem] max-md:text-[2.8rem] max-sm:text-[2.1rem] font-bold text-white mb-6 leading-none uppercase tracking-tight">Fusing Industry <span className="text-red-500">AI</span> & Critical Safety</h1>
-              <p className="text-[1.05rem] text-slate-200 mb-10 max-w-[540px] leading-relaxed">We engineer intelligent, cyber-physical safety systems. From explosion-proof IIoT mobility to predictive threat analytics, we safeguard heavy industrial infrastructure.</p>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-500/15 border border-amber-500/30 text-amber-500 text-[0.7rem] font-mono font-bold uppercase tracking-widest mb-6">{slide1Tagline}</div>
+              <h1 className="text-[3.5rem] max-md:text-[2.8rem] max-sm:text-[2.1rem] font-bold text-white mb-6 leading-none uppercase tracking-tight">{slide1Title}</h1>
+              <p className="text-[1.05rem] text-slate-200 mb-10 max-w-[540px] leading-relaxed">{slide1Desc}</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#solutions" className="btn-primary">Operations Center</a>
-                <a href="#solutions" className="btn-secondary text-white border-white/40 hover:border-white hover:bg-white/10">Our Capabilities</a>
+                <a href="#solutions" className="btn-primary">{slide1Btn1Text}</a>
+                <a href="#solutions" className="btn-secondary text-white border-white/40 hover:border-white hover:bg-white/10">{slide1Btn2Text}</a>
               </div>
             </div>
 
             <div ref={frame2Ref} className="absolute top-1/2 left-0 w-full" style={{ opacity: 0, transform: "translate3d(0, -50%, 0)", pointerEvents: "none" }}>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sky-500/15 border border-sky-500/30 text-sky-400 text-[0.7rem] font-mono font-bold uppercase tracking-widest mb-6">IIoT Data Telemetry Loops</div>
-              <h2 className="text-[3.5rem] max-md:text-[2.6rem] max-sm:text-[2.0rem] font-bold text-white mb-6 leading-none uppercase tracking-tight">Real-time Edge Acquisition</h2>
-              <p className="text-[1.05rem] text-slate-200 mb-10 max-w-[540px] leading-relaxed">Deploying intrinsically safe wireless sensor webs inside explosive gas zones. Fusing critical network monitoring architecture protocols into a unified digital operations environment.</p>
-              <a href="#solutions" className="btn-primary">Explore MIMES Wireless</a>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-sky-500/15 border border-sky-500/30 text-sky-400 text-[0.7rem] font-mono font-bold uppercase tracking-widest mb-6">{slide2Tagline}</div>
+              <h2 className="text-[3.5rem] max-md:text-[2.6rem] max-sm:text-[2.0rem] font-bold text-white mb-6 leading-none uppercase tracking-tight">{slide2Title}</h2>
+              <p className="text-[1.05rem] text-slate-200 mb-10 max-w-[540px] leading-relaxed">{slide2Desc}</p>
+              <a href="#solutions" className="btn-primary">{slide2Btn1Text}</a>
             </div>
 
 

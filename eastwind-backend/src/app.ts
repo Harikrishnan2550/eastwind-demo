@@ -18,6 +18,7 @@ import contactSettingsRouter from "./routes/contactSettings.js";
 import solutionsPageRouter from "./routes/solutionsPage.js";
 import brandsRouter from "./routes/brands.js";
 import successStoriesRouter from "./routes/successStories.js";
+import heroRouter from "./routes/hero.js";
 import { EnquiryController } from "./controllers/enquiry.controller.js";
 
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/contact-settings", contactSettingsRouter);
 app.use("/api/solutions-page", solutionsPageRouter);
 app.use("/api/brands", brandsRouter);
 app.use("/api/success-stories", successStoriesRouter);
+app.use("/api/hero", heroRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/auth", authRouter);
 app.post("/api/enquiry", EnquiryController.submitEnquiry);

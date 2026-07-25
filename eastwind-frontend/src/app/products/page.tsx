@@ -227,37 +227,37 @@ function ProductsCatalogContent() {
 
       <main className="pt-32 pb-24 flex-1">
         
-        {/* Short & Sleek Gradient Hero Header */}
+        {/* Short & Sleek Solid Orange Hero Header */}
         <section className="max-w-[1400px] mx-auto px-10 max-sm:px-5 mb-8">
-          <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-r from-[#1e3e8f] via-slate-900 to-[#c22026] py-5 px-8 sm:px-10 text-white shadow-xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="relative rounded-[24px] overflow-hidden bg-orange-600 py-5 px-8 sm:px-10 text-white shadow-xl border border-orange-500 flex flex-col md:flex-row md:items-center justify-between gap-4">
             
             {/* Subtle Grid Backdrop */}
-            <div className="industrial-grid absolute inset-0 opacity-[0.05] pointer-events-none" />
+            <div className="industrial-grid absolute inset-0 opacity-[0.08] pointer-events-none" />
 
             {/* Left Content */}
             <div className="relative z-10 space-y-1 max-w-[780px]">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
-                <span className="text-[0.7rem] font-mono font-extrabold uppercase tracking-widest text-orange-300">
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                <span className="text-[0.7rem] font-mono font-extrabold uppercase tracking-widest text-orange-100">
                   Certified Equipment Inventory
                 </span>
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-none">
-                Eastwind <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-orange-400">Products Catalog</span>
+                Eastwind Products Catalog
               </h1>
 
-              <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+              <p className="text-xs sm:text-sm text-orange-50 leading-relaxed font-medium">
                 Browse our complete portfolio of certified marine, oil & gas, petrochemical, and industrial safety systems.
               </p>
             </div>
 
             {/* Right Side Compact Badges */}
             <div className="relative z-10 flex items-center gap-2.5 shrink-0">
-              <span className="px-3 py-1.5 bg-white/15 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-white border border-white/20 shadow-sm">
+              <span className="px-3.5 py-1.5 bg-white/20 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-white border border-white/30 shadow-sm">
                 11+ Brands
               </span>
-              <span className="px-3 py-1.5 bg-orange-500/25 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-orange-200 border border-orange-400/30 shadow-sm">
+              <span className="px-3.5 py-1.5 bg-slate-900/40 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-white border border-white/20 shadow-sm">
                 55+ Equipment Models
               </span>
             </div>
