@@ -103,6 +103,36 @@ export default function Navbar() {
     }));
   };
 
+  // Dynamic Solution Categories from Admin CMS
+  useEffect(() => {
+    async function fetchDynamicSolutions() {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${baseUrl}/api/solutions`, { cache: "no-store" });
+        if (res.ok) {
+          const solutionsData = await res.json();
+          if (Array.isArray(solutionsData) && solutionsData.length > 0) {
+            const dynamicCategories: SolutionCategory[] = solutionsData.map((sol: any) => ({
+              id: sol.id || sol.slug,
+              name: sol.title,
+              href: `/solutions/${sol.id || sol.slug}`,
+              description: sol.subLabel || sol.tagline || sol.description || "High-compliance engineered solution",
+              accent: sol.accent === "blue" ? "#1e3e8f" : "#c22026",
+              items: (sol.features || []).slice(0, 5).map((f: string) => ({
+                name: f,
+                href: `/solutions/${sol.id || sol.slug}`
+              }))
+            }));
+            setCategoriesList(dynamicCategories);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch dynamic navbar solution categories:", err);
+      }
+    }
+    fetchDynamicSolutions();
+  }, []);
+
   // 6 Solution Categories & their associated products/sub-solutions
   const [categoriesList, setCategoriesList] = useState<SolutionCategory[]>([
     {
