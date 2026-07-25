@@ -6,20 +6,18 @@ export class BrandModel {
   static async getAll(): Promise<IBrand[]> {
     let items = await Brand.find({}).exec();
 
-    // Auto-sync missing brands from database.json if fewer than 11 brands in MongoDB
-    if (!items || items.length < 11) {
+    // Initial seed from database.json ONLY if MongoDB collection is completely empty
+    if (!items || items.length === 0) {
       if (fs.existsSync(DB_FILE)) {
         try {
           const rawData = fs.readFileSync(DB_FILE, "utf-8");
           const seed = JSON.parse(rawData);
           if (seed.brands && seed.brands.length > 0) {
-            for (const b of seed.brands) {
-              await Brand.findOneAndUpdate({ id: b.id }, b, { upsert: true, new: true });
-            }
+            await Brand.insertMany(seed.brands);
             items = await Brand.find({}).exec();
           }
         } catch (e) {
-          console.error("Auto-syncing brands failed:", e);
+          console.error("Seeding brands failed:", e);
         }
       }
     }
@@ -32,14 +30,34 @@ export class BrandModel {
   }
 
   static async create(data: Partial<IBrand>): Promise<IBrand> {
-    return await Brand.create(data);
+    const created = await Brand.create(data);
+    await this.syncDatabaseFile();
+    return created;
   }
 
   static async update(id: string, updates: Partial<IBrand>): Promise<IBrand | null> {
-    return await Brand.findOneAndUpdate({ id }, updates, { new: true }).exec();
+    const updated = await Brand.findOneAndUpdate({ id }, updates, { new: true }).exec();
+    await this.syncDatabaseFile();
+    return updated;
   }
 
   static async delete(id: string): Promise<IBrand | null> {
-    return await Brand.findOneAndDelete({ id }).exec();
+    const deleted = await Brand.findOneAndDelete({ id }).exec();
+    await this.syncDatabaseFile();
+    return deleted;
+  }
+
+  private static async syncDatabaseFile() {
+    try {
+      if (fs.existsSync(DB_FILE)) {
+        const items = await Brand.find({}).exec();
+        const rawData = fs.readFileSync(DB_FILE, "utf-8");
+        const seed = JSON.parse(rawData);
+        seed.brands = items;
+        fs.writeFileSync(DB_FILE, JSON.stringify(seed, null, 2), "utf-8");
+      }
+    } catch (e) {
+      console.error("Syncing database.json brands failed:", e);
+    }
   }
 }

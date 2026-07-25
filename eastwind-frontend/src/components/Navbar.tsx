@@ -112,16 +112,30 @@ export default function Navbar() {
         if (res.ok) {
           const data = await res.json();
           if (data && Array.isArray(data.industries) && data.industries.length > 0) {
-            const dynamicCategories: SolutionCategory[] = data.industries.map((ind: any) => ({
-              id: ind.id,
-              name: ind.name,
-              href: `/solutions/${ind.id}`,
-              description: ind.description || ind.riskKicker || "High-compliance industry solution",
-              accent: ind.accent || "#1e3e8f",
-              items: [
-                { name: `${ind.name} Core Systems`, href: `/solutions/${ind.id}` }
-              ]
-            }));
+            const dynamicCategories: SolutionCategory[] = data.industries.map((ind: any) => {
+              let catItems: { name: string; href: string }[] = [];
+              if (Array.isArray(ind.items) && ind.items.length > 0) {
+                catItems = ind.items.map((itemObj: any) => {
+                  if (typeof itemObj === "string") {
+                    return { name: itemObj, href: `/solutions/${ind.id}` };
+                  }
+                  return { name: itemObj.name || itemObj.title || "Category Product", href: itemObj.href || `/solutions/${ind.id}` };
+                });
+              } else if (typeof ind.items === "string" && ind.items.trim()) {
+                catItems = ind.items.split(",").map((s: string) => ({ name: s.trim(), href: `/solutions/${ind.id}` }));
+              } else {
+                catItems = [{ name: `${ind.name} Core Systems`, href: `/solutions/${ind.id}` }];
+              }
+
+              return {
+                id: ind.id,
+                name: ind.name,
+                href: `/solutions/${ind.id}`,
+                description: ind.description || ind.riskKicker || "High-compliance industry solution",
+                accent: ind.accent || "#1e3e8f",
+                items: catItems
+              };
+            });
             setCategoriesList(dynamicCategories);
           }
         }

@@ -3873,11 +3873,26 @@
       "title": "Contact Engineering",
       "description": "Have a project requirement or need technical details? Coordinate with our estimating and engineering teams based in Al Khobar and Riyadh.",
       "operationalSectors": [
-        { "value": "oil-gas", "label": "Oil & Gas Infrastructure" },
-        { "value": "petrochemical", "label": "Petrochemical Operations" },
-        { "value": "civil-defense", "label": "Civil Defense Command" },
-        { "value": "marine", "label": "Marine & Offshore Platforms" },
-        { "value": "utility-power", "label": "Utility & Electrical Grids" }
+        {
+          "value": "oil-gas",
+          "label": "Oil & Gas Infrastructure"
+        },
+        {
+          "value": "petrochemical",
+          "label": "Petrochemical Operations"
+        },
+        {
+          "value": "civil-defense",
+          "label": "Civil Defense Command"
+        },
+        {
+          "value": "marine",
+          "label": "Marine & Offshore Platforms"
+        },
+        {
+          "value": "utility-power",
+          "label": "Utility & Electrical Grids"
+        }
       ],
       "submitButtonText": "Transmit Encrypted Request //",
       "successTitle": "Message Transmitted",
@@ -3895,11 +3910,26 @@
       "formSubHeaderTagline": "Project Registration",
       "formSubHeaderTitle": "Blueprint Specifications Intake",
       "marketSegments": [
-        { "value": "oil-gas", "label": "Onshore / Offshore Oil & Gas" },
-        { "value": "petrochemical", "label": "Downstream Petrochemical Infrastructure" },
-        { "value": "civil-defense", "label": "Civil Defense / Public Safety" },
-        { "value": "power-utilities", "label": "Utility Systems & Smart Energy Grids" },
-        { "value": "marine-offshore", "label": "Marine Engineering & Fleet Operations" }
+        {
+          "value": "oil-gas",
+          "label": "Onshore / Offshore Oil & Gas"
+        },
+        {
+          "value": "petrochemical",
+          "label": "Downstream Petrochemical Infrastructure"
+        },
+        {
+          "value": "civil-defense",
+          "label": "Civil Defense / Public Safety"
+        },
+        {
+          "value": "power-utilities",
+          "label": "Utility Systems & Smart Energy Grids"
+        },
+        {
+          "value": "marine-offshore",
+          "label": "Marine Engineering & Fleet Operations"
+        }
       ],
       "submitButtonText": "Transmit Integration File",
       "successTitle": "Transmission Complete",
@@ -3911,12 +3941,30 @@
       "enquiryTitle": "Request Technical Integration Quoting",
       "enquiryDescription": "Complete the security assessment form below. Our estimation group will process your scope and respond with preliminary blueprints.",
       "applicationPurposes": [
-        { "value": "house", "label": "Residential (House)" },
-        { "value": "company", "label": "Corporate Office (Company)" },
-        { "value": "hospital", "label": "Healthcare Facility (Hospital)" },
-        { "value": "refinery", "label": "Industrial Refinery / Plant" },
-        { "value": "commercial", "label": "Commercial Hub / Hotel" },
-        { "value": "other", "label": "Other / Custom Infrastructure" }
+        {
+          "value": "house",
+          "label": "Residential (House)"
+        },
+        {
+          "value": "company",
+          "label": "Corporate Office (Company)"
+        },
+        {
+          "value": "hospital",
+          "label": "Healthcare Facility (Hospital)"
+        },
+        {
+          "value": "refinery",
+          "label": "Industrial Refinery / Plant"
+        },
+        {
+          "value": "commercial",
+          "label": "Commercial Hub / Hotel"
+        },
+        {
+          "value": "other",
+          "label": "Other / Custom Infrastructure"
+        }
       ],
       "submitButtonText": "Submit Solution Enquiry",
       "successTitle": "Enquiry Dispatched",
@@ -4050,44 +4098,125 @@
       "partnersTitle": "Integrated Technology Partners",
       "partnersDesc": "We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.",
       "partners": [
-        "Dräger", "Empel", "Nardi", "Mimes", "One Seven", "Sieon", "Xshielder",
-        "Nittan", "FlamePro", "E2S", "Schneider", "CRI", "CEJN", "Polyhose",
-        "Keiconnections", "Leader", "Tridiagonal", "Phoenix", "Pepperl+Fuchs",
-        "Guttor", "Paratech", "Panam", "Atexxor", "Thermocable"
+        "Dräger",
+        "Empel",
+        "Nardi",
+        "Mimes",
+        "One Seven",
+        "Sieon",
+        "Xshielder",
+        "Nittan",
+        "FlamePro",
+        "E2S",
+        "Schneider",
+        "CRI",
+        "CEJN",
+        "Polyhose",
+        "Keiconnections",
+        "Leader",
+        "Tridiagonal",
+        "Phoenix",
+        "Pepperl+Fuchs",
+        "Guttor",
+        "Paratech",
+        "Panam",
+        "Atexxor",
+        "Thermocable"
       ],
       "gatewayTagline": "Enquiry Gateway",
       "gatewayTitle": "Initiate Solution Proposal Request",
       "gatewayDesc": "Our regional infrastructure engineering office coordinates directly with technical site operators to map out field constraints, balance topologies, and deploy high-compliance certified safety systems.",
       "solutionScopeOptions": [
-        { "value": "ai-digitalization", "label": "AI, Digitalisation & Data" },
-        { "value": "firefighting", "label": "Tactical Response Fleet Systems" },
-        { "value": "gas-detection", "label": "Fire & Gas Topology Loops" },
-        { "value": "suppression", "label": "Extinguishing & Simulator Skids" },
-        { "value": "wireless", "label": "Industrial Wireless Mesh Networks" },
-        { "value": "services", "label": "Specialised Field Services" }
+        {
+          "value": "ai-digitalization",
+          "label": "AI, Digitalisation & Data"
+        },
+        {
+          "value": "firefighting",
+          "label": "Tactical Response Fleet Systems"
+        },
+        {
+          "value": "gas-detection",
+          "label": "Fire & Gas Topology Loops"
+        },
+        {
+          "value": "suppression",
+          "label": "Extinguishing & Simulator Skids"
+        },
+        {
+          "value": "wireless",
+          "label": "Industrial Wireless Mesh Networks"
+        },
+        {
+          "value": "services",
+          "label": "Specialised Field Services"
+        }
       ],
       "submitButtonText": "Submit Request"
     }
   ],
   "brands": [
     {
+      "_id": "6a632fa87ab1894da6cbbfdf",
       "id": "one-seven",
       "name": "One Seven",
       "tagline": "Compressed Air Foam Extinguishing Systems",
-      "solutionId": "tactical-fire-fighting",
+      "solutionId": "vehicle-fire-fighting",
       "solutionName": "Vehicle Fire Fighting",
       "description": "Global leader in high-expansion Compressed Air Foam Systems (CAFS) slashed water usage up to 90% in heavy industrial blazes.",
-      "logoUrl": "/products/default-fire-fighting-rescue.png",
+      "logoUrl": "/uploads/1785001670297-WhatsApp_Image_2026-07-25_at_6.35.01_PM.jpeg",
       "accent": "orange",
       "products": [
-        { "id": "os-1", "name": "One Seven CAFS Skid Unit", "category": "CAF Systems", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "High-energy compressed air foam generator skid." },
-        { "id": "os-2", "name": "OS Foam Concentrate Matrix", "category": "Foam Solution", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Class A and Class B hydrocarbon foam concentrate." },
-        { "id": "os-3", "name": "OS Heavy Fire Truck Skid", "category": "Tactical Response", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Integrated foam pump panel for industrial fire trucks." },
-        { "id": "os-4", "name": "OS Compressed Air Proportioner", "category": "Foam Equipment", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Electronic high-accuracy foam dosing feedback loop." },
-        { "id": "os-5", "name": "OS High Expansion Nozzle", "category": "Suppression Hardware", "solutionName": "Vehicle Fire Fighting", "imageUrl": "/products/default-fire-fighting-rescue.png", "description": "Heavy-duty discharge nozzle for hydrocarbon suppression." }
-      ]
+        {
+          "id": "os-1",
+          "name": "One Seven CAFS Skid Unit",
+          "category": "CAF Systems",
+          "solutionName": "Vehicle Fire Fighting",
+          "imageUrl": "/products/default-fire-fighting-rescue.png",
+          "description": "High-energy compressed air foam generator skid.",
+          "_id": "6a64f4aac73b08a5e7249685"
+        },
+        {
+          "id": "os-2",
+          "name": "OS Foam Concentrate Matrix",
+          "category": "Foam Solution",
+          "solutionName": "Vehicle Fire Fighting",
+          "imageUrl": "/products/default-fire-fighting-rescue.png",
+          "description": "Class A and Class B hydrocarbon foam concentrate.",
+          "_id": "6a64f4aac73b08a5e7249686"
+        },
+        {
+          "id": "os-3",
+          "name": "OS Heavy Fire Truck Skid",
+          "category": "Tactical Response",
+          "solutionName": "Vehicle Fire Fighting",
+          "imageUrl": "/products/default-fire-fighting-rescue.png",
+          "description": "Integrated foam pump panel for industrial fire trucks.",
+          "_id": "6a64f4aac73b08a5e7249687"
+        },
+        {
+          "id": "os-4",
+          "name": "OS Compressed Air Proportioner",
+          "category": "Foam Equipment",
+          "solutionName": "Vehicle Fire Fighting",
+          "imageUrl": "/products/default-fire-fighting-rescue.png",
+          "description": "Electronic high-accuracy foam dosing feedback loop.",
+          "_id": "6a64f4aac73b08a5e7249688"
+        },
+        {
+          "id": "os-5",
+          "name": "OS High Expansion Nozzle",
+          "category": "Suppression Hardware",
+          "solutionName": "Vehicle Fire Fighting",
+          "imageUrl": "/products/default-fire-fighting-rescue.png",
+          "description": "Heavy-duty discharge nozzle for hydrocarbon suppression.",
+          "_id": "6a64f4aac73b08a5e7249689"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbbfe5",
       "id": "sione",
       "name": "SIONE",
       "tagline": "Structural Fire Suites & Thermal Hoods",
@@ -4097,14 +4226,56 @@
       "logoUrl": "/products/sione-hood.png",
       "accent": "red",
       "products": [
-        { "id": "sn-1", "name": "SIONE Structural Fire Suit", "category": "Fire Suites", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Nomex turnout apparel with internal moisture barrier." },
-        { "id": "sn-2", "name": "SIONE Particulate Fire Hood", "category": "Protective Hoods", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/sione-hood.png", "description": "99.9% particulate block nanolayer fire hood." },
-        { "id": "sn-3", "name": "SIONE Thermal Safety Boots", "category": "Firefighter Boots", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Steel-toe puncture resistant thermal leather boots." },
-        { "id": "sn-4", "name": "SIONE Close-Proximity Gloves", "category": "Safety Gloves", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "Multi-layer aramid heat resistant gloves." },
-        { "id": "sn-5", "name": "SIONE Fire Helmet Shell", "category": "Head Protection", "solutionName": "Respiratory & Personal Protection", "imageUrl": "/products/default-respiratory-protection.png", "description": "High-impact composite helmet with gold visor." }
-      ]
+        {
+          "id": "sn-1",
+          "name": "SIONE Structural Fire Suit",
+          "category": "Fire Suites",
+          "solutionName": "Respiratory & Personal Protection",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Nomex turnout apparel with internal moisture barrier.",
+          "_id": "6a64f4aac73b08a5e72496cb"
+        },
+        {
+          "id": "sn-2",
+          "name": "SIONE Particulate Fire Hood",
+          "category": "Protective Hoods",
+          "solutionName": "Respiratory & Personal Protection",
+          "imageUrl": "/products/sione-hood.png",
+          "description": "99.9% particulate block nanolayer fire hood.",
+          "_id": "6a64f4aac73b08a5e72496cc"
+        },
+        {
+          "id": "sn-3",
+          "name": "SIONE Thermal Safety Boots",
+          "category": "Firefighter Boots",
+          "solutionName": "Respiratory & Personal Protection",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Steel-toe puncture resistant thermal leather boots.",
+          "_id": "6a64f4aac73b08a5e72496cd"
+        },
+        {
+          "id": "sn-4",
+          "name": "SIONE Close-Proximity Gloves",
+          "category": "Safety Gloves",
+          "solutionName": "Respiratory & Personal Protection",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Multi-layer aramid heat resistant gloves.",
+          "_id": "6a64f4aac73b08a5e72496ce"
+        },
+        {
+          "id": "sn-5",
+          "name": "SIONE Fire Helmet Shell",
+          "category": "Head Protection",
+          "solutionName": "Respiratory & Personal Protection",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "High-impact composite helmet with gold visor.",
+          "_id": "6a64f4aac73b08a5e72496cf"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbbfeb",
       "id": "partech",
       "name": "Partech",
       "tagline": "Damage Control & Hull Stabilization Items",
@@ -4114,14 +4285,56 @@
       "logoUrl": "/products/default-damage-control.png",
       "accent": "blue",
       "products": [
-        { "id": "pt-1", "name": "Partech Emergency Leak Seal Kit", "category": "Damage Control", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Rapid pneumatic pipe leak containment plug set." },
-        { "id": "pt-2", "name": "Partech Hull Breach Shoring Kit", "category": "Rescue Systems", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Aluminium telescopic mechanical shoring struts." },
-        { "id": "pt-3", "name": "Partech High-Pressure Pipe Clamp", "category": "Pipe Repair", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Stainless steel emergency pipeline containment clamp." },
-        { "id": "pt-4", "name": "Partech Submersible Dewatering Pump", "category": "Marine Drainage", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "High-flow explosion-proof bilge pump." },
-        { "id": "pt-5", "name": "Partech Magnetic Patch Sealer", "category": "Hull Maintenance", "solutionName": "Damage Control & Rescue Application", "imageUrl": "/products/default-damage-control.png", "description": "Neodymium magnetic patch for steel hull fractures." }
-      ]
+        {
+          "id": "pt-1",
+          "name": "Partech Emergency Leak Seal Kit",
+          "category": "Damage Control",
+          "solutionName": "Damage Control & Rescue Application",
+          "imageUrl": "/products/default-damage-control.png",
+          "description": "Rapid pneumatic pipe leak containment plug set.",
+          "_id": "6a64f4aac73b08a5e7249712"
+        },
+        {
+          "id": "pt-2",
+          "name": "Partech Hull Breach Shoring Kit",
+          "category": "Rescue Systems",
+          "solutionName": "Damage Control & Rescue Application",
+          "imageUrl": "/products/default-damage-control.png",
+          "description": "Aluminium telescopic mechanical shoring struts.",
+          "_id": "6a64f4aac73b08a5e7249713"
+        },
+        {
+          "id": "pt-3",
+          "name": "Partech High-Pressure Pipe Clamp",
+          "category": "Pipe Repair",
+          "solutionName": "Damage Control & Rescue Application",
+          "imageUrl": "/products/default-damage-control.png",
+          "description": "Stainless steel emergency pipeline containment clamp.",
+          "_id": "6a64f4aac73b08a5e7249714"
+        },
+        {
+          "id": "pt-4",
+          "name": "Partech Submersible Dewatering Pump",
+          "category": "Marine Drainage",
+          "solutionName": "Damage Control & Rescue Application",
+          "imageUrl": "/products/default-damage-control.png",
+          "description": "High-flow explosion-proof bilge pump.",
+          "_id": "6a64f4aac73b08a5e7249715"
+        },
+        {
+          "id": "pt-5",
+          "name": "Partech Magnetic Patch Sealer",
+          "category": "Hull Maintenance",
+          "solutionName": "Damage Control & Rescue Application",
+          "imageUrl": "/products/default-damage-control.png",
+          "description": "Neodymium magnetic patch for steel hull fractures.",
+          "_id": "6a64f4aac73b08a5e7249716"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbbff1",
       "id": "nardi",
       "name": "Nardi Compressor",
       "tagline": "High-Pressure Breathing Air & Gas Compressors",
@@ -4131,14 +4344,56 @@
       "logoUrl": "/products/default-respiratory-protection.png",
       "accent": "orange",
       "products": [
-        { "id": "nd-1", "name": "Nardi Pacific 350 Bar Compressor", "category": "High Pressure Compressors", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "350 Bar multi-stage oil-free air compressor." },
-        { "id": "nd-2", "name": "Nardi Cascade Recharging Rack", "category": "Cascade Systems", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "4-Cylinder 300 Bar SCBA cascade charging manifold." },
-        { "id": "nd-3", "name": "Nardi Air Quality Monitor Panel", "category": "Purification", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Real-time CO/CO2/Moisture active purity sensor." },
-        { "id": "nd-4", "name": "Nardi Portable Field Compressor", "category": "Mobile Breathing Air", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Compact gas engine powered breathing air charging unit." },
-        { "id": "nd-5", "name": "Nardi Auto Purge Condensate Trap", "category": "Compressor Accessories", "solutionName": "Breathing Air Cascade Systems", "imageUrl": "/products/default-respiratory-protection.png", "description": "Automated moisture discharge drainage assembly." }
-      ]
+        {
+          "id": "nd-1",
+          "name": "Nardi Pacific 350 Bar Compressor",
+          "category": "High Pressure Compressors",
+          "solutionName": "Breathing Air Cascade Systems",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "350 Bar multi-stage oil-free air compressor.",
+          "_id": "6a64f4aac73b08a5e724971d"
+        },
+        {
+          "id": "nd-2",
+          "name": "Nardi Cascade Recharging Rack",
+          "category": "Cascade Systems",
+          "solutionName": "Breathing Air Cascade Systems",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "4-Cylinder 300 Bar SCBA cascade charging manifold.",
+          "_id": "6a64f4aac73b08a5e724971e"
+        },
+        {
+          "id": "nd-3",
+          "name": "Nardi Air Quality Monitor Panel",
+          "category": "Purification",
+          "solutionName": "Breathing Air Cascade Systems",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Real-time CO/CO2/Moisture active purity sensor.",
+          "_id": "6a64f4aac73b08a5e724971f"
+        },
+        {
+          "id": "nd-4",
+          "name": "Nardi Portable Field Compressor",
+          "category": "Mobile Breathing Air",
+          "solutionName": "Breathing Air Cascade Systems",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Compact gas engine powered breathing air charging unit.",
+          "_id": "6a64f4aac73b08a5e7249720"
+        },
+        {
+          "id": "nd-5",
+          "name": "Nardi Auto Purge Condensate Trap",
+          "category": "Compressor Accessories",
+          "solutionName": "Breathing Air Cascade Systems",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Automated moisture discharge drainage assembly.",
+          "_id": "6a64f4aac73b08a5e7249721"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbbff7",
       "id": "xshielder",
       "name": "Xshielder",
       "tagline": "ATEX Zone 0 Mobile & Intrinsically Safe Devices",
@@ -4148,14 +4403,56 @@
       "logoUrl": "/products/xshielder-phone.png",
       "accent": "blue",
       "products": [
-        { "id": "xs-1", "name": "Xshielder Ex-Proof Smartphone", "category": "Mobile Solutions", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Zone 0/21 rugged LTE smartphone with lone-worker SOS." },
-        { "id": "xs-2", "name": "Xshielder Hazardous Area Tablet", "category": "Ex Tablets", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "10-inch ATEX Zone 1 Windows/Android industrial tablet." },
-        { "id": "xs-3", "name": "Xshielder Wireless Headset System", "category": "Ex Audio", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Noise-cancelling Bluetooth communication headset." },
-        { "id": "xs-4", "name": "Xshielder Thermal Imaging Camera", "category": "Field Vision", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Intrinsically safe IR thermography inspection camera." },
-        { "id": "xs-5", "name": "Xshielder RFID Asset Reader", "category": "Field Scanners", "solutionName": "Explosion Proof Mobility", "imageUrl": "/products/xshielder-phone.png", "description": "Zone 0 handheld UHF barcode and RFID tag scanner." }
-      ]
+        {
+          "id": "xs-1",
+          "name": "Xshielder Ex-Proof Smartphone",
+          "category": "Mobile Solutions",
+          "solutionName": "Explosion Proof Mobility",
+          "imageUrl": "/products/xshielder-phone.png",
+          "description": "Zone 0/21 rugged LTE smartphone with lone-worker SOS.",
+          "_id": "6a64f4aac73b08a5e7249728"
+        },
+        {
+          "id": "xs-2",
+          "name": "Xshielder Hazardous Area Tablet",
+          "category": "Ex Tablets",
+          "solutionName": "Explosion Proof Mobility",
+          "imageUrl": "/products/xshielder-phone.png",
+          "description": "10-inch ATEX Zone 1 Windows/Android industrial tablet.",
+          "_id": "6a64f4aac73b08a5e7249729"
+        },
+        {
+          "id": "xs-3",
+          "name": "Xshielder Wireless Headset System",
+          "category": "Ex Audio",
+          "solutionName": "Explosion Proof Mobility",
+          "imageUrl": "/products/xshielder-phone.png",
+          "description": "Noise-cancelling Bluetooth communication headset.",
+          "_id": "6a64f4aac73b08a5e724972a"
+        },
+        {
+          "id": "xs-4",
+          "name": "Xshielder Thermal Imaging Camera",
+          "category": "Field Vision",
+          "solutionName": "Explosion Proof Mobility",
+          "imageUrl": "/products/xshielder-phone.png",
+          "description": "Intrinsically safe IR thermography inspection camera.",
+          "_id": "6a64f4aac73b08a5e724972b"
+        },
+        {
+          "id": "xs-5",
+          "name": "Xshielder RFID Asset Reader",
+          "category": "Field Scanners",
+          "solutionName": "Explosion Proof Mobility",
+          "imageUrl": "/products/xshielder-phone.png",
+          "description": "Zone 0 handheld UHF barcode and RFID tag scanner.",
+          "_id": "6a64f4aac73b08a5e724972c"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbbffd",
       "id": "mimes",
       "name": "Mimes",
       "tagline": "Wireless Gas & Fire Topologies",
@@ -4165,14 +4462,56 @@
       "logoUrl": "/products/gas-detector.png",
       "accent": "blue",
       "products": [
-        { "id": "mm-1", "name": "Mimes Wireless Toxic Gas Detector", "category": "Wireless Gas Detection", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "ISA100.11a multi-gas optical sensor node." },
-        { "id": "mm-2", "name": "Mimes Wireless Flame Detector", "category": "Flame Detection", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "Triple IR optical flame detection transmitter." },
-        { "id": "mm-3", "name": "Mimes Ex-Proof Alarm Beacon", "category": "Beacons & Sounders", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "115dB xenom strobe beacon sounder assembly." },
-        { "id": "mm-4", "name": "Mimes Manual Call Point (MCP)", "category": "Manual Alarm", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "ATEX Zone 0 glass break wireless call point." },
-        { "id": "mm-5", "name": "Mimes Gateway Receiver Station", "category": "Data Gateway", "solutionName": "Wireless Gas Detection Systems", "imageUrl": "/products/gas-detector.png", "description": "Central SCADA interface router gateway link." }
-      ]
+        {
+          "id": "mm-1",
+          "name": "Mimes Wireless Toxic Gas Detector",
+          "category": "Wireless Gas Detection",
+          "solutionName": "Wireless Gas Detection Systems",
+          "imageUrl": "/products/gas-detector.png",
+          "description": "ISA100.11a multi-gas optical sensor node.",
+          "_id": "6a64f4abc73b08a5e7249733"
+        },
+        {
+          "id": "mm-2",
+          "name": "Mimes Wireless Flame Detector",
+          "category": "Flame Detection",
+          "solutionName": "Wireless Gas Detection Systems",
+          "imageUrl": "/products/gas-detector.png",
+          "description": "Triple IR optical flame detection transmitter.",
+          "_id": "6a64f4abc73b08a5e7249734"
+        },
+        {
+          "id": "mm-3",
+          "name": "Mimes Ex-Proof Alarm Beacon",
+          "category": "Beacons & Sounders",
+          "solutionName": "Wireless Gas Detection Systems",
+          "imageUrl": "/products/gas-detector.png",
+          "description": "115dB xenom strobe beacon sounder assembly.",
+          "_id": "6a64f4abc73b08a5e7249735"
+        },
+        {
+          "id": "mm-4",
+          "name": "Mimes Manual Call Point (MCP)",
+          "category": "Manual Alarm",
+          "solutionName": "Wireless Gas Detection Systems",
+          "imageUrl": "/products/gas-detector.png",
+          "description": "ATEX Zone 0 glass break wireless call point.",
+          "_id": "6a64f4abc73b08a5e7249736"
+        },
+        {
+          "id": "mm-5",
+          "name": "Mimes Gateway Receiver Station",
+          "category": "Data Gateway",
+          "solutionName": "Wireless Gas Detection Systems",
+          "imageUrl": "/products/gas-detector.png",
+          "description": "Central SCADA interface router gateway link.",
+          "_id": "6a64f4abc73b08a5e7249737"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbc003",
       "id": "atexor",
       "name": "Atexor",
       "tagline": "Explosion Proof Lighting Systems",
@@ -4182,14 +4521,56 @@
       "logoUrl": "/products/default-explosion-proof-products.png",
       "accent": "orange",
       "products": [
-        { "id": "ax-1", "name": "Atexor Slam Tank LED Light", "category": "Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Low-voltage portable LED work light for tank cleaning." },
-        { "id": "ax-2", "name": "Atexor Ex High-Bay Floodlight", "category": "Industrial Lighting", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "15,000 Lumen ATEX Zone 1 refinery floodlight." },
-        { "id": "ax-3", "name": "Atexor Emergency LED Fitting", "category": "Linear Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Battery backup linear emergency escape luminaire." },
-        { "id": "ax-4", "name": "Atexor Ex Handheld Inspection Lamp", "category": "Hand Lights", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Rechargeable Zone 0 safety flashlight." },
-        { "id": "ax-5", "name": "Atexor Ex Distribution Transformer", "category": "Power Distribution", "solutionName": "Explosion Proof Products", "imageUrl": "/products/default-explosion-proof-products.png", "description": "Portable 110V/24V hazardous area transformer box." }
-      ]
+        {
+          "id": "ax-1",
+          "name": "Atexor Slam Tank LED Light",
+          "category": "Lights",
+          "solutionName": "Explosion Proof Products",
+          "imageUrl": "/products/default-explosion-proof-products.png",
+          "description": "Low-voltage portable LED work light for tank cleaning.",
+          "_id": "6a64f4abc73b08a5e724973e"
+        },
+        {
+          "id": "ax-2",
+          "name": "Atexor Ex High-Bay Floodlight",
+          "category": "Industrial Lighting",
+          "solutionName": "Explosion Proof Products",
+          "imageUrl": "/products/default-explosion-proof-products.png",
+          "description": "15,000 Lumen ATEX Zone 1 refinery floodlight.",
+          "_id": "6a64f4abc73b08a5e724973f"
+        },
+        {
+          "id": "ax-3",
+          "name": "Atexor Emergency LED Fitting",
+          "category": "Linear Lights",
+          "solutionName": "Explosion Proof Products",
+          "imageUrl": "/products/default-explosion-proof-products.png",
+          "description": "Battery backup linear emergency escape luminaire.",
+          "_id": "6a64f4abc73b08a5e7249740"
+        },
+        {
+          "id": "ax-4",
+          "name": "Atexor Ex Handheld Inspection Lamp",
+          "category": "Hand Lights",
+          "solutionName": "Explosion Proof Products",
+          "imageUrl": "/products/default-explosion-proof-products.png",
+          "description": "Rechargeable Zone 0 safety flashlight.",
+          "_id": "6a64f4abc73b08a5e7249741"
+        },
+        {
+          "id": "ax-5",
+          "name": "Atexor Ex Distribution Transformer",
+          "category": "Power Distribution",
+          "solutionName": "Explosion Proof Products",
+          "imageUrl": "/products/default-explosion-proof-products.png",
+          "description": "Portable 110V/24V hazardous area transformer box.",
+          "_id": "6a64f4abc73b08a5e7249742"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbc009",
       "id": "polyhose",
       "name": "Polyhose",
       "tagline": "High & Low Pressure Breathing Air Hoses",
@@ -4199,14 +4580,56 @@
       "logoUrl": "/products/default-respiratory-protection.png",
       "accent": "blue",
       "products": [
-        { "id": "ph-1", "name": "Polyhose High Pressure Air Line", "category": "Breathing Air Hose", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Flexible 300 Bar high pressure SCBA air supply hose." },
-        { "id": "ph-2", "name": "Polyhose Chemical Transfer Hose", "category": "Chemical Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "PTFE lined acid and solvent transfer hose." },
-        { "id": "ph-3", "name": "Polyhose Pneumatic Control Hose", "category": "Pneumatic Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Polyurethane recoil pneumatic air loop hose." },
-        { "id": "ph-4", "name": "Polyhose Anti-Static Air Line", "category": "Anti-Static Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Conductive grounding rubber air supply line." },
-        { "id": "ph-5", "name": "Polyhose Fire Resistant Sleeve Hose", "category": "Thermal Hoses", "solutionName": "Breathing Protection & Air Lines", "imageUrl": "/products/default-respiratory-protection.png", "description": "Silicone glass-fiber fire shield protected hose." }
-      ]
+        {
+          "id": "ph-1",
+          "name": "Polyhose High Pressure Air Line",
+          "category": "Breathing Air Hose",
+          "solutionName": "Breathing Protection & Air Lines",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Flexible 300 Bar high pressure SCBA air supply hose.",
+          "_id": "6a64f4abc73b08a5e7249749"
+        },
+        {
+          "id": "ph-2",
+          "name": "Polyhose Chemical Transfer Hose",
+          "category": "Chemical Hoses",
+          "solutionName": "Breathing Protection & Air Lines",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "PTFE lined acid and solvent transfer hose.",
+          "_id": "6a64f4abc73b08a5e724974a"
+        },
+        {
+          "id": "ph-3",
+          "name": "Polyhose Pneumatic Control Hose",
+          "category": "Pneumatic Hoses",
+          "solutionName": "Breathing Protection & Air Lines",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Polyurethane recoil pneumatic air loop hose.",
+          "_id": "6a64f4abc73b08a5e724974b"
+        },
+        {
+          "id": "ph-4",
+          "name": "Polyhose Anti-Static Air Line",
+          "category": "Anti-Static Hoses",
+          "solutionName": "Breathing Protection & Air Lines",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Conductive grounding rubber air supply line.",
+          "_id": "6a64f4abc73b08a5e724974c"
+        },
+        {
+          "id": "ph-5",
+          "name": "Polyhose Fire Resistant Sleeve Hose",
+          "category": "Thermal Hoses",
+          "solutionName": "Breathing Protection & Air Lines",
+          "imageUrl": "/products/default-respiratory-protection.png",
+          "description": "Silicone glass-fiber fire shield protected hose.",
+          "_id": "6a64f4abc73b08a5e724974d"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbc00f",
       "id": "cejn",
       "name": "CEJN",
       "tagline": "Smart Fittings & Quick Coupling Hardware",
@@ -4216,14 +4639,56 @@
       "logoUrl": "/products/default-process-instrumentation.png",
       "accent": "orange",
       "products": [
-        { "id": "cj-1", "name": "CEJN Breathing Air Quick Coupling", "category": "Smart Fittings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Safety locking quick disconnect coupling for air lines." },
-        { "id": "cj-2", "name": "CEJN High Pressure Hydraulic Nipple", "category": "Hydraulic Fittings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "700 Bar ultra-high pressure hydraulic connector." },
-        { "id": "cj-3", "name": "CEJN Non-Drip Fluid Connector", "category": "Fluid Couplings", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Flat-face spill free chemical fluid coupling." },
-        { "id": "cj-4", "name": "CEJN Compressed Air Blowgun", "category": "Air Tools", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "OSHA compliant ergonomic safety blowgun." },
-        { "id": "cj-5", "name": "CEJN Hose Reel Enclosure", "category": "Hose Reels", "solutionName": "Process & Instrumentation", "imageUrl": "/products/default-process-instrumentation.png", "description": "Automatic retractable air hose reel assembly." }
-      ]
+        {
+          "id": "cj-1",
+          "name": "CEJN Breathing Air Quick Coupling",
+          "category": "Smart Fittings",
+          "solutionName": "Process & Instrumentation",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "Safety locking quick disconnect coupling for air lines.",
+          "_id": "6a64f4abc73b08a5e7249754"
+        },
+        {
+          "id": "cj-2",
+          "name": "CEJN High Pressure Hydraulic Nipple",
+          "category": "Hydraulic Fittings",
+          "solutionName": "Process & Instrumentation",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "700 Bar ultra-high pressure hydraulic connector.",
+          "_id": "6a64f4abc73b08a5e7249755"
+        },
+        {
+          "id": "cj-3",
+          "name": "CEJN Non-Drip Fluid Connector",
+          "category": "Fluid Couplings",
+          "solutionName": "Process & Instrumentation",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "Flat-face spill free chemical fluid coupling.",
+          "_id": "6a64f4abc73b08a5e7249756"
+        },
+        {
+          "id": "cj-4",
+          "name": "CEJN Compressed Air Blowgun",
+          "category": "Air Tools",
+          "solutionName": "Process & Instrumentation",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "OSHA compliant ergonomic safety blowgun.",
+          "_id": "6a64f4abc73b08a5e7249757"
+        },
+        {
+          "id": "cj-5",
+          "name": "CEJN Hose Reel Enclosure",
+          "category": "Hose Reels",
+          "solutionName": "Process & Instrumentation",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "Automatic retractable air hose reel assembly.",
+          "_id": "6a64f4abc73b08a5e7249758"
+        }
+      ],
+      "__v": 0
     },
     {
+      "_id": "6a632fa87ab1894da6cbc015",
       "id": "thermocable",
       "name": "Thermo Cable",
       "tagline": "Linear Heat & Thermal Detection Cables",
@@ -4233,11 +4698,44 @@
       "logoUrl": "/products/default-process-instrumentation.png",
       "accent": "red",
       "products": [
-        { "id": "tc-1", "name": "Thermo Cable Digital LHD Cable", "category": "Linear Heat Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "68°C digital alarm trigger linear heat detection cable." },
-        { "id": "tc-2", "name": "Thermo Cable Analogue Thermal Sensor", "category": "Thermal Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "Continuous temperature monitoring sensor cable." },
-        { "id": "tc-4", "name": "Thermo Cable End of Line Box", "category": "LHD Modules", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "Zone monitoring interface and test box." },
-        { "id": "tc-5", "name": "Thermo Cable High Temp 105°C LHD", "category": "High Temp Cable", "solutionName": "Fire & Gas Detection Systems", "imageUrl": "/products/default-process-instrumentation.png", "description": "105°C fixed temperature alarm linear sensor loop." }
-      ]
+        {
+          "id": "tc-1",
+          "name": "Thermo Cable Digital LHD Cable",
+          "category": "Linear Heat Cable",
+          "solutionName": "Fire & Gas Detection Systems",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "68°C digital alarm trigger linear heat detection cable.",
+          "_id": "6a64f4abc73b08a5e724975f"
+        },
+        {
+          "id": "tc-2",
+          "name": "Thermo Cable Analogue Thermal Sensor",
+          "category": "Thermal Cable",
+          "solutionName": "Fire & Gas Detection Systems",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "Continuous temperature monitoring sensor cable.",
+          "_id": "6a64f4abc73b08a5e7249760"
+        },
+        {
+          "id": "tc-4",
+          "name": "Thermo Cable End of Line Box",
+          "category": "LHD Modules",
+          "solutionName": "Fire & Gas Detection Systems",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "Zone monitoring interface and test box.",
+          "_id": "6a64f4abc73b08a5e7249761"
+        },
+        {
+          "id": "tc-5",
+          "name": "Thermo Cable High Temp 105°C LHD",
+          "category": "High Temp Cable",
+          "solutionName": "Fire & Gas Detection Systems",
+          "imageUrl": "/products/default-process-instrumentation.png",
+          "description": "105°C fixed temperature alarm linear sensor loop.",
+          "_id": "6a64f4abc73b08a5e7249762"
+        }
+      ],
+      "__v": 0
     }
   ],
   "success_stories": [

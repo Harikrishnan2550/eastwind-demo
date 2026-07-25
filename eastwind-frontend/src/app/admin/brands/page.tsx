@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatImageUrl } from "@/utils/image";
 
 export interface BrandProductItem {
   id: string;
@@ -122,43 +123,77 @@ export default function AdminBrandsPage() {
   };
 
   // Image Upload helper
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isProductImage = false) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, isProductImage = false) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
     clearMessages();
 
-    try {
-      const token = localStorage.getItem("admin_token");
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("image", file);
-
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const res = await fetch(`${baseUrl}/api/upload`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("File upload failed");
-      const data = await res.json();
-      const uploadedUrl = data.imageUrl || data.url;
-
-      if (isProductImage) {
-        setProdImageUrl(uploadedUrl);
-      } else {
-        setFormLogoUrl(uploadedUrl);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (!event.target?.result) {
+        setUploading(false);
+        return;
       }
-      setSuccess("Asset uploaded successfully!");
-    } catch (err: any) {
-      setError(err.message || "Failed to upload asset");
-    } finally {
+      const rawUrl = event.target.result as string;
+
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width);
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height);
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.82);
+          if (isProductImage) {
+            setProdImageUrl(compressedDataUrl);
+          } else {
+            setFormLogoUrl(compressedDataUrl);
+          }
+          setSuccess(`Asset '${file.name}' attached and ready!`);
+        } else {
+          if (isProductImage) {
+            setProdImageUrl(rawUrl);
+          } else {
+            setFormLogoUrl(rawUrl);
+          }
+        }
+        setUploading(false);
+      };
+      img.onerror = () => {
+        if (isProductImage) {
+          setProdImageUrl(rawUrl);
+        } else {
+          setFormLogoUrl(rawUrl);
+        }
+        setUploading(false);
+      };
+      img.src = rawUrl;
+    };
+    reader.onerror = () => {
+      setError("Failed to process image file.");
       setUploading(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   // Add Product to array
@@ -338,6 +373,32 @@ export default function AdminBrandsPage() {
                   </span>
                   <span className="text-[10px] font-mono text-slate-400">ID: {brand.id}</span>
                 </div>
+
+                {/* Brand Logo / Asset Image Display Box */}
+                <div className="h-28 w-full bg-slate-900 rounded-xl mb-3 flex items-center justify-center p-2 border border-slate-800 relative overflow-hidden">
+                  {brand.logoUrl && brand.logoUrl.trim() !== "" ? (
+                    <img
+                      key={brand.logoUrl}
+                      src={formatImageUrl(brand.logoUrl)}
+                      alt={brand.name}
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
+                        }
+                      }}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : null}
+                  <div
+                    style={{ display: brand.logoUrl && brand.logoUrl.trim() !== "" ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-center p-2 space-y-1 text-slate-500"
+                  >
+                    <span className="text-lg">📷</span>
+                    <span className="text-[10px] font-mono font-medium text-slate-400">No Image Found</span>
+                  </div>
+                </div>
                 <h3 className="text-lg font-bold text-slate-800 mb-1">{brand.name}</h3>
                 <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">{brand.tagline}</p>
                 <p className="text-xs text-slate-600 line-clamp-3 mb-4">{brand.description}</p>
@@ -489,19 +550,45 @@ export default function AdminBrandsPage() {
                 />
               </div>
 
-              {/* Brand Logo / Asset Upload */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Brand Logo / Asset Image</label>
+              {/* Brand Logo / Asset Upload with Live Image Preview Box */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700">Brand Logo / Asset Image</label>
+                
+                <div className="h-36 w-full bg-slate-900 rounded-xl overflow-hidden flex items-center justify-center p-2 border border-slate-800 relative">
+                  {formLogoUrl && formLogoUrl.trim() !== "" ? (
+                    <img
+                      key={formLogoUrl}
+                      src={formatImageUrl(formLogoUrl)}
+                      alt="Brand Logo Preview"
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
+                        }
+                      }}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : null}
+                  <div
+                    style={{ display: formLogoUrl && formLogoUrl.trim() !== "" ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-500"
+                  >
+                    <span className="text-xl">📷</span>
+                    <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
+                  </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
                     value={formLogoUrl}
                     onChange={(e) => setFormLogoUrl(e.target.value)}
-                    placeholder="/products/default-fire-fighting-rescue.png"
-                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                    placeholder="Enter image URL or upload photo"
+                    className="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-xs focus:ring-2 focus:ring-orange-500 focus:outline-none font-mono"
                   />
                   <label className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-slate-300">
-                    {uploading ? "Uploading..." : "Browse..."}
+                    {uploading ? "Processing..." : "Browse..."}
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, false)} />
                   </label>
                 </div>

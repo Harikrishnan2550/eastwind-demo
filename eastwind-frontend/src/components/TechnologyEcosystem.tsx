@@ -15,6 +15,7 @@ export interface BrandPortfolioItem {
   id: string;
   name: string;
   tagline: string;
+  logoUrl?: string;
   accentTone: "orange" | "blue" | "red";
   products: BrandProductItem[];
 }
@@ -184,6 +185,7 @@ export default function TechnologyEcosystem() {
               id: b.id,
               name: b.name,
               tagline: b.solutionName || b.tagline || "Brand Products",
+              logoUrl: b.logoUrl || b.imageUrl || "",
               accentTone: b.accent === "orange" ? "orange" : b.accent === "red" ? "red" : "blue",
               products: (b.products || []).map((p: any) => ({
                 id: p.id,
@@ -192,11 +194,7 @@ export default function TechnologyEcosystem() {
               }))
             }));
 
-            const mergedMap = new Map<string, BrandPortfolioItem>();
-            MASTER_BRAND_CATALOG.forEach((item) => mergedMap.set(item.id, item));
-            mappedApiBrands.forEach((item) => mergedMap.set(item.id, item));
-
-            setBrands(Array.from(mergedMap.values()));
+            setBrands(mappedApiBrands);
           }
         }
       } catch (err) {
@@ -281,18 +279,33 @@ export default function TechnologyEcosystem() {
                       : "border border-transparent bg-transparent hover:bg-slate-100/50 hover:-translate-y-[1px]"
                   }`}
                 >
-                  <span>
-                    <span className={`block text-[0.92rem] font-extrabold tracking-normal ${
-                      isActive ? "text-slate-900 font-extrabold" : "text-slate-600"
-                    }`}>
-                      {brand.name}
-                    </span>
-                    <span className={`block mt-1 text-[0.72rem] font-bold ${
-                      isActive ? "text-orange-600 font-bold" : "text-slate-400"
-                    }`}>
-                      {brand.tagline}
-                    </span>
-                  </span>
+                  <div className="flex items-center gap-3 min-w-0">
+                    {brand.logoUrl && brand.logoUrl.trim() !== "" && (
+                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-0.5 shrink-0 shadow-2xs">
+                        <img 
+                          src={formatImageUrl(brand.logoUrl)} 
+                          alt={brand.name} 
+                          onError={(e) => {
+                            const parent = (e.currentTarget as HTMLElement).parentElement;
+                            if (parent) parent.style.display = "none";
+                          }}
+                          className="max-h-full max-w-full object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="flex flex-col min-w-0">
+                      <span className={`block text-[0.92rem] font-extrabold tracking-normal ${
+                        isActive ? "text-slate-900 font-extrabold" : "text-slate-600"
+                      }`}>
+                        {brand.name}
+                      </span>
+                      <span className={`block mt-1 text-[0.72rem] font-bold ${
+                        isActive ? "text-orange-600 font-bold" : "text-slate-400"
+                      }`}>
+                        {brand.tagline}
+                      </span>
+                    </div>
+                  </div>
                   <span
                     aria-hidden="true"
                     className={`w-2.5 h-2.5 rounded-full ${

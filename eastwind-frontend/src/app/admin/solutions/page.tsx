@@ -26,6 +26,7 @@ interface IndustryItem {
   accent: string;
   image: string;
   description: string;
+  items?: any;
 }
 
 interface CorePortfolioItem {
@@ -754,6 +755,22 @@ export default function UnifiedAdminSolutionsPage() {
                       updated[idx].description = e.target.value;
                       setIndustries(updated);
                     }} className="w-full p-2 border rounded" />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-0.5">Category Products / Sub-solutions (comma-separated for Navbar & Details)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Wireless Gas Detection, Plant OPS, Temporary Refuge Chamber, Tank Farm Fire Fighting"
+                      value={Array.isArray(ind.items) ? ind.items.map((i: any) => typeof i === "string" ? i : i.name).join(", ") : (ind.items || "")}
+                      onChange={(e) => {
+                        const updated = [...industries];
+                        const itemsArr = e.target.value.split(",").map(s => s.trim()).filter(Boolean).map(name => ({ name, href: `/solutions/${ind.id}` }));
+                        updated[idx].items = itemsArr;
+                        setIndustries(updated);
+                      }}
+                      className="w-full p-2 border rounded font-mono text-[10px]"
+                    />
                   </div>
                 </div>
               ))}
