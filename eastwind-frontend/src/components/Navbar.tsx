@@ -120,25 +120,32 @@ export default function Navbar() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
         
-        // 1. Fetch products catalog (with static fallback)
+        // 1. Fetch products catalog (with 1.5s timeout signal + static fallback)
         let productsCatalog: any[] = [];
         try {
-          const prodsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 1500);
+          const prodsRes = await fetch(`${baseUrl}/api/products`, { cache: "no-store", signal: controller.signal });
+          clearTimeout(timeoutId);
           if (prodsRes.ok) {
             productsCatalog = await prodsRes.json();
           }
         } catch (e) {
-          console.warn("Failed to fetch products catalog for navbar:", e);
+          console.warn("Failed or timed out fetching products catalog for navbar:", e);
         }
 
         if (!Array.isArray(productsCatalog) || productsCatalog.length === 0) {
           productsCatalog = productsDb;
         }
 
-        // 2. Fetch solutions page configuration
-        const res = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
+        // 2. Fetch solutions page configuration (with 1.5s timeout signal)
+        try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 1500);
+          const res = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store", signal: controller2.signal });
+          clearTimeout(timeoutId2);
+          if (res.ok) {
+            const data = await res.json();
           if (data && Array.isArray(data.industries) && data.industries.length > 0) {
             const dynamicCategories: SolutionCategory[] = data.industries.map((ind: any) => {
               let catItems: SolutionItem[] = [];
@@ -219,6 +226,9 @@ export default function Navbar() {
             setCategoriesList(dynamicCategories);
           }
         }
+        } catch (err2) {
+          console.warn("Failed or timed out fetching solutions-page for navbar:", err2);
+        }
       } catch (err) {
         console.warn("Failed to fetch dynamic navbar categories:", err);
       }
@@ -227,90 +237,95 @@ export default function Navbar() {
   }, []);
 
   // 6 Solution Categories matching website domain diagram:
+  // 6 Solution Categories matching website domain specification:
+  // 1. Civil Defence
+  // 2. Smart Industrial Facilities
+  // 3. Oil and Gas
+  // 4. Marine Operations
+  // 5. Utilities and Power
+  // 6. Defence and Border Security
   const [categoriesList, setCategoriesList] = useState<SolutionCategory[]>([
     {
-      id: "oil-gas",
-      name: "Oil & Gas",
-      href: "/solutions/oil-and-gas",
-      description: "Intelligent Hydrocarbon Operations & Intrinsic Wireless Systems",
-      accent: "#1e3e8f",
+      id: "civil-defence",
+      name: "Civil Defence",
+      href: "/solutions/civil-defence",
+      description: "Metropolitan Safety Infrastructure & Emergency Response",
+      accent: "#991b1b",
       items: [
-        { name: "End-End ISA 100 Wireless Gas Detection", href: "/solutions/oil-and-gas" },
-        { name: "Plant Operations (Plant OPS)", href: "/solutions/oil-and-gas" },
-        { name: "TGR (Temporary Refuge Chamber)", href: "/solutions/oil-and-gas" },
-        { name: "Tank Farm Fire Fighting", href: "/solutions/oil-and-gas" },
-        { name: "LER & Analyzer Shelters", href: "/solutions/oil-and-gas" },
-        { name: "Digital Mobility-X Shielder", href: "/solutions/oil-and-gas" },
+        { name: "Asset Management Systems", href: "/products?id=fire-truck" },
+        { name: "Rescue Intervention Vehicles (RIV)", href: "/products?id=fire-truck" },
+        { name: "CAFS Systems", href: "/products?id=one-seven-cafs" },
+        { name: "SCBA Support Trucks", href: "/products?id=fire-truck" },
+        { name: "CBRN Emergency Response Systems", href: "/products?id=sione-hood" },
       ],
     },
     {
-      id: "marine-offshore",
+      id: "smart-industrial-facilities",
+      name: "Smart Industrial Facilities",
+      href: "/solutions/smart-industrial-facilities",
+      description: "Automated Facility Health & Process Reliability",
+      accent: "#c22026",
+      items: [
+        { name: "Smart Factories", href: "/products?id=pressure-transmitter" },
+        { name: "Plant AI Diagnostics", href: "/products?id=pressure-transmitter" },
+        { name: "Wireless Data Acquisition", href: "/products?id=wireless-converter" },
+        { name: "SIL2 Wireless Gas Detection", href: "/products?id=gas-detector" },
+        { name: "Emergency Response Solutions", href: "/products?id=one-seven-cafs" },
+      ],
+    },
+    {
+      id: "oil-and-gas",
+      name: "Oil and Gas",
+      href: "/solutions/oil-and-gas",
+      description: "Intelligent Hydrocarbon Operations & Wireless Gas Detection",
+      accent: "#1e3e8f",
+      items: [
+        { name: "End-End ISA 100 Wireless Gas Detection", href: "/products?id=gas-detector" },
+        { name: "Plant Operations (Plant OPS)", href: "/products?id=pressure-transmitter" },
+        { name: "TGR (Temporary Refuge Chamber)", href: "/products?id=wireless-converter" },
+        { name: "Tank Farm Fire Fighting", href: "/products?id=one-seven-cafs" },
+        { name: "LER & Analyzer Shelters", href: "/products?id=pressure-transmitter" },
+        { name: "Digital Mobility-X Shielder", href: "/products?id=xshielder-phone" },
+      ],
+    },
+    {
+      id: "marine-operations",
       name: "Marine Operations",
-      href: "/solutions/marine-offshore",
+      href: "/solutions/marine-operations",
       description: "Harsh Deepwater Infrastructure Resilience & Damage Control",
       accent: "#b45309",
       items: [
-        { name: "Damage Control Systems", href: "/solutions/marine-offshore" },
-        { name: "Wireless Data Acquisition", href: "/solutions/marine-offshore" },
-        { name: "H2S Shelter Rental & Air Loops", href: "/solutions/marine-offshore" },
-        { name: "Temporary Refuge Chambers (TGR)", href: "/solutions/marine-offshore" },
-        { name: "Decompression Chambers", href: "/solutions/marine-offshore" },
-        { name: "Air Loops & Breathing Air Cascades", href: "/solutions/marine-offshore" },
+        { name: "Damage Control Systems", href: "/products?id=smoke-detector" },
+        { name: "Wireless Data Acquisition", href: "/products?id=wireless-converter" },
+        { name: "H2S Shelter Rental & Air Loops", href: "/products?id=gas-detector" },
+        { name: "Temporary Refuge Chambers (TGR)", href: "/products?id=smoke-detector" },
+        { name: "Air Loops & Breathing Air Cascades", href: "/products?id=smoke-detector" },
       ],
     },
     {
-      id: "utilities-power",
-      name: "Utilities & Power",
-      href: "/solutions/utility-power",
+      id: "utilities-and-power",
+      name: "Utilities and Power",
+      href: "/solutions/utilities-and-power",
       description: "Critical Grid Asset Safeguarding & Thermal Monitoring",
       accent: "#1e3e8f",
       items: [
-        { name: "Sampling Systems (SWAS)", href: "/solutions/utility-power" },
-        { name: "Wireless Infrastructure", href: "/solutions/utility-power" },
-        { name: "Smart Facilities", href: "/solutions/utility-power" },
-        { name: "Digital Mobility (Xshielder)", href: "/solutions/utility-power" },
+        { name: "Sampling Systems (SWAS)", href: "/products?id=pressure-transmitter" },
+        { name: "Wireless Infrastructure", href: "/products?id=wireless-converter" },
+        { name: "Smart Facilities", href: "/products?id=pressure-transmitter" },
+        { name: "Digital Mobility (Xshielder)", href: "/products?id=xshielder-phone" },
       ],
     },
     {
-      id: "defense-security",
-      name: "Defense & Border Security",
-      href: "/solutions/civil-defense",
+      id: "defence-and-border-security",
+      name: "Defence and Border Security",
+      href: "/solutions/defence-and-border-security",
       description: "National Level Security & Blast-Resistant Modules",
       accent: "#b45309",
       items: [
-        { name: "Secure Wireless Telemetry", href: "/solutions/civil-defense" },
-        { name: "Blast-Resistant Guard Shelters", href: "/solutions/civil-defense" },
-        { name: "Tactical Cyber Defense", href: "/solutions/civil-defense" },
-        { name: "HCIS Approved Fencing", href: "/solutions/civil-defense" },
-      ],
-    },
-    {
-      id: "civil-defense",
-      name: "Civil Defense",
-      href: "/solutions/civil-defense",
-      description: "Metropolitan Safety Infrastructure & Emergency Vehicles",
-      accent: "#c22026",
-      items: [
-        { name: "Asset Management Systems", href: "/solutions/civil-defense" },
-        { name: "Rescue Intervention Vehicles (RIV)", href: "/solutions/civil-defense" },
-        { name: "CAFS Systems", href: "/solutions/civil-defense" },
-        { name: "SCBA Support Trucks", href: "/solutions/civil-defense" },
-        { name: "CBRN Emergency Response Systems", href: "/solutions/civil-defense" },
-      ],
-    },
-    {
-      id: "smart-facilities",
-      name: "Smart Industrial Facilities",
-      href: "/solutions/petrochemicals",
-      description: "Automated Facility Health & Process Reliability Diagnostics",
-      accent: "#c22026",
-      items: [
-        { name: "Smart Factories", href: "/solutions/petrochemicals" },
-        { name: "Plant AI Diagnostics", href: "/solutions/petrochemicals" },
-        { name: "Wireless Data Acquisition", href: "/solutions/petrochemicals" },
-        { name: "SIL2 Wireless Gas Detection", href: "/solutions/petrochemicals" },
-        { name: "Wireless Systems (ISA100, LoRa)", href: "/solutions/petrochemicals" },
-        { name: "Emergency Response Solutions", href: "/solutions/petrochemicals" },
+        { name: "Secure Wireless Telemetry", href: "/products?id=wireless-converter" },
+        { name: "Blast-Resistant Guard Shelters", href: "/products?id=xshielder-phone" },
+        { name: "Tactical Cyber Defense", href: "/products?id=xshielder-phone" },
+        { name: "HCIS Approved Fencing", href: "/products?id=xshielder-phone" },
       ],
     },
   ]);

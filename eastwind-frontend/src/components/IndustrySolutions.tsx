@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import InteractivePortfolioSection, { PortfolioItem } from "./InteractivePortfolioSection";
+import { productsDb } from "@/data/productsData";
 
 interface IndustryItem extends PortfolioItem {
   num: string;
@@ -730,108 +731,115 @@ export default function IndustrySolutions() {
     async function loadDynamicSolutions() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const [solutionsRes, appsRes] = await Promise.all([
-          fetch(`${baseUrl}/api/solutions`),
-          fetch(`${baseUrl}/api/applications`)
-        ]);
+        
+        let productsCatalog: any[] = [];
+        try {
+          const controller1 = new AbortController();
+          const timeoutId1 = setTimeout(() => controller1.abort(), 1500);
+          const prodsRes = await fetch(`${baseUrl}/api/products`, { signal: controller1.signal });
+          clearTimeout(timeoutId1);
+          if (prodsRes.ok) {
+            productsCatalog = await prodsRes.json();
+          }
+        } catch (e) {
+          console.warn("Failed or timed out fetching products for IndustrySolutions:", e);
+        }
+        if (!Array.isArray(productsCatalog) || productsCatalog.length === 0) {
+          productsCatalog = productsDb;
+        }
 
-        if (solutionsRes.ok && appsRes.ok) {
-          const fetchedSolutions = await solutionsRes.json();
-          const fetchedApps = await appsRes.json();
-          
-          const updated = initialIndustries.map((ind) => {
-            // Find matching application record in the database
-            const dbApp = fetchedApps.find((a: any) => a.id === ind.id);
+        try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 1500);
+          const solPageRes = await fetch(`${baseUrl}/api/solutions-page`, { signal: controller2.signal });
+          clearTimeout(timeoutId2);
+          if (solPageRes.ok) {
+            const data = await solPageRes.json();
+          if (data && Array.isArray(data.industries) && data.industries.length > 0) {
+            const updated: IndustryItem[] = data.industries.map((ind: any, idx: number) => {
+              const indId = (ind.id || "").toLowerCase();
+              const indName = (ind.name || "").toLowerCase();
 
-            const matching = fetchedSolutions.filter((sol: any) => {
-              const apps: string[] = (sol.applications || []).map((a: string) => a.toLowerCase());
-              
-              if (ind.id === "oil-gas") {
-                return apps.some(a => 
-                  a.includes("oil & gas") || 
-                  a.includes("oil and gas") || 
-                  a.includes("refining") || 
-                  a.includes("refinery") || 
-                  a.includes("hydrocarbon") || 
-                  a.includes("drilling") || 
-                  a.includes("pipeline") || 
-                  a.includes("wellhead")
-                );
+              // Match real products from catalog
+              let matchingProds = productsCatalog.filter((p: any) => {
+                const catLower = (p.category || "").toLowerCase();
+                const nameLower = (p.name || "").toLowerCase();
+
+                if (indId.includes("oil") || indName.includes("oil")) {
+                  return catLower.includes("gas") || catLower.includes("instrumentation") || /gas|detector|transmitter|wireless|tank|foam/i.test(nameLower);
+                }
+                if (indId.includes("smart") || indName.includes("smart") || indId.includes("petro") || indName.includes("facility")) {
+                  return catLower.includes("process") || catLower.includes("explosion") || /transmitter|flow|skid|analyzer|instrument|ai|smart|gas|detector/i.test(nameLower);
+                }
+                if (indId.includes("civil") || indName.includes("civil")) {
+                  return catLower.includes("fire") || catLower.includes("respiratory") || /truck|foam|cafs|suit|hood|scba|rescue|fire/i.test(nameLower);
+                }
+                if (indId.includes("marine") || indName.includes("marine") || indId.includes("offshore")) {
+                  return catLower.includes("explosion") || catLower.includes("respiratory") || /leak|shoring|chamber|cascade|air|hull|marine/i.test(nameLower);
+                }
+                if (indId.includes("util") || indName.includes("power")) {
+                  return catLower.includes("process") || catLower.includes("wireless") || /swas|sampling|wireless|converter|power|grid/i.test(nameLower);
+                }
+                if (indId.includes("defense") || indName.includes("security")) {
+                  return catLower.includes("respiratory") || catLower.includes("fire") || /shelter|telemetry|cyber|guard|blast|cbrn/i.test(nameLower);
+                }
+                return false;
+              });
+
+              if (matchingProds.length < 3 && productsCatalog.length > 0) {
+                const extra = productsCatalog.filter((p: any) => !matchingProds.some((m: any) => m.id === p.id));
+                matchingProds = [...matchingProds, ...extra.slice(0, 4 - matchingProds.length)];
               }
-              if (ind.id === "offshore") {
-                return apps.some(a => 
-                  a.includes("offshore") || 
-                  a.includes("marine") || 
-                  a.includes("deepwater") || 
-                  a.includes("diving") || 
-                  a.includes("vessel") || 
-                  a.includes("deck")
-                );
+
+              // Build solution items pointing to real product page URLs
+              const solutionLinks = matchingProds.map((p: any) => ({
+                name: p.name,
+                href: `/products?id=${encodeURIComponent(p.id)}`
+              }));
+
+              // Extract custom items if added in admin
+              let customLinks: { name: string; href: string }[] = [];
+              if (Array.isArray(ind.items) && ind.items.length > 0) {
+                customLinks = ind.items.map((itemObj: any) => {
+                  if (typeof itemObj === "string") {
+                    return { name: itemObj, href: `/products` };
+                  }
+                  return { name: itemObj.name || itemObj.title || "Category Product", href: itemObj.href || `/products` };
+                });
               }
-              if (ind.id === "utilities") {
-                return apps.some(a => 
-                  a.includes("utilities") || 
-                  a.includes("utility") || 
-                  a.includes("power") || 
-                  a.includes("grid") || 
-                  a.includes("water") || 
-                  a.includes("desalination")
-                );
-              }
-              if (ind.id === "defense") {
-                return apps.some(a => 
-                  a.includes("defense") || 
-                  a.includes("border") || 
-                  a.includes("security") || 
-                  a.includes("military") || 
-                  a.includes("national security")
-                );
-              }
-              if (ind.id === "civil-defense") {
-                return apps.some(a => 
-                  a.includes("civil defense") || 
-                  a.includes("fire brigade") || 
-                  a.includes("hazmat") || 
-                  a.includes("responder") || 
-                  a.includes("rescue") || 
-                  a.includes("emergency")
-                );
-              }
-              if (ind.id === "smart-facilities") {
-                return apps.some(a => 
-                  a.includes("facilities") || 
-                  a.includes("facility") || 
-                  a.includes("petrochemical") || 
-                  a.includes("chemical") || 
-                  a.includes("factory") || 
-                  a.includes("substation") || 
-                  a.includes("cracker") || 
-                  a.includes("polymer")
-                );
-              }
-              return false;
+
+              const allSolutions = [...solutionLinks, ...customLinks];
+
+              // Find base initial item for styling/icons
+              const base = initialIndustries[idx] || initialIndustries[0];
+
+              return {
+                id: ind.id,
+                name: ind.name,
+                category: ind.riskKicker || base.category,
+                imageTone: base.imageTone || "blue",
+                overview: [ind.description || base.overview[0]],
+                features: base.features,
+                applications: [ind.riskKicker || base.applications[0]],
+                benefits: base.benefits,
+                num: `0${idx + 1}`,
+                riskFactor: ind.riskKicker || base.riskFactor,
+                accent: ind.accent || base.accent,
+                accentLight: `${ind.accent || base.accent}10`,
+                accentBorder: `${ind.accent || base.accent}40`,
+                icon: base.icon,
+                solutions: allSolutions.length > 0 ? allSolutions : base.solutions
+              };
             });
 
-            // Map matching solutions to format
-            const dynamicSolutions = matching.map((sol: any) => ({
-              name: sol.title,
-              href: `/solutions/${sol.id}`
-            }));
-
-            return {
-              ...ind,
-              name: dbApp ? dbApp.title : ind.name,
-              category: dbApp ? dbApp.category : ind.category,
-              overview: dbApp ? [dbApp.overview] : ind.overview,
-              accent: dbApp ? dbApp.accentHex : ind.accent,
-              solutions: dynamicSolutions.length > 0 ? dynamicSolutions : ind.solutions
-            };
-          });
-
-          setIndustries(updated);
+            setIndustries(updated);
+          }
+        }
+        } catch (err2) {
+          console.warn("Failed or timed out fetching solutions-page for IndustrySolutions:", err2);
         }
       } catch (error) {
-        console.error("Failed to load homepage solutions and applications dynamically:", error);
+        console.error("Failed to load homepage solutions dynamically:", error);
       }
     }
     loadDynamicSolutions();
