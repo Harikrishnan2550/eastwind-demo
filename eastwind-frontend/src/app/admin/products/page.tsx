@@ -13,9 +13,11 @@ export default function AdminProductsPage() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 10;
 
+  const [selectedBrandFilter, setSelectedBrandFilter] = useState<string>("All");
+
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, selectedBrandFilter]);
 
   // Modal states
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -281,11 +283,20 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter(item => 
-    item.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.brand?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const availableBrands = ["All", ...Array.from(new Set(products.map(p => p.brand).filter(Boolean)))];
+
+  const filteredProducts = products.filter(item => {
+    const matchesSearch =
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      item.id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.brand?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesBrand =
+      selectedBrandFilter === "All" ||
+      item.brand?.toLowerCase() === selectedBrandFilter.toLowerCase();
+
+    return matchesSearch && matchesBrand;
+  });
   
   const totalItems = filteredProducts.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -326,20 +337,39 @@ export default function AdminProductsPage() {
         </div>
       )}
 
-      {/* Search Input Bar */}
-      <div className="relative max-w-md w-full">
-        <span className="absolute left-4 top-3 text-slate-400">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-        <input
-          type="text"
-          placeholder="Search products by name, brand or ID..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-xs text-white placeholder-slate-400 focus:border-orange-500 focus:outline-none transition-all font-medium"
-        />
+      {/* Search & Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+        {/* Search Input Bar */}
+        <div className="relative max-w-md w-full">
+          <span className="absolute left-4 top-3 text-slate-400">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            placeholder="Search products by name, brand or ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-11 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-2xl text-xs text-white placeholder-slate-400 focus:border-orange-500 focus:outline-none transition-all font-medium"
+          />
+        </div>
+
+        {/* Filter By Brand Dropdown */}
+        <div className="flex items-center gap-2 shrink-0 max-sm:w-full">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider shrink-0">Filter Brand:</span>
+          <select
+            value={selectedBrandFilter}
+            onChange={(e) => setSelectedBrandFilter(e.target.value)}
+            className="px-4 py-2.5 bg-white border border-slate-300 rounded-2xl text-xs font-extrabold text-slate-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 focus:outline-none cursor-pointer max-sm:w-full shadow-sm"
+          >
+            {availableBrands.map((b) => (
+              <option key={b} value={b} className="bg-white text-slate-900 font-bold py-1">
+                {b === "All" ? "All Brands (Show All)" : b}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Products Table Card */}

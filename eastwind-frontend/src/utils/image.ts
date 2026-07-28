@@ -1,9 +1,12 @@
 export function formatImageUrl(
   url?: string,
-  fallback: string = "/products/default-fire-fighting-rescue.png"
+  fallback: string = "/products/default-process-instrumentation.png"
 ): string {
   if (!url || !url.trim()) return fallback;
-  const trimmed = url.trim();
+  let trimmed = url.trim();
+
+  // Clean corrupted trailing backslashes or spaces from pasted/saved base64 strings
+  trimmed = trimmed.replace(/[\r\n\s\\]+$/g, "");
 
   // 1. Data URLs or absolute HTTP/HTTPS URLs
   if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("data:")) {

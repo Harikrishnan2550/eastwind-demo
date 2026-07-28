@@ -46,25 +46,37 @@ export default function AdminBrandsPage() {
   const [formLogoUrl, setFormLogoUrl] = useState<string>("");
   const [formAccent, setFormAccent] = useState<string>("orange");
 
-  // Form Products array state
+  // Form Products array & editing state
+  // Brand Products selector state
   const [formProducts, setFormProducts] = useState<BrandProductItem[]>([]);
-  const [prodName, setProdName] = useState<string>("");
-  const [prodCategory, setProdCategory] = useState<string>("");
-  const [prodSolution, setProdSolution] = useState<string>("");
-  const [prodImageUrl, setProdImageUrl] = useState<string>("");
-  const [prodDesc, setProdDesc] = useState<string>("");
+  const [allMasterProducts, setAllMasterProducts] = useState<BrandProductItem[]>([]);
+  const [selectedMasterProdId, setSelectedMasterProdId] = useState<string>("");
 
   // Upload state
   const [uploading, setUploading] = useState<boolean>(false);
 
-  // Load brands
+  // Load brands and master inventory products
   const fetchBrands = async () => {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const res = await fetch(`${baseUrl}/api/brands`);
-      if (!res.ok) throw new Error("Failed to fetch brand records");
-      const list = await res.json();
-      setBrands(list);
+      if (res.ok) {
+        const list = await res.json();
+        setBrands(list);
+      }
+
+      const pRes = await fetch(`${baseUrl}/api/products`);
+      if (pRes.ok) {
+        const pList = await pRes.json();
+        setAllMasterProducts(pList.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          category: p.category || "General Safety",
+          solutionName: p.solutionName || p.category || "Industrial Solution",
+          imageUrl: p.imageUrl || "/products/default-process-instrumentation.png",
+          description: p.description || ""
+        })));
+      }
     } catch (err: any) {
       console.error(err);
       setError("Failed to retrieve brands portfolio from active database.");
@@ -94,11 +106,7 @@ export default function AdminBrandsPage() {
     setFormLogoUrl("");
     setFormAccent("orange");
     setFormProducts([]);
-    setProdName("");
-    setProdCategory("");
-    setProdSolution("");
-    setProdImageUrl("");
-    setProdDesc("");
+    setSelectedMasterProdId("");
     setShowModal(true);
   };
 
@@ -114,16 +122,12 @@ export default function AdminBrandsPage() {
     setFormLogoUrl(item.logoUrl || "");
     setFormAccent(item.accent || "orange");
     setFormProducts(item.products || []);
-    setProdName("");
-    setProdCategory("");
-    setProdSolution("");
-    setProdImageUrl("");
-    setProdDesc("");
+    setSelectedMasterProdId("");
     setShowModal(true);
   };
 
-  // Image Upload helper
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, isProductImage = false) => {
+  // Image Upload helper for Brand Logo
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -164,27 +168,15 @@ export default function AdminBrandsPage() {
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
           const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.82);
-          if (isProductImage) {
-            setProdImageUrl(compressedDataUrl);
-          } else {
-            setFormLogoUrl(compressedDataUrl);
-          }
-          setSuccess(`Asset '${file.name}' attached and ready!`);
+          setFormLogoUrl(compressedDataUrl);
+          setSuccess(`Brand logo '${file.name}' attached and ready!`);
         } else {
-          if (isProductImage) {
-            setProdImageUrl(rawUrl);
-          } else {
-            setFormLogoUrl(rawUrl);
-          }
+          setFormLogoUrl(rawUrl);
         }
         setUploading(false);
       };
       img.onerror = () => {
-        if (isProductImage) {
-          setProdImageUrl(rawUrl);
-        } else {
-          setFormLogoUrl(rawUrl);
-        }
+        setFormLogoUrl(rawUrl);
         setUploading(false);
       };
       img.src = rawUrl;
@@ -196,31 +188,24 @@ export default function AdminBrandsPage() {
     reader.readAsDataURL(file);
   };
 
-  // Add Product to array
-  const handleAddProduct = () => {
-    if (!prodName) {
-      setError("Product Name is required to add to brand products.");
+  // Attach Product from Master Inventory to Brand
+  const handleAttachMasterProduct = () => {
+    if (!selectedMasterProdId) return;
+    const match = allMasterProducts.find((p) => p.id === selectedMasterProdId);
+    if (!match) return;
+
+    if (formProducts.some((p) => p.id === match.id || p.name === match.name)) {
+      setError(`Product '${match.name}' is already attached to this brand.`);
       return;
     }
-    const newProd: BrandProductItem = {
-      id: `prod-${Date.now()}`,
-      name: prodName,
-      category: prodCategory || "General Safety",
-      solutionName: prodSolution || formSolutionName || "Industrial Solution",
-      imageUrl: prodImageUrl || "/products/default-fire-fighting-rescue.png",
-      description: prodDesc || "",
-    };
-    setFormProducts([...formProducts, newProd]);
-    setProdName("");
-    setProdCategory("");
-    setProdSolution("");
-    setProdImageUrl("");
-    setProdDesc("");
+
+    setFormProducts([...formProducts, match]);
+    setSuccess(`Attached product '${match.name}' to brand.`);
+    setSelectedMasterProdId("");
   };
 
-  // Remove Product from array
-  const handleRemoveProduct = (index: number) => {
-    setFormProducts(formProducts.filter((_, idx) => idx !== index));
+  const handleRemoveProduct = (idx: number) => {
+    setFormProducts(formProducts.filter((_, i) => i !== idx));
   };
 
   // Save Brand (Submit)
@@ -589,7 +574,7 @@ export default function AdminBrandsPage() {
                   />
                   <label className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg cursor-pointer transition-colors border border-slate-300">
                     {uploading ? "Processing..." : "Browse..."}
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, false)} />
+                    <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
                   </label>
                 </div>
               </div>
@@ -597,83 +582,95 @@ export default function AdminBrandsPage() {
               {/* BRAND PRODUCTS MANAGER */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-4">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Brand Products Slide List ({formProducts.length})
-                  </h4>
-                  <span className="text-[10px] text-slate-500">Products display in 3s slider animation</span>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Attached Brand Products ({formProducts.length})
+                    </h4>
+                    <span className="text-[10px] text-slate-500">Products assigned to this brand</span>
+                  </div>
                 </div>
 
-                {/* Products List Table */}
-                {formProducts.length > 0 && (
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                {/* Products List Table with Image Thumbnails & Remove Button Only */}
+                {formProducts.length > 0 ? (
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                     {formProducts.map((p, idx) => (
-                      <div key={idx} className="flex items-center justify-between bg-white border border-slate-200 p-2.5 rounded-lg text-xs">
-                        <div>
-                          <p className="font-bold text-slate-800">{p.name}</p>
-                          <p className="text-[10px] text-slate-500">Category: {p.category} | Solution: {p.solutionName}</p>
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between gap-3 bg-white border border-slate-200 p-2.5 rounded-xl text-xs hover:border-slate-300 transition-all"
+                      >
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          {/* Image Thumbnail Box */}
+                          <div className="w-10 h-10 rounded-lg bg-slate-900 border border-slate-200 overflow-hidden flex items-center justify-center p-0.5 shrink-0 shadow-2xs">
+                            {p.imageUrl && p.imageUrl.trim() !== "" ? (
+                              <img
+                                src={formatImageUrl(p.imageUrl)}
+                                alt={p.name}
+                                onError={(e) => {
+                                  (e.currentTarget as HTMLElement).style.display = "none";
+                                }}
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            ) : (
+                              <span className="text-xs">📷</span>
+                            )}
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <p className="font-extrabold text-slate-800 truncate leading-snug">{p.name}</p>
+                            <p className="text-[10px] text-slate-500 truncate">
+                              <span className="font-semibold text-slate-600">Category:</span> {p.category}
+                            </p>
+                          </div>
                         </div>
+
                         <button
                           type="button"
                           onClick={() => handleRemoveProduct(idx)}
-                          className="text-red-600 hover:text-red-800 text-xs font-bold px-2 py-1"
+                          className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-lg transition-colors border border-rose-200 flex items-center gap-1 cursor-pointer shrink-0"
                         >
-                          Remove
+                          <span>🗑️</span> Remove from Brand
                         </button>
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <div className="text-center py-4 bg-white border border-slate-200 rounded-xl text-xs text-slate-400 font-medium">
+                    No products attached to this brand yet. Select a product below to attach.
+                  </div>
                 )}
 
-                {/* Add New Product Inputs */}
-                <div className="bg-white border border-slate-200 rounded-lg p-3 space-y-3">
-                  <span className="text-[11px] font-bold text-slate-700 block">Add Product To Brand</span>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      placeholder="Product Name (e.g. One Seven CAFS Skid)"
-                      value={prodName}
-                      onChange={(e) => setProdName(e.target.value)}
-                      className="px-2.5 py-1.5 border border-slate-300 rounded text-xs"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Category (e.g. CAF Systems)"
-                      value={prodCategory}
-                      onChange={(e) => setProdCategory(e.target.value)}
-                      className="px-2.5 py-1.5 border border-slate-300 rounded text-xs"
-                    />
-                  </div>
+                {/* Attach Product From Master Inventory */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 space-y-3 shadow-2xs">
+                  <span className="text-xs font-extrabold text-slate-800 block">
+                    ➕ Attach Product from Inventory
+                  </span>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <input
-                      type="text"
-                      placeholder="Target Solution Tag (e.g. Vehicle Fire Fighting)"
-                      value={prodSolution}
-                      onChange={(e) => setProdSolution(e.target.value)}
-                      className="px-2.5 py-1.5 border border-slate-300 rounded text-xs"
-                    />
-                    <div className="flex gap-1">
-                      <input
-                        type="text"
-                        placeholder="Image URL"
-                        value={prodImageUrl}
-                        onChange={(e) => setProdImageUrl(e.target.value)}
-                        className="flex-1 px-2.5 py-1.5 border border-slate-300 rounded text-xs"
-                      />
-                      <label className="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold rounded cursor-pointer border border-slate-300">
-                        Upload
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, true)} />
-                      </label>
-                    </div>
-                  </div>
+                  <div className="space-y-2.5">
+                    <select
+                      value={selectedMasterProdId}
+                      onChange={(e) => setSelectedMasterProdId(e.target.value)}
+                      className="w-full px-3 py-2.5 border border-slate-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-orange-500 focus:outline-none bg-white text-slate-800"
+                    >
+                      <option value="">-- Select Product from Inventory --</option>
+                      {allMasterProducts.map((mp) => (
+                        <option key={mp.id} value={mp.id}>
+                          {mp.name} ({mp.category})
+                        </option>
+                      ))}
+                    </select>
 
-                  <button
-                    type="button"
-                    onClick={handleAddProduct}
-                    className="w-full py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded shadow-sm"
-                  >
-                    + Add Product to Brand
-                  </button>
+                    <button
+                      type="button"
+                      onClick={handleAttachMasterProduct}
+                      disabled={!selectedMasterProdId}
+                      className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-all"
+                    >
+                      + Attach Selected Product to Brand
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-slate-400 italic m-0">
+                    To create or edit product specifications, use <strong>Manage Products (`/admin/products`)</strong>.
+                  </p>
                 </div>
               </div>
 
@@ -719,11 +716,25 @@ export default function AdminBrandsPage() {
 
             <div>
               <h4 className="text-xs font-bold text-slate-800 mb-2">Registered Brand Products ({viewItem.products?.length || 0})</h4>
-              <div className="space-y-1.5 max-h-40 overflow-y-auto">
+              <div className="space-y-1.5 max-h-52 overflow-y-auto">
                 {(viewItem.products || []).map((p, idx) => (
-                  <div key={idx} className="text-xs bg-slate-50 p-2 rounded-lg border border-slate-100 flex justify-between">
-                    <span className="font-medium text-slate-800">{p.name}</span>
-                    <span className="text-[10px] text-slate-500 font-mono">{p.category}</span>
+                  <div key={idx} className="text-xs bg-slate-50 p-2 rounded-xl border border-slate-100 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-200 overflow-hidden flex items-center justify-center p-0.5 shrink-0">
+                        {p.imageUrl && p.imageUrl.trim() !== "" ? (
+                          <img
+                            src={formatImageUrl(p.imageUrl)}
+                            alt={p.name}
+                            onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
+                            className="max-h-full max-w-full object-contain"
+                          />
+                        ) : (
+                          <span className="text-[10px]">📷</span>
+                        )}
+                      </div>
+                      <span className="font-bold text-slate-800 truncate">{p.name}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-mono shrink-0">{p.category}</span>
                   </div>
                 ))}
               </div>

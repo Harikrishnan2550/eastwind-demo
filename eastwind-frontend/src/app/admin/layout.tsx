@@ -199,6 +199,15 @@ export default function AdminLayout({
       )
     },
     {
+      name: "Manage Footer Section",
+      href: "/admin/footer",
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1zM4 15h16" />
+        </svg>
+      )
+    },
+    {
       name: "Brands Portfolio",
       href: "/admin/brands",
       icon: (
@@ -376,10 +385,10 @@ export default function AdminLayout({
       ` }} />
       
       {/* 1. Sidebar Nav */}
-      <aside className="w-64 bg-white border-r border-slate-200/60 flex flex-col justify-between flex-shrink-0 h-screen select-none">
-        <div className="flex flex-col flex-1">
+      <aside className="w-64 bg-white border-r border-slate-200/60 flex flex-col justify-between flex-shrink-0 h-screen select-none overflow-hidden">
+        <div className="flex flex-col flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-orange-500">
           {/* Brand header */}
-          <div className="h-20 flex items-center px-6 border-b border-slate-200/60 gap-3">
+          <div className="h-20 flex items-center px-6 border-b border-slate-200/60 gap-3 shrink-0 sticky top-0 bg-white z-10">
             <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center font-bold text-white text-md">
               EW
             </div>
@@ -412,7 +421,7 @@ export default function AdminLayout({
         </div>
 
         {/* Admin Footer & Logout */}
-        <div className="p-4 border-t border-slate-200/60 space-y-4">
+        <div className="p-4 border-t border-slate-200/60 space-y-4 shrink-0 bg-white z-10">
           <div className="flex items-center gap-3 px-2">
             <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-600 text-xs">
               {username.charAt(0).toUpperCase()}

@@ -4,7 +4,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import WhyChooseUs from "@/components/WhyChooseUs";
 import IndustrySolutions from "@/components/IndustrySolutions";
 import TechnologyEcosystem from "@/components/TechnologyEcosystem";
 import Contact from "@/components/Contact";
@@ -29,9 +28,6 @@ export default function Home() {
 
         {/* 3. Premium Modular About Us Section */}
         <About />
-
-        {/* 4. Core Operational Pillars Section */}
-        <WhyChooseUs />
 
         {/* 5. Technology Ecosystem Portfolio Section */}
         <TechnologyEcosystem />

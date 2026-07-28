@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatImageUrl } from "@/utils/image";
 
 interface MetricItem {
   value: string;
@@ -18,7 +19,7 @@ interface HomeAboutData {
 }
 
 const defaultData: HomeAboutData = {
-  imageUrl: "/about.png",
+  imageUrl: "/products/default-process-instrumentation.png",
   title: "Sustaining Regional Safety Infrastructure",
   overviewText: "East Wind operates as a regional, end-to-end safety solutions provider delivering the complete lifecycle of safety projects across mission-critical infrastructure segments.",
   secondaryText: "Our core strength centers on adopting and implementing the latest safety technologies to solve complex, high-risk challenges—improving safety performance while reducing total cost of ownership (TCO) for our clients.",
@@ -46,6 +47,7 @@ const defaultData: HomeAboutData = {
 
 export default function About() {
   const [data, setData] = useState<HomeAboutData>(defaultData);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const fetchHomeAbout = async () => {
@@ -62,6 +64,7 @@ export default function About() {
             metrics: json.metrics && json.metrics.length > 0 ? json.metrics : defaultData.metrics,
             lifecycleSteps: json.lifecycleSteps && json.lifecycleSteps.length > 0 ? json.lifecycleSteps : defaultData.lifecycleSteps,
           });
+          setImageError(false);
         }
       } catch (err) {
         console.error("Failed to fetch dynamic home about section:", err);
@@ -88,12 +91,22 @@ export default function About() {
         
         {/* LEFT COLUMN: Premium Documentary Splash Visual */}
         <div className="lg:col-span-5 flex flex-col relative group">
-          <div className="relative w-full h-full min-h-[480px] max-lg:min-h-[320px] overflow-hidden rounded-[28px] border border-slate-200/60 shadow-2xl bg-slate-950/10">
-            <img
-              src={data.imageUrl}
-              alt={data.title}
-              className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-101 select-none pointer-events-none"
-            />
+          <div className="relative w-full h-full min-h-[480px] max-lg:min-h-[320px] overflow-hidden rounded-[28px] border border-slate-200/60 shadow-2xl bg-slate-950/10 flex items-center justify-center">
+            {data.imageUrl && !imageError ? (
+              <img
+                src={formatImageUrl(data.imageUrl)}
+                alt={data.title}
+                onError={() => setImageError(true)}
+                className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105 select-none"
+              />
+            ) : (
+              <div className="w-full h-full min-h-[400px] flex flex-col items-center justify-center bg-slate-900 text-slate-400 p-6 text-center">
+                <span className="text-4xl mb-2">📷</span>
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
+                  No Image Found
+                </span>
+              </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 via-transparent to-transparent pointer-events-none" />
           </div>
         </div>

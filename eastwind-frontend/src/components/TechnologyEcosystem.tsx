@@ -258,7 +258,7 @@ export default function TechnologyEcosystem() {
         </div>
 
         {/* 2-Column Sidebar Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(260px,0.3fr)_minmax(0,0.7fr)] gap-8.5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,0.35fr)_minmax(0,0.65fr)] gap-8.5 items-start">
           
           {/* ================= LEFT SIDE: PREMIUM SCROLLBAR BRAND SELECTION TABS ================= */}
           <aside
@@ -273,15 +273,15 @@ export default function TechnologyEcosystem() {
                   key={brand.id}
                   type="button"
                   onClick={() => setActiveBrandId(brand.id)}
-                  className={`portfolio-selector-button w-full min-h-[68px] flex items-center justify-between gap-3.5 p-[15px_16px] rounded-2xl cursor-pointer text-left transition-all duration-180 max-lg:mb-0 ${
+                  className={`portfolio-selector-button w-full min-h-[76px] flex items-center justify-between gap-4 p-4 rounded-2xl cursor-pointer text-left transition-all duration-180 max-lg:mb-0 ${
                     isActive
                       ? "border border-slate-200 bg-white/90 shadow-sm translate-y-0"
                       : "border border-transparent bg-transparent hover:bg-slate-100/50 hover:-translate-y-[1px]"
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-4 min-w-0">
                     {brand.logoUrl && brand.logoUrl.trim() !== "" && (
-                      <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-0.5 shrink-0 shadow-2xs">
+                      <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
                         <img 
                           src={formatImageUrl(brand.logoUrl)} 
                           alt={brand.name} 
@@ -294,15 +294,10 @@ export default function TechnologyEcosystem() {
                       </div>
                     )}
                     <div className="flex flex-col min-w-0">
-                      <span className={`block text-[0.92rem] font-extrabold tracking-normal ${
-                        isActive ? "text-slate-900 font-extrabold" : "text-slate-600"
+                      <span className={`block text-[1rem] font-extrabold tracking-normal ${
+                        isActive ? "text-slate-900 font-black" : "text-slate-700 font-bold"
                       }`}>
                         {brand.name}
-                      </span>
-                      <span className={`block mt-1 text-[0.72rem] font-bold ${
-                        isActive ? "text-orange-600 font-bold" : "text-slate-400"
-                      }`}>
-                        {brand.tagline}
                       </span>
                     </div>
                   </div>

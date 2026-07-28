@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatImageUrl } from "@/utils/image";
 
 interface HomeMetric {
   value: string;
@@ -35,7 +36,7 @@ export default function AdminAboutPage() {
   const [uploadingField, setUploadingField] = useState<string | null>(null);
 
   // Tab 1: Home Page About State
-  const [homeImage, setHomeImage] = useState<string>("/about.png");
+  const [homeImage, setHomeImage] = useState<string>("/products/default-process-instrumentation.png");
   const [homeTitle, setHomeTitle] = useState<string>("Sustaining Regional Safety Infrastructure");
   const [homeOverview, setHomeOverview] = useState<string>("East Wind operates as a regional, end-to-end safety solutions provider delivering the complete lifecycle of safety projects across mission-critical infrastructure segments.");
   const [homeSecondary, setHomeSecondary] = useState<string>("Our core strength centers on adopting and implementing the latest safety technologies to solve complex, high-risk challenges—improving safety performance while reducing total cost of ownership (TCO) for our clients.");
@@ -228,6 +229,7 @@ export default function AdminAboutPage() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
 
+      // 1. Upload file to backend disk via /api/upload
       const formData = new FormData();
       formData.append("file", file);
       formData.append("image", file);
@@ -235,20 +237,58 @@ export default function AdminAboutPage() {
       const res = await fetch(`${baseUrl}/api/upload`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: token ? `Bearer ${token}` : ""
         },
         body: formData
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Image upload failed");
+      if (res.ok) {
+        const data = await res.json();
+        const uploadedUrl = data.imageUrl || data.url || (data.filename ? `/uploads/${data.filename}` : "");
+        if (uploadedUrl) {
+          setter(uploadedUrl);
+          setSuccess(`Image '${file.name}' uploaded successfully.`);
+          setUploadingField(null);
+          return;
+        }
+      }
 
-      setter(data.imageUrl || data.url);
-      setSuccess(`Image file '${file.name}' uploaded successfully.`);
+      // 2. Client-side Canvas fallback
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = async () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+            setter(compressedDataUrl);
+            setSuccess(`Image '${file.name}' previewed successfully.`);
+            setUploadingField(null);
+            return;
+          }
+        };
+        img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to upload image file.");
-    } finally {
       setUploadingField(null);
     }
   };
@@ -444,6 +484,33 @@ export default function AdminAboutPage() {
                   >
                     {uploadingField === "homeImage" ? "Uploading..." : "Upload File"}
                   </label>
+                </div>
+
+                {/* Live Image Preview Container */}
+                <div className="mt-3 relative w-full h-44 rounded-xl border border-slate-200 bg-slate-900 overflow-hidden flex items-center justify-center">
+                  {homeImage ? (
+                    <img
+                      src={formatImageUrl(homeImage)}
+                      alt="Home About Preview"
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        if (el.nextElementSibling) {
+                          (el.nextElementSibling as HTMLElement).style.display = "flex";
+                        }
+                      }}
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  ) : null}
+                  <div
+                    style={{ display: homeImage ? "none" : "flex" }}
+                    className="flex flex-col items-center justify-center text-slate-400 p-4 text-center"
+                  >
+                    <span className="text-2xl mb-1">📷</span>
+                    <span className="text-[0.68rem] font-mono font-bold uppercase tracking-wider text-slate-300">
+                      No Image Found
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
