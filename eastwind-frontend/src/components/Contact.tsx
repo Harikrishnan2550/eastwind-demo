@@ -180,10 +180,8 @@ export default function Contact() {
           <div
             className="lg:col-span-5 flex flex-col justify-between rounded-[28px] p-10 max-sm:p-7 relative overflow-hidden"
             style={{
-              background: "linear-gradient(145deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.95)",
+              background: "#f2f4f2",
+              border: "1px solid #e2e6e3",
               boxShadow: "0 4px 24px rgba(30,62,143,0.05), 0 1px 2px rgba(0,0,0,0.02)",
             }}
           >
@@ -254,10 +252,8 @@ export default function Contact() {
           <div
             className="lg:col-span-7 rounded-[28px] p-10 max-sm:p-7 relative overflow-hidden"
             style={{
-              background: "linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(248,250,253,0.92) 100%)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              border: "1px solid rgba(255,255,255,0.95)",
+              background: "#f2f4f2",
+              border: "1px solid #e2e6e3",
               boxShadow: "0 4px 24px rgba(30,62,143,0.05), 0 1px 2px rgba(0,0,0,0.02)",
             }}
           >

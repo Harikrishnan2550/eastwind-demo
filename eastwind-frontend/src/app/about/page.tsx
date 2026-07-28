@@ -282,7 +282,7 @@ export default function AboutPage() {
               {data.metrics.map((metric, idx) => (
                 <div 
                   key={idx}
-                  className="spatial-panel p-8 bg-white/80 border border-slate-200 rounded-[28px] hover:shadow-md hover:border-slate-350 transition-all duration-300 flex flex-col justify-between"
+                  className="spatial-panel p-8 border border-slate-200 rounded-[28px] hover:shadow-md hover:border-slate-350 transition-all duration-300 flex flex-col justify-between"
                   style={{ borderLeft: `5px solid ${metric.accent || (idx % 2 === 0 ? "#1e3e8f" : "#c22026")}` }}
                 >
                   <div>
@@ -330,7 +330,7 @@ export default function AboutPage() {
               return (
                 <div
                   key={idx}
-                  className={`spatial-panel p-8 bg-white/90 border border-slate-200/80 rounded-[28px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 flex flex-col justify-between group ${hoverBorder} ${hoverShadow}`}
+                  className={`spatial-panel p-8 border border-slate-200/80 rounded-[28px] transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-2 flex flex-col justify-between group ${hoverBorder} ${hoverShadow}`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-6">

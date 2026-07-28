@@ -115,7 +115,8 @@ function SolutionCard({ sol, idx, total, scrollYProgress }: SolutionCardProps) {
             className="spatial-panel w-full p-10 max-sm:p-8 flex flex-col gap-6 border border-white/60 backdrop-blur-2xl saturate-150 rounded-[28px] relative z-10 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_20px_50px_rgba(15,23,42,0.06),inset 0_1px_1px_rgba(255,255,255,0.7)] group-hover:shadow-[0_30px_70px_rgba(15,23,42,0.1)] group-hover:border-white/80"
             style={{
               borderLeft: `5px solid ${highlightColor}`,
-              background: "rgba(255, 255, 255, 0.90)",
+              background: "#f2f4f2",
+              borderColor: "#e2e6e3",
             }}
           >
             {/* Big Watermark Index Serial */}

@@ -260,10 +260,10 @@ export default function TechnologyEcosystem() {
         {/* 2-Column Sidebar Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(340px,0.35fr)_minmax(0,0.65fr)] gap-8.5 items-start">
           
-          {/* ================= LEFT SIDE: PREMIUM SCROLLBAR BRAND SELECTION TABS ================= */}
+          {/* ================= LEFT SIDE: SCROLLBAR BRAND SELECTION TABS ================= */}
           <aside
-            className="portfolio-selector spatial-panel p-4 sticky top-28 z-10 max-lg:static max-lg:grid max-lg:grid-cols-2 max-lg:gap-2.5 max-sm:grid-cols-1 max-h-[calc(100vh-140px)] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-orange-500 transition-colors"
-            style={{ scrollbarWidth: "thin", scrollbarColor: "#cbd5e1 #f1f5f9" }}
+            className="portfolio-selector p-4 border border-[#e2e6e3] rounded-[32px] shadow-md sticky top-28 z-10 max-lg:static max-lg:grid max-lg:grid-cols-2 max-lg:gap-2.5 max-sm:grid-cols-1 max-h-[calc(100vh-140px)] overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-slate-100 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-orange-500 transition-colors"
+            style={{ scrollbarWidth: "thin", scrollbarColor: "#cbd5e1 #f1f5f9", backgroundColor: "#f2f4f2", borderColor: "#e2e6e3" }}
             aria-label="Brand selection tabs"
           >
             {brands.map((brand) => {
@@ -275,8 +275,8 @@ export default function TechnologyEcosystem() {
                   onClick={() => setActiveBrandId(brand.id)}
                   className={`portfolio-selector-button w-full min-h-[76px] flex items-center justify-between gap-4 p-4 rounded-2xl cursor-pointer text-left transition-all duration-180 max-lg:mb-0 ${
                     isActive
-                      ? "border border-slate-200 bg-white/90 shadow-sm translate-y-0"
-                      : "border border-transparent bg-transparent hover:bg-slate-100/50 hover:-translate-y-[1px]"
+                      ? "border border-slate-300 bg-white shadow-sm translate-y-0"
+                      : "border border-transparent bg-transparent hover:bg-slate-200/50 hover:-translate-y-[1px]"
                   }`}
                 >
                   <div className="flex items-center gap-4 min-w-0">
@@ -312,10 +312,13 @@ export default function TechnologyEcosystem() {
             })}
           </aside>
 
-          {/* ================= RIGHT SIDE: WHITE / LIGHT BLUE SHADE CARD WITH ONLY PRODUCT IMAGE & PRODUCT NAME ================= */}
-          <div className="spatial-panel overflow-hidden p-6 max-sm:p-4">
+          {/* ================= RIGHT SIDE: CARD WITH ONLY PRODUCT IMAGE & PRODUCT NAME ================= */}
+          <div 
+            style={{ backgroundColor: "#f2f4f2", borderColor: "#e2e6e3" }}
+            className="border border-[#e2e6e3] rounded-[32px] overflow-hidden p-6 max-sm:p-4 shadow-md"
+          >
             {/* White / Light Blue Shade Card Container */}
-            <div className="product-visual min-h-[440px] max-sm:min-h-[340px] rounded-[28px] border border-blue-100/80 bg-gradient-to-br from-white via-slate-50 to-blue-50/70 relative overflow-hidden flex flex-col justify-between p-8 max-sm:p-6 shadow-xl shadow-slate-200/50 text-slate-900">
+            <div className="product-visual min-h-[440px] max-sm:min-h-[340px] rounded-[28px] border border-[#e2e6e3] bg-gradient-to-br from-[#f8faf8] via-[#f2f4f2] to-[#eaeaea] relative overflow-hidden flex flex-col justify-between p-8 max-sm:p-6 shadow-sm text-slate-900">
               
               {/* Ambient Glow inside light card */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-[100px] opacity-[0.12] bg-blue-500 pointer-events-none transition-all duration-700" />

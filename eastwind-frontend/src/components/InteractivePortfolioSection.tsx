@@ -363,7 +363,7 @@ export default function InteractivePortfolioSection<T extends PortfolioItem = Po
                   <div
                     key={product.id}
                     className={`${
-                      isDark ? "spatial-panel" : "bg-white border border-slate-200/60 rounded-2xl shadow-3xs"
+                      isDark ? "spatial-panel" : "bg-[#f2f4f2] border border-[#e2e6e3] rounded-2xl shadow-3xs"
                     } overflow-hidden transition-all duration-300 ${
                       isActive ? "border-slate-350 shadow-md scale-[1.01]" : "border-slate-200/40"
                     }`}
@@ -589,7 +589,7 @@ export default function InteractivePortfolioSection<T extends PortfolioItem = Po
 
             {/* Left Column: Custom Visual (SVG) wrapped in spatial panel (desktop only) */}
             <div className={`hidden lg:flex ${
-              isDark ? "spatial-panel" : "bg-white border border-slate-200/60 rounded-3xl shadow-[0_12px_36px_rgba(30,62,143,0.06)]"
+              isDark ? "spatial-panel" : "bg-[#f2f4f2] border border-[#e2e6e3] rounded-3xl shadow-[0_12px_36px_rgba(0,0,0,0.04)]"
             } p-8 max-sm:p-4 w-full flex-col justify-center items-stretch ${
               isFullHeight ? "min-h-0" : ""
             }`}>
@@ -606,7 +606,7 @@ export default function InteractivePortfolioSection<T extends PortfolioItem = Po
 
             {/* Right Column: Details Panel wrapped in spatial panel (desktop only) */}
             <div className={`hidden lg:flex ${
-              isDark ? "spatial-panel" : "bg-white border border-slate-200/60 rounded-3xl shadow-[0_12px_36px_rgba(30,62,143,0.06)]"
+              isDark ? "spatial-panel" : "bg-[#f2f4f2] border border-[#e2e6e3] rounded-3xl shadow-[0_12px_36px_rgba(0,0,0,0.04)]"
             } p-9 max-sm:p-6 flex-col justify-between overflow-y-auto ${
               isFullHeight ? "h-full min-h-0" : ""
             }`}>

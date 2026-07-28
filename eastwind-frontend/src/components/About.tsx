@@ -115,7 +115,10 @@ export default function About() {
         <div className="lg:col-span-7 flex flex-col justify-between gap-6">
           
           {/* Narrative Overview Panel */}
-          <div className="spatial-panel bg-white/80 backdrop-blur-2xl border border-white/75 rounded-[32px] max-md:rounded-2xl p-10 max-sm:p-6 flex flex-col justify-center shadow-lg text-black flex-grow">
+          <div 
+            style={{ backgroundColor: "#f2f4f2", borderColor: "#e2e6e3" }}
+            className="border border-[#e2e6e3] rounded-[32px] max-md:rounded-2xl p-10 max-sm:p-6 flex flex-col justify-center shadow-md text-black flex-grow"
+          >
             <h2 className="text-[2.6rem] max-md:text-[2rem] max-sm:text-[1.65rem] font-black tracking-tight uppercase leading-[1.1] mb-6 text-black">
               {data.title}
             </h2>
@@ -128,7 +131,10 @@ export default function About() {
           </div>
 
           {/* Symmetrical Operational Benchmarks & Project Trackers */}
-          <div className="spatial-panel bg-white/70 backdrop-blur-2xl border border-white/65 rounded-[32px] max-md:rounded-2xl p-10 max-sm:p-6 flex flex-col justify-center shadow-md text-black">
+          <div 
+            style={{ backgroundColor: "#f2f4f2", borderColor: "#e2e6e3" }}
+            className="border border-[#e2e6e3] rounded-[32px] max-md:rounded-2xl p-10 max-sm:p-6 flex flex-col justify-center shadow-md text-black"
+          >
             
             {/* Quantitative Data Grid */}
             <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 mb-8 border-b border-slate-200/60 pb-8">
@@ -155,7 +161,7 @@ export default function About() {
               {data.lifecycleSteps.map((step) => (
                 <div 
                   key={step} 
-                  className="flex items-center gap-2.5 py-2.5 px-4 bg-white/60 border border-slate-200/50 rounded-xl text-xs font-bold text-black shadow-3xs"
+                  className="flex items-center gap-2.5 py-2.5 px-4 bg-white/80 border border-slate-200/60 rounded-xl text-xs font-bold text-black shadow-3xs"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#ff2228] shrink-0" />
                   <span className="truncate">{step}</span>
