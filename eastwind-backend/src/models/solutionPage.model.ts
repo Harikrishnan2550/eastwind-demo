@@ -59,6 +59,7 @@ export class SolutionPageModel {
         { id: "solutions_page" },
         {
           id: "solutions_page",
+          heroBgImage: "/application.png",
           heroTagline: "ENGINEERED SAFETY & INDUSTRIAL INFRASTRUCTURE",
           heroTitle: "MIDDLE EAST SAFETY SOLUTIONS",
           heroDescription: "Eastwind Arabia supplies high-compliance fire fighting, respiratory protection, wireless gas detection, and process instrumentation modules across Saudi Arabia and the GCC.",

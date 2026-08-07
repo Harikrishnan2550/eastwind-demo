@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -96,10 +97,10 @@ const itemSlugMap: Record<string, string> = {
 };
 
 const defaultPageConfig: SolutionsPageConfig = {
-  heroBgImage: "/solution.png",
-  heroTagline: "Ecosystem Engineering Portal",
-  heroTitle: "High-Compliance Engineered Solutions",
-  heroDescription: "Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator. We formulate high-risk protective frameworks that isolate hazards, guarantee regional operational safety, and structurally reduce asset TCO.",
+  heroBgImage: "/application.png",
+  heroTagline: "ENGINEERED SAFETY & INDUSTRIAL INFRASTRUCTURE",
+  heroTitle: "MIDDLE EAST SAFETY SOLUTIONS",
+  heroDescription: "Eastwind Arabia supplies high-compliance fire fighting, respiratory protection, wireless gas detection, and process instrumentation modules across Saudi Arabia and the GCC.",
   industriesTagline: "Operating Environments",
   industriesTitle: "Solutions By Operating Industry",
   industriesDesc: "Industrial sectors feature highly specific chemical, thermal, and spatial risks. We build multi-layered mitigation loops engineered to perform reliably inside harsh conditions.",
@@ -258,6 +259,38 @@ const defaultIndustrySolutionsMap: Record<string, { name: string; items: string[
       items: ["HSE consultancy", "Explosion proof design consultancy"]
     }
   ],
+  "oil-and-gas": [
+    {
+      name: "Wireless & Telemetry Systems",
+      items: ["End-End ISA 100 wireless gas detection system", "Plant OPS", "Air loops systems", "Wireless data acquisition"]
+    },
+    {
+      name: "Containment & Safety Infrastructure",
+      items: ["TGR(temporary refuge chamber)", "LER", "Analyzer shelters"]
+    },
+    {
+      name: "Fire Fighting & Operations",
+      items: ["Tank farm fire fighting", "Digital mobility-x shielder", "H2s shelter rental", "Breathing air cascade system"]
+    },
+    {
+      name: "Engineering & Risk Consultancy",
+      items: ["HSE consultancy", "Explosion proof design consultancy"]
+    }
+  ],
+  "smart-industrial-facilities": [
+    {
+      name: "Factory Digitalization & IIoT",
+      items: ["Smart factories", "Plant Ai", "Wireless data acquisition"]
+    },
+    {
+      name: "Wireless Systems & Gas Safety",
+      items: ["SIL2 wireless gas detection systems", "ISA 100, LUARA, HART, Wireless systems"]
+    },
+    {
+      name: "Emergency Response & Operations",
+      items: ["Emergency response solution", "Plant OPS"]
+    }
+  ],
   "petrochemical": [
     {
       name: "Factory Digitalization",
@@ -272,6 +305,16 @@ const defaultIndustrySolutionsMap: Record<string, { name: string; items: string[
       items: ["Emergency response solution"]
     }
   ],
+  "civil-defence": [
+    {
+      name: "Fleet & Specialized Vehicles",
+      items: ["Asset management systems AI integrated fire trucks", "Rescue intervention truck (RIV)", "SCBA trucks", "CBRN Vehicles"]
+    },
+    {
+      name: "Extinguishing & Incident Response",
+      items: ["Compressed air form system (CAFS)", "Emergency response system"]
+    }
+  ],
   "civil-defense": [
     {
       name: "Fleet & Specialized Vehicles",
@@ -280,6 +323,20 @@ const defaultIndustrySolutionsMap: Record<string, { name: string; items: string[
     {
       name: "Extinguishing & Incident Response",
       items: ["Compressed air form system (CAFS)", "Emergency response system"]
+    }
+  ],
+  "marine-operations": [
+    {
+      name: "Vessel Containment & Integrity",
+      items: ["Damage control system", "TGR", "DE Compression champeers"]
+    },
+    {
+      name: "Wireless & Telecom Infrastructures",
+      items: ["Wireless data acquisition and LAUARA 1SA 100, WIRELESS HART", "Digital mobility Xshielder", "Plant OPS"]
+    },
+    {
+      name: "Field Services & Rentals",
+      items: ["H2S shelter rental", "Air loops systems", "Breathing air cascade solution"]
     }
   ],
   "marine": [
@@ -296,29 +353,124 @@ const defaultIndustrySolutionsMap: Record<string, { name: string; items: string[
       items: ["H2S shelter rental", "Air loops systems", "Breathing air cascade solution"]
     }
   ],
+  "utilities-and-power": [
+    {
+      name: "Grid Telemetry & Sampling",
+      items: ["Sampling systems", "Wireless infrastructure", "Smart Facility", "Digital mobility Xshilder"]
+    },
+    {
+      name: "Thermal & Physical Containment",
+      items: ["Analyzer shelters", "Explosion proof design consultancy"]
+    }
+  ],
   "utility-power": [
     {
       name: "Grid Telemetry & Infrastructure",
       items: ["Sampling systems", "Wireless infrastructure", "Smart Facility", "Digital mobility Xshilder"]
     }
+  ],
+  "defence-and-border-security": [
+    {
+      name: "Secure Telemetry & Modules",
+      items: ["Wireless data acquisition", "Digital mobility Xshielder", "TGR"]
+    },
+    {
+      name: "Blast Isolation & Tactical Shielding",
+      items: ["LER", "Analyzer shelters", "Explosion proof design consultancy"]
+    }
+  ],
+  "defense": [
+    {
+      name: "Secure Telemetry & Modules",
+      items: ["Wireless data acquisition", "Digital mobility Xshielder", "TGR"]
+    },
+    {
+      name: "Blast Isolation & Tactical Shielding",
+      items: ["LER", "Analyzer shelters", "Explosion proof design consultancy"]
+    }
   ]
 };
 
-export default function SolutionsPage() {
+function getMatchingIndustryId(catParam: string | null, industries: IndustryData[]): string | null {
+  if (!catParam) return null;
+  const clean = catParam.toLowerCase().trim();
+
+  // 1. Direct ID match
+  const direct = industries.find((ind) => ind.id.toLowerCase() === clean);
+  if (direct) return direct.id;
+
+  // 2. Alias / Partial matches
+  if (clean.includes("oil")) {
+    return industries.find((ind) => ind.id.toLowerCase().includes("oil"))?.id || "oil-gas";
+  }
+  if (clean.includes("smart") || clean.includes("facility") || clean.includes("petro")) {
+    return (
+      industries.find((ind) => {
+        const id = ind.id.toLowerCase();
+        const name = ind.name.toLowerCase();
+        return id.includes("smart") || id.includes("petro") || name.includes("smart") || name.includes("petro");
+      })?.id || "petrochemical"
+    );
+  }
+  if (clean.includes("civil")) {
+    return industries.find((ind) => ind.id.toLowerCase().includes("civil"))?.id || "civil-defense";
+  }
+  if (clean.includes("marine") || clean.includes("offshore")) {
+    return industries.find((ind) => ind.id.toLowerCase().includes("marine") || ind.id.toLowerCase().includes("offshore"))?.id || "marine";
+  }
+  if (clean.includes("util") || clean.includes("power")) {
+    return industries.find((ind) => ind.id.toLowerCase().includes("util") || ind.id.toLowerCase().includes("power"))?.id || "utility-power";
+  }
+  if (clean.includes("defen") || clean.includes("security")) {
+    return industries.find((ind) => ind.id.toLowerCase().includes("defen") || ind.id.toLowerCase().includes("security"))?.id || "defense";
+  }
+
+  // 3. Name match
+  const nameMatch = industries.find(
+    (ind) => ind.name.toLowerCase().includes(clean) || clean.includes(ind.name.toLowerCase())
+  );
+  if (nameMatch) return nameMatch.id;
+
+  return null;
+}
+
+function SolutionsPageContent() {
+  const searchParams = useSearchParams();
+  const urlCat = searchParams.get("cat") || searchParams.get("id") || searchParams.get("tab") || searchParams.get("category");
+
   const [pageConfig, setPageConfig] = useState<SolutionsPageConfig>(defaultPageConfig);
-  const [activeTab, setActiveTab] = useState<string>("oil-gas");
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    const matched = getMatchingIndustryId(urlCat, defaultPageConfig.industries);
+    return matched || "oil-gas";
+  });
   const [hoveredSolution, setHoveredSolution] = useState<string | null>(null);
   const [solutionsList, setSolutionsList] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (urlCat && pageConfig.industries.length > 0) {
+      const matched = getMatchingIndustryId(urlCat, pageConfig.industries);
+      if (matched) {
+        setActiveTab(matched);
+      }
+    }
+  }, [urlCat, pageConfig.industries]);
 
   useEffect(() => {
     async function loadData() {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
         
-        // Fetch Solutions Page Configuration
-        const pageRes = await fetch(`${baseUrl}/api/solutions-page`, { cache: "no-store" });
+        // Fetch Solutions Page Configuration with cache-busting
+        const pageRes = await fetch(`${baseUrl}/api/solutions-page?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache"
+          }
+        });
         if (pageRes.ok) {
           const data = await pageRes.json();
+          const loadedIndustries = data.industries && data.industries.length > 0 ? data.industries : defaultPageConfig.industries;
           setPageConfig({
             heroBgImage: data.heroBgImage || defaultPageConfig.heroBgImage,
             heroTagline: data.heroTagline || defaultPageConfig.heroTagline,
@@ -327,7 +479,7 @@ export default function SolutionsPage() {
             industriesTagline: data.industriesTagline || defaultPageConfig.industriesTagline,
             industriesTitle: data.industriesTitle || defaultPageConfig.industriesTitle,
             industriesDesc: data.industriesDesc || defaultPageConfig.industriesDesc,
-            industries: data.industries && data.industries.length > 0 ? data.industries : defaultPageConfig.industries,
+            industries: loadedIndustries,
             capabilitiesTagline: data.capabilitiesTagline || defaultPageConfig.capabilitiesTagline,
             capabilitiesTitle: data.capabilitiesTitle || defaultPageConfig.capabilitiesTitle,
             capabilitiesDesc: data.capabilitiesDesc || defaultPageConfig.capabilitiesDesc,
@@ -343,8 +495,11 @@ export default function SolutionsPage() {
             submitButtonText: data.submitButtonText || defaultPageConfig.submitButtonText,
           });
 
-          if (data.industries && data.industries.length > 0) {
-            setActiveTab(data.industries[0].id);
+          const matched = getMatchingIndustryId(urlCat, loadedIndustries);
+          if (matched) {
+            setActiveTab(matched);
+          } else if (!urlCat) {
+            setActiveTab(loadedIndustries[0].id);
           }
         }
 
@@ -359,17 +514,21 @@ export default function SolutionsPage() {
       }
     }
     loadData();
-  }, []);
+  }, [urlCat]);
 
   const activeIndustry = pageConfig.industries.find((ind) => ind.id === activeTab) || pageConfig.industries[0] || defaultPageConfig.industries[0];
 
   const activeIndustrySolutions = solutionsList.filter((sol) => {
-    const apps = sol.applications || [];
-    if (activeTab === "oil-gas") return apps.includes("Oil & Gas");
-    if (activeTab === "petrochemical") return apps.includes("Petrochemicals");
-    if (activeTab === "civil-defense") return apps.includes("Defense") || apps.includes("Civil Defense");
-    if (activeTab === "marine") return apps.includes("Offshore") || apps.includes("Marine");
-    if (activeTab === "utility-power") return apps.includes("Utilities");
+    const apps = (sol.applications || []).map((a: string) => a.toLowerCase());
+    const cleanTab = activeTab.toLowerCase();
+
+    if (cleanTab.includes("oil")) return apps.some((a: string) => a.includes("oil") || a.includes("gas"));
+    if (cleanTab.includes("smart") || cleanTab.includes("petro") || cleanTab.includes("facility")) return apps.some((a: string) => a.includes("petro") || a.includes("smart") || a.includes("facility"));
+    if (cleanTab.includes("civil")) return apps.some((a: string) => a.includes("civil") || a.includes("defense"));
+    if (cleanTab.includes("marine") || cleanTab.includes("offshore")) return apps.some((a: string) => a.includes("marine") || a.includes("offshore"));
+    if (cleanTab.includes("util") || cleanTab.includes("power")) return apps.some((a: string) => a.includes("util") || a.includes("power"));
+    if (cleanTab.includes("defen") || cleanTab.includes("security")) return apps.some((a: string) => a.includes("defen") || a.includes("security"));
+
     return false;
   });
 
@@ -382,7 +541,15 @@ export default function SolutionsPage() {
     groupedSolutions[cat].push(sol);
   });
 
-  const fallbackDefaults = defaultIndustrySolutionsMap[activeIndustry.id] || defaultIndustrySolutionsMap["oil-gas"];
+  const fallbackDefaults =
+    defaultIndustrySolutionsMap[activeIndustry.id] ||
+    defaultIndustrySolutionsMap[activeTab] ||
+    (activeTab.includes("civil") ? defaultIndustrySolutionsMap["civil-defence"] :
+     activeTab.includes("smart") || activeTab.includes("petro") ? defaultIndustrySolutionsMap["smart-industrial-facilities"] :
+     activeTab.includes("marine") ? defaultIndustrySolutionsMap["marine-operations"] :
+     activeTab.includes("util") || activeTab.includes("power") ? defaultIndustrySolutionsMap["utilities-and-power"] :
+     activeTab.includes("defen") || activeTab.includes("security") ? defaultIndustrySolutionsMap["defence-and-border-security"] :
+     defaultIndustrySolutionsMap["oil-and-gas"]);
 
   const displaySolutions = Object.keys(groupedSolutions).length > 0 
     ? Object.entries(groupedSolutions).map(([name, items]) => ({
@@ -762,5 +929,17 @@ export default function SolutionsPage() {
         <Footer />
       </main>
     </>
+  );
+}
+
+export default function SolutionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white text-sm font-mono">
+        Loading Solutions...
+      </div>
+    }>
+      <SolutionsPageContent />
+    </Suspense>
   );
 }

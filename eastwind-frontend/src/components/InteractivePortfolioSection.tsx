@@ -71,6 +71,8 @@ interface InteractivePortfolioSectionProps<T extends PortfolioItem = PortfolioIt
   isFullHeight?: boolean;
   hideOverview?: boolean;
   isDark?: boolean;
+  topTabControl?: React.ReactNode;
+  customContent?: React.ReactNode;
 }
 
 export default function InteractivePortfolioSection<T extends PortfolioItem = PortfolioItem>({
@@ -90,6 +92,8 @@ export default function InteractivePortfolioSection<T extends PortfolioItem = Po
   isFullHeight = false,
   hideOverview = false,
   isDark = false,
+  topTabControl,
+  customContent,
 }: InteractivePortfolioSectionProps<T>) {
   const [activeId, setActiveId] = useState(items[0]?.id || "");
   const activeProduct = items.find((product) => product.id === activeId) || items[0];
@@ -125,23 +129,32 @@ export default function InteractivePortfolioSection<T extends PortfolioItem = Po
         isFullHeight ? "flex flex-col flex-grow overflow-hidden" : ""
       }`}>
         {/* Header Block */}
-        <div className={`max-w-[780px] shrink-0 ${isFullHeight ? "mb-10" : "mb-14"}`}>
-          <span className="block mb-3.5 text-[var(--active-base)] uppercase font-mono text-[0.75rem] font-bold tracking-widest">
-            {sectionLabel}
-          </span>
-          <h2 className={`text-[3rem] max-md:text-[2.2rem] mb-5 uppercase font-extrabold tracking-tight leading-none ${
-            isDark ? "text-white" : "text-slate-900"
-          }`}>
-            {sectionTitle}
-          </h2>
-          <p className={`text-[1.08rem] leading-relaxed m-0 font-medium ${
-            isDark ? "text-slate-300" : "text-slate-700"
-          }`}>
-            {sectionDesc}
-          </p>
+        <div className={`flex flex-col lg:flex-row lg:items-end justify-between gap-6 shrink-0 ${isFullHeight ? "mb-10" : "mb-14"}`}>
+          <div className="max-w-[780px]">
+            <span className="block mb-3.5 text-[var(--active-base)] uppercase font-mono text-[0.75rem] font-bold tracking-widest">
+              {sectionLabel}
+            </span>
+            <h2 className={`text-[3rem] max-md:text-[2.2rem] mb-5 uppercase font-extrabold tracking-tight leading-none ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
+              {sectionTitle}
+            </h2>
+            <p className={`text-[1.08rem] leading-relaxed m-0 font-medium ${
+              isDark ? "text-slate-300" : "text-slate-700"
+            }`}>
+              {sectionDesc}
+            </p>
+          </div>
+          {topTabControl && (
+            <div className="flex shrink-0 max-lg:w-full max-lg:justify-center">
+              {topTabControl}
+            </div>
+          )}
         </div>
 
-        {hasSidebar ? (
+        {customContent ? (
+          customContent
+        ) : hasSidebar ? (
           /* Standard 2-Column Sidebar tabs layout */
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(240px,0.3fr)_minmax(0,0.7fr)] gap-8.5 items-start">
             {/* Sidebar Selector buttons */}

@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductActions from "@/components/ProductActions";
 import MimesEcosystem from "@/components/MimesEcosystem";
+import SolutionImage from "@/components/SolutionImage";
 import { productsDb as hardwareDb, ProductItem, getProductImageUrl } from "@/data/productsData";
 import { formatImageUrl } from "@/utils/image";
 
@@ -561,28 +562,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </div>
 
               <div className="lg:col-span-6 w-full flex flex-col relative min-h-[260px] lg:min-h-[360px] bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center p-2">
-                {product.imageUrl && product.imageUrl.trim() !== "" ? (
-                  <img 
-                    key={product.imageUrl}
-                    src={formatImageUrl(product.imageUrl)} 
-                    alt={product.title} 
-                    onError={(e) => {
-                      const el = e.currentTarget as HTMLImageElement;
-                      el.style.display = "none";
-                      if (el.nextElementSibling) {
-                        (el.nextElementSibling as HTMLElement).style.display = "flex";
-                      }
-                    }}
-                    className="w-full h-full max-h-full max-w-full block rounded-xl object-contain filter contrast-102" 
-                  />
-                ) : null}
-                <div
-                  style={{ display: product.imageUrl && product.imageUrl.trim() !== "" ? "none" : "flex" }}
-                  className="flex flex-col items-center justify-center text-center p-6 space-y-1 text-slate-400"
-                >
-                  <span className="text-3xl">📷</span>
-                  <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
-                </div>
+                <SolutionImage imageUrl={product.imageUrl} title={product.title} />
               </div>
 
             </div>

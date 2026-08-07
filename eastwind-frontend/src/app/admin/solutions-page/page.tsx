@@ -32,10 +32,10 @@ export default function AdminSolutionsPage() {
   const [uploadingField, setUploadingField] = useState<string | null>(null);
 
   // Hero & Industries State
-  const [heroBgImage, setHeroBgImage] = useState<string>("/solution.png");
-  const [heroTagline, setHeroTagline] = useState<string>("Ecosystem Engineering Portal");
-  const [heroTitle, setHeroTitle] = useState<string>("High-Compliance Engineered Solutions");
-  const [heroDescription, setHeroDescription] = useState<string>("Eastwind completely bypasses basic component provisioning to function as an end-to-end technological validator. We formulate high-risk protective frameworks that isolate hazards, guarantee regional operational safety, and structurally reduce asset TCO.");
+  const [heroBgImage, setHeroBgImage] = useState<string>("/application.png");
+  const [heroTagline, setHeroTagline] = useState<string>("ENGINEERED SAFETY & INDUSTRIAL INFRASTRUCTURE");
+  const [heroTitle, setHeroTitle] = useState<string>("MIDDLE EAST SAFETY SOLUTIONS");
+  const [heroDescription, setHeroDescription] = useState<string>("Eastwind Arabia supplies high-compliance fire fighting, respiratory protection, wireless gas detection, and process instrumentation modules across Saudi Arabia and the GCC.");
   const [industriesTagline, setIndustriesTagline] = useState<string>("Operating Environments");
   const [industriesTitle, setIndustriesTitle] = useState<string>("Solutions By Operating Industry");
   const [industriesDesc, setIndustriesDesc] = useState<string>("Industrial sectors feature highly specific chemical, thermal, and spatial risks. We build multi-layered mitigation loops engineered to perform reliably inside harsh conditions.");

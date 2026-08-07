@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import InteractivePortfolioSection, { PortfolioItem } from "./InteractivePortfolioSection";
 import { productsDb } from "@/data/productsData";
 
@@ -724,8 +725,87 @@ function SolutionCards({ activeItem }: { activeItem: IndustryItem }) {
 
 // ─── Page Section ────────────────────────────────────────────────────────────
 
+const defaultApplicationsList = [
+  {
+    id: "industry-digitalisation",
+    name: "Industry Digitalisation",
+    tagline: "IIoT Sensors & Plant Twins",
+    desc: "Transforming legacy industrial infrastructure with digital twin architectures, real-time sensor loops, and predictive operations.",
+    accent: "#1e3e8f",
+    href: "/applications/industry-digitalisation",
+  },
+  {
+    id: "wireless-data-acquisition",
+    name: "Wireless Data Acquisition",
+    tagline: "ISA100 & LoRaWAN Mesh Networks",
+    desc: "Zero-cabling intrinsically safe wireless telemetry bridging Zone 0 sensors directly into central DCS and SCADA systems.",
+    accent: "#c22026",
+    href: "/applications/wireless-data-acquisition",
+  },
+  {
+    id: "ai-predictive-analytics",
+    name: "AI Predictive Analytics",
+    tagline: "Machine Learning Risk Prevention",
+    desc: "Advanced neural diagnostic algorithms predicting instrument failure, gas leakage patterns, and thermal anomalies before critical trips.",
+    accent: "#1e3e8f",
+    href: "/applications/ai-predictive-analytics",
+  },
+  {
+    id: "fire-rescue-systems",
+    name: "Fire & Rescue Systems",
+    tagline: "CAFS Extinguishing & Tactical Vehicles",
+    desc: "High-expansion One Seven CAFS, specialized emergency response vehicles, and municipal firefighting infrastructure.",
+    accent: "#991b1b",
+    href: "/applications/fire-rescue-systems",
+  },
+  {
+    id: "explosion-proof-mobility",
+    name: "Explosion-Proof Mobility",
+    tagline: "Zone 1/2 Certified Mobile Devices",
+    desc: "Rugged ATEX/IECEx certified smartphones, tablets, and wearable cameras for field operators working inside explosive atmospheres.",
+    accent: "#b45309",
+    href: "/applications/explosion-proof-mobility",
+  },
+  {
+    id: "breathing-protection",
+    name: "Breathing & Asset Protection",
+    tagline: "SCBA, Air Cascade Loops & Shelters",
+    desc: "Life-support breathing air systems, H2S emergency cascade loops, and temporary refuge chambers (TGR) for hazardous plant environments.",
+    accent: "#1e3e8f",
+    href: "/applications/breathing-protection",
+  },
+];
+
 export default function IndustrySolutions() {
   const [industries, setIndustries] = useState<IndustryItem[]>(initialIndustries);
+  const [mainTab, setMainTab] = useState<"solutions" | "applications">("solutions");
+  const [applicationsList, setApplicationsList] = useState(defaultApplicationsList);
+
+  useEffect(() => {
+    async function loadDynamicApplications() {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const res = await fetch(`${baseUrl}/api/applications`);
+        if (res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list) && list.length > 0) {
+            const mapped = list.map((item: any) => ({
+              id: item.id || item._id,
+              name: item.title || item.name,
+              tagline: item.subLabel || item.tagline || "Technical Scope & Integration",
+              desc: item.description || item.summary || "Comprehensive industrial safety application.",
+              accent: item.accent === "orange" ? "#b45309" : "#1e3e8f",
+              href: `/applications/${item.id || item._id}`
+            }));
+            setApplicationsList(mapped);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load dynamic applications:", err);
+      }
+    }
+    loadDynamicApplications();
+  }, []);
 
   useEffect(() => {
     async function loadDynamicSolutions() {
@@ -851,12 +931,84 @@ export default function IndustrySolutions() {
     contactSection?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const topTabControl = (
+    <div className="inline-flex p-1.5 bg-slate-100/90 border border-slate-200/80 rounded-full shadow-inner backdrop-blur-md">
+      <button
+        type="button"
+        onClick={() => setMainTab("solutions")}
+        className={`px-8 py-3 rounded-full text-[0.78rem] font-black uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+          mainTab === "solutions"
+            ? "bg-[#1e3e8f] text-white shadow-md scale-102"
+            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+        }`}
+      >
+        SOLUTIONS
+      </button>
+      <button
+        type="button"
+        onClick={() => setMainTab("applications")}
+        className={`px-8 py-3 rounded-full text-[0.78rem] font-black uppercase tracking-wider transition-all duration-300 cursor-pointer ${
+          mainTab === "applications"
+            ? "bg-[#c22026] text-white shadow-md scale-102"
+            : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+        }`}
+      >
+        APPLICATIONS
+      </button>
+    </div>
+  );
+
+  const applicationsGrid = (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      {applicationsList.map((app, idx) => (
+        <Link
+          key={app.id}
+          href={app.href}
+          className="group relative p-7 bg-white border border-slate-200/80 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 transition-all duration-300 flex flex-col justify-between overflow-hidden no-underline text-inherit"
+        >
+          <div className="space-y-4 relative z-10">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#c22026] bg-red-50 border border-red-100 px-3 py-1.5 rounded-full">
+                Application 0{idx + 1}
+              </span>
+              <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#1e3e8f] group-hover:text-white transition-all duration-300 text-xs font-bold">
+                →
+              </span>
+            </div>
+            <div>
+              <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#1e3e8f] transition-colors m-0">
+                {app.name}
+              </h3>
+              <p className="text-xs font-bold text-slate-400 mt-1 m-0">
+                {app.tagline}
+              </p>
+            </div>
+            <p className="text-xs text-slate-600 leading-relaxed font-normal m-0 line-clamp-3">
+              {app.desc}
+            </p>
+          </div>
+
+          <div className="pt-6 border-t border-slate-100 mt-6 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#1e3e8f] group-hover:text-[#c22026] transition-colors relative z-10">
+            <span>Explore Application Page</span>
+            <span className="group-hover:translate-x-1 transition-transform font-bold text-sm">›</span>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+
   return (
     <InteractivePortfolioSection
       sectionId="solutions"
-      sectionLabel="Sector Specific Operations"
-      sectionTitle="Solutions by Industry"
-      sectionDesc="We adapt our core capabilities to the specific compliance and threat profiles of the Middle East's primary infrastructure sectors."
+      sectionLabel={mainTab === "applications" ? "Technical Capabilities & Scopes" : "Sector Specific Operations"}
+      sectionTitle="Solutions & Applications"
+      sectionDesc={
+        mainTab === "applications"
+          ? "Explore our core technical application frameworks designed to engineer continuous safety and operational intelligence across hazardous facilities."
+          : "We adapt our core capabilities to the specific compliance and threat profiles of primary infrastructure sectors."
+      }
+      topTabControl={topTabControl}
+      customContent={mainTab === "applications" ? applicationsGrid : null}
       items={industries}
       backgroundColor="#ffffff"
       isDark={false}

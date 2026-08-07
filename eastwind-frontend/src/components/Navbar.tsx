@@ -216,7 +216,7 @@ export default function Navbar() {
               return {
                 id: ind.id,
                 name: ind.name,
-                href: `/solutions/${ind.id}`,
+                href: `/solutions?cat=${encodeURIComponent(ind.id)}`,
                 description: ind.description || ind.riskKicker || "High-compliance industry solution",
                 accent: ind.accent || "#1e3e8f",
                 items: finalItems
@@ -248,7 +248,7 @@ export default function Navbar() {
     {
       id: "civil-defence",
       name: "Civil Defence",
-      href: "/solutions/civil-defence",
+      href: "/solutions?cat=civil-defence",
       description: "Metropolitan Safety Infrastructure & Emergency Response",
       accent: "#991b1b",
       items: [
@@ -262,7 +262,7 @@ export default function Navbar() {
     {
       id: "smart-industrial-facilities",
       name: "Smart Industrial Facilities",
-      href: "/solutions/smart-industrial-facilities",
+      href: "/solutions?cat=smart-industrial-facilities",
       description: "Automated Facility Health & Process Reliability",
       accent: "#c22026",
       items: [
@@ -276,7 +276,7 @@ export default function Navbar() {
     {
       id: "oil-and-gas",
       name: "Oil and Gas",
-      href: "/solutions/oil-and-gas",
+      href: "/solutions?cat=oil-and-gas",
       description: "Intelligent Hydrocarbon Operations & Wireless Gas Detection",
       accent: "#1e3e8f",
       items: [
@@ -291,7 +291,7 @@ export default function Navbar() {
     {
       id: "marine-operations",
       name: "Marine Operations",
-      href: "/solutions/marine-operations",
+      href: "/solutions?cat=marine-operations",
       description: "Harsh Deepwater Infrastructure Resilience & Damage Control",
       accent: "#b45309",
       items: [
@@ -305,7 +305,7 @@ export default function Navbar() {
     {
       id: "utilities-and-power",
       name: "Utilities and Power",
-      href: "/solutions/utilities-and-power",
+      href: "/solutions?cat=utilities-and-power",
       description: "Critical Grid Asset Safeguarding & Thermal Monitoring",
       accent: "#1e3e8f",
       items: [
@@ -318,7 +318,7 @@ export default function Navbar() {
     {
       id: "defence-and-border-security",
       name: "Defence and Border Security",
-      href: "/solutions/defence-and-border-security",
+      href: "/solutions?cat=defence-and-border-security",
       description: "National Level Security & Blast-Resistant Modules",
       accent: "#b45309",
       items: [
@@ -492,157 +492,18 @@ export default function Navbar() {
             <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
           </Link>
 
-          {/* Solutions Dropdown - 6 Solution Categories with hoverable products list */}
-          <div className="nav-dropdown relative group/nav">
-            <button
-              type="button"
-              onClick={() => {
-                const next = activeDropdown === "solutions" ? null : "solutions";
-                setActiveDropdown(next);
-              }}
-              className={`nav-link-dropdown inline-flex items-center gap-1.25 px-3.5 py-2 text-[0.76rem] font-extrabold uppercase tracking-wider rounded-full transition-all duration-200 cursor-pointer ${
-                showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
-              } ${activeDropdown === "solutions" ? (showTransparent ? "text-white bg-white/15" : "text-[#1e3e8f] bg-slate-100") : ""}`}
-            >
-              Solutions {renderChevron(activeDropdown === "solutions")}
-            </button>
-            {activeDropdown === "solutions" && (
-              <div
-                onMouseLeave={() => setHoveredCategoryIdx(null)}
-                className={`dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 bg-white/95 border border-slate-200/80 rounded-[28px] shadow-2xl z-[150] backdrop-blur-xl transition-all duration-300 overflow-hidden p-4 ${
-                  hoveredCategoryIdx !== null ? "w-[640px] max-w-[90vw]" : "w-[280px]"
-                }`}
-              >
-                {hoveredCategoryIdx === null ? (
-                  /* Compact View: 6 Categories Only (No blank space) */
-                  <div className="flex flex-col gap-1 w-full">
-                    {categoriesList.map((cat, idx) => (
-                      <Link
-                        key={cat.id}
-                        href={cat.href}
-                        onMouseEnter={() => setHoveredCategoryIdx(idx)}
-                        onClick={() => {
-                          setActiveDropdown(null);
-                          setHoveredCategoryIdx(null);
-                          setMobileMenuOpen(false);
-                        }}
-                        className="group/cat min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl no-underline text-slate-700 hover:bg-slate-100 hover:text-[#1e3e8f] transition-all duration-200"
-                      >
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-[0.82rem] font-extrabold leading-tight truncate">
-                            {cat.name}
-                          </span>
-                          <span className="text-[0.64rem] font-medium text-slate-400 truncate">
-                            {cat.items.length} Products & Solutions
-                          </span>
-                        </div>
-                        <span className="text-[0.9rem] font-bold text-slate-300 group-hover/cat:text-[#c22026] group-hover/cat:translate-x-1 transition-all">
-                          ›
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  /* Expanded View: Categories on Left, Products on Right */
-                  <div className="grid grid-cols-12 gap-3 items-stretch w-full">
-                    {/* Left Column: 6 Categories */}
-                    <div className="col-span-5 border-r border-slate-100 pr-2 flex flex-col gap-1">
-                      {categoriesList.map((cat, idx) => {
-                        const isHovered = hoveredCategoryIdx === idx;
-                        return (
-                          <Link
-                            key={cat.id}
-                            href={cat.href}
-                            onMouseEnter={() => setHoveredCategoryIdx(idx)}
-                            onClick={() => {
-                              setActiveDropdown(null);
-                              setHoveredCategoryIdx(null);
-                              setMobileMenuOpen(false);
-                            }}
-                            className={`group/cat min-h-[40px] flex items-center justify-between gap-2 px-3 py-2 rounded-xl no-underline transition-all duration-200 ${
-                              isHovered
-                                ? "bg-slate-100 text-[#1e3e8f] shadow-sm"
-                                : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                            }`}
-                          >
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-[0.82rem] font-extrabold leading-tight truncate">
-                                {cat.name}
-                              </span>
-                              <span className="text-[0.64rem] font-medium text-slate-400 truncate">
-                                {cat.items.length} Products & Solutions
-                              </span>
-                            </div>
-                            <span
-                              className={`text-[0.9rem] font-bold transition-transform duration-200 ${
-                                isHovered ? "text-[#c22026] translate-x-1" : "text-slate-300 group-hover/cat:text-slate-400"
-                              }`}
-                            >
-                              ›
-                            </span>
-                          </Link>
-                        );
-                      })}
-                    </div>
+          {/* Solutions Link Button - Direct Redirect to /solutions */}
+          <Link
+            href="/solutions"
+            className={`nav-link relative group/nav px-3.5 py-2 text-[0.76rem] font-extrabold uppercase no-underline tracking-wider rounded-full transition-all duration-200 ${
+              showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
+            }`}
+          >
+            <span>Solutions</span>
+            <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
+          </Link>
 
-                    {/* Right Column: Associated Category Products */}
-                    <div className="col-span-7 pl-2 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-[0.62rem] font-bold tracking-wider uppercase text-slate-400">
-                              Category Products & Hardware
-                            </span>
-                            <span className="text-[0.88rem] font-black text-[#1e3e8f] truncate">
-                              {categoriesList[hoveredCategoryIdx]?.name}
-                            </span>
-                          </div>
-                          <Link
-                            href={categoriesList[hoveredCategoryIdx]?.href || "#"}
-                            onClick={() => {
-                              setActiveDropdown(null);
-                              setHoveredCategoryIdx(null);
-                              setMobileMenuOpen(false);
-                            }}
-                            className="text-[0.68rem] font-bold text-[#c22026] hover:underline whitespace-nowrap ml-2"
-                          >
-                            All Solutions →
-                          </Link>
-                        </div>
-
-                        <div className="flex flex-col gap-1 max-h-[280px] overflow-y-auto pr-1">
-                          {categoriesList[hoveredCategoryIdx]?.items.map((item, itemIdx) => (
-                            <Link
-                              key={itemIdx}
-                              href={item.href}
-                              onClick={() => {
-                                setActiveDropdown(null);
-                                setHoveredCategoryIdx(null);
-                                setMobileMenuOpen(false);
-                              }}
-                              className="group/subitem flex items-center justify-between p-2 rounded-lg text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-50 no-underline transition-all duration-200"
-                            >
-                              <div className="flex items-center gap-2 min-w-0">
-                                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/subitem:bg-[#c22026] transition-colors shrink-0" />
-                                <span className="text-[0.78rem] font-extrabold leading-tight truncate">
-                                  {item.name}
-                                </span>
-                              </div>
-                              <span className="text-slate-300 text-[0.8rem] group-hover/subitem:text-[#c22026] group-hover/subitem:translate-x-0.5 transition-all shrink-0 font-bold">
-                                ›
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Applications Dropdown - Technical Scopes / Capabilities */}
+          {/* Applications Dropdown - Technical Applications List */}
           <div className="nav-dropdown relative group/nav">
             <button
               type="button"
@@ -654,7 +515,7 @@ export default function Navbar() {
               Applications {renderChevron(activeDropdown === "applications")}
             </button>
             {activeDropdown === "applications" && (
-              <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-64 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
+              <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-72 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
                 {renderDropdownLinks(applicationsList)}
               </div>
             )}
@@ -745,59 +606,14 @@ export default function Navbar() {
               About Us
             </Link>
 
-            {/* Mobile Solutions Section */}
-            <div>
-              <button 
-                type="button" 
-                onClick={() => toggleMobileAccordion("solutions")} 
-                className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold cursor-pointer"
-              >
-                <span>Solutions</span>
-                {renderChevron(mobileAccordions.solutions)}
-              </button>
-              {mobileAccordions.solutions && (
-                <div className="flex flex-col gap-2 mt-1.5 p-2 border border-slate-200/40 rounded-xl bg-white/70 shadow-inner">
-                  {categoriesList.map((cat) => {
-                    const isSubOpen = mobileSubAccordion === cat.id;
-                    return (
-                      <div key={cat.id} className="flex flex-col border border-slate-100 rounded-lg overflow-hidden">
-                        <button
-                          type="button"
-                          onClick={() => setMobileSubAccordion(isSubOpen ? null : cat.id)}
-                          className="w-full min-h-[38px] flex items-center justify-between px-3 bg-slate-50/90 text-slate-800 text-[0.82rem] font-bold cursor-pointer"
-                        >
-                          <span>{cat.name}</span>
-                          <span className={`text-[0.7rem] transition-transform ${isSubOpen ? "rotate-90 text-[#c22026]" : "text-slate-400"}`}>
-                            ▶
-                          </span>
-                        </button>
-                        {isSubOpen && (
-                          <div className="flex flex-col gap-1 p-2 bg-white">
-                            <Link
-                              href={cat.href}
-                              onClick={() => setMobileMenuOpen(false)}
-                              className="px-2 py-1 text-[0.76rem] font-bold text-[#c22026] hover:underline"
-                            >
-                              Overview Page →
-                            </Link>
-                            {cat.items.map((item, i) => (
-                              <Link
-                                key={i}
-                                href={item.href}
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="min-h-[32px] flex items-center px-2.5 rounded text-slate-600 no-underline text-[0.78rem] font-medium hover:text-[#1e3e8f] hover:bg-slate-50"
-                              >
-                                • {item.name}
-                              </Link>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            {/* Mobile Solutions Direct Link */}
+            <Link 
+              href="/solutions" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold no-underline"
+            >
+              Solutions
+            </Link>
 
             {/* Mobile Applications Section */}
             <div>
@@ -816,7 +632,7 @@ export default function Navbar() {
                       key={item.name} 
                       href={item.href} 
                       onClick={() => setMobileMenuOpen(false)} 
-                      className="min-h-[36px] flex items-center px-3 rounded-lg text-slate-600 no-underline text-[0.82rem] font-semibold"
+                      className="min-h-[36px] flex items-center px-3 rounded-lg text-slate-600 no-underline text-[0.82rem] font-semibold hover:text-[#1e3e8f] hover:bg-slate-50"
                     >
                       {item.name}
                     </Link>
