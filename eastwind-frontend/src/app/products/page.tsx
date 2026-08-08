@@ -228,43 +228,7 @@ function ProductsCatalogContent() {
 
       <main className="pt-32 pb-24 flex-1">
         
-        {/* Short & Sleek Solid Orange Hero Header */}
-        <section className="max-w-[1400px] mx-auto px-10 max-sm:px-5 mb-8">
-          <div className="relative rounded-[24px] overflow-hidden bg-orange-600 py-5 px-8 sm:px-10 text-white shadow-xl border border-orange-500 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            
-            {/* Subtle Grid Backdrop */}
-            <div className="industrial-grid absolute inset-0 opacity-[0.08] pointer-events-none" />
 
-            {/* Left Content */}
-            <div className="relative z-10 space-y-1 max-w-[780px]">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <span className="text-[0.7rem] font-mono font-extrabold uppercase tracking-widest text-orange-100">
-                  Certified Equipment Inventory
-                </span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-none">
-                Eastwind Products Catalog
-              </h1>
-
-              <p className="text-xs sm:text-sm text-orange-50 leading-relaxed font-medium">
-                Browse our complete portfolio of certified marine, oil & gas, petrochemical, and industrial safety systems.
-              </p>
-            </div>
-
-            {/* Right Side Compact Badges */}
-            <div className="relative z-10 flex items-center gap-2.5 shrink-0">
-              <span className="px-3.5 py-1.5 bg-white/20 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-white border border-white/30 shadow-sm">
-                11+ Brands
-              </span>
-              <span className="px-3.5 py-1.5 bg-slate-900/40 backdrop-blur-md rounded-xl text-xs font-mono font-bold text-white border border-white/20 shadow-sm">
-                55+ Equipment Models
-              </span>
-            </div>
-
-          </div>
-        </section>
 
         {/* Main Content Layout (Left Filters + Right Products Grid) */}
         <section className="max-w-[1400px] mx-auto px-10 max-sm:px-5">
@@ -460,11 +424,11 @@ function ProductsCatalogContent() {
                       key={product.id}
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white border border-slate-200 rounded-[24px] overflow-hidden shadow-sm hover:shadow-xl hover:border-orange-500/50 transition-all duration-300 flex flex-col justify-between group"
+                      className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
                     >
                       <div>
-                        {/* Product Image Display (UNCROPPED WHOLE IMAGE) */}
-                        <div className="h-56 bg-slate-950 p-4 relative flex items-center justify-center border-b border-slate-800">
+                        {/* Clean White Product Image Display */}
+                        <div className="h-52 bg-white p-2 relative flex items-center justify-center mb-4">
                           {product.imageUrl && product.imageUrl.trim() !== "" ? (
                             <img
                               key={product.imageUrl}
@@ -477,48 +441,38 @@ function ProductsCatalogContent() {
                                   (el.nextElementSibling as HTMLElement).style.display = "flex";
                                 }
                               }}
-                              className="max-h-full max-w-full object-contain filter drop-shadow-md transition-transform duration-500 group-hover:scale-105"
+                              className="max-h-48 max-w-full object-contain filter drop-shadow-xs transition-transform duration-500 group-hover:scale-105"
                             />
                           ) : null}
                           <div
                             style={{ display: product.imageUrl && product.imageUrl.trim() !== "" ? "none" : "flex" }}
                             className="flex flex-col items-center justify-center text-center p-4 space-y-1 text-slate-400"
                           >
-                            <span className="text-xl">📷</span>
+                            <span className="text-2xl">📷</span>
                             <span className="text-xs font-mono font-medium text-slate-400">No Image Found</span>
-                          </div>
-                          <div className="absolute top-3 left-3">
-                            <span className="text-[10px] font-mono font-bold bg-white/95 text-slate-900 px-2.5 py-1 rounded-md shadow-sm border border-slate-200">
-                              {product.brand}
-                            </span>
                           </div>
                         </div>
 
-                        {/* Product Body Text */}
-                        <div className="p-6 space-y-3">
-                          <span className="text-[10px] font-mono font-bold uppercase text-orange-600 bg-orange-50 border border-orange-200 px-2 py-0.5 rounded inline-block">
-                            {product.category}
-                          </span>
-
-                          <h3 className="text-base font-extrabold text-slate-900 leading-snug group-hover:text-orange-600 transition-colors">
+                        {/* Product Title & Short Subtitle Content */}
+                        <div className="mb-6 space-y-1.5">
+                          <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-[#2ba8ab] transition-colors">
                             {product.name}
                           </h3>
 
-                          <p className="text-xs text-slate-600 leading-relaxed line-clamp-3 font-medium">
-                            {product.description}
+                          <p className="text-xs sm:text-sm text-slate-500 leading-relaxed line-clamp-2 font-normal">
+                            {product.description || product.category || "Certified Industrial Safety Equipment"}
                           </p>
                         </div>
                       </div>
 
-                      {/* Action Button */}
-                      <div className="p-6 pt-0">
+                      {/* Single Action Button (View Details) */}
+                      <div className="pt-2">
                         <button
                           type="button"
                           onClick={() => handleSelectProduct(product)}
-                          className="w-full py-2.5 px-4 bg-slate-900 hover:bg-orange-600 text-white font-bold text-xs uppercase font-mono tracking-wider rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-md"
+                          className="w-full py-2.5 px-4 bg-white border border-[#2ba8ab] text-[#2ba8ab] hover:bg-[#2ba8ab] hover:text-white font-bold text-sm rounded-xl transition-all duration-200 text-center shadow-2xs"
                         >
-                          <span>View Product & Enquire</span>
-                          <span>→</span>
+                          View Details
                         </button>
                       </div>
                     </motion.div>

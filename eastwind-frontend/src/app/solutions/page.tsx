@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -50,7 +50,7 @@ interface SolutionsPageConfig {
   partnersTagline: string;
   partnersTitle: string;
   partnersDesc: string;
-  partners: string[];
+  partners: any[];
   gatewayTagline: string;
   gatewayTitle: string;
   gatewayDesc: string;
@@ -434,15 +434,83 @@ function getMatchingIndustryId(catParam: string | null, industries: IndustryData
   return null;
 }
 
+const pageApplicationsList = [
+  {
+    id: "industry-digitalisation",
+    name: "Industry Digitalisation",
+    tagline: "IIoT Sensors & Plant Twins",
+    desc: "Transforming legacy industrial infrastructure with digital twin architectures, real-time sensor loops, and predictive operations.",
+    href: "/applications/industry-digitalisation",
+  },
+  {
+    id: "wireless-data-acquisition",
+    name: "Wireless Data Acquisition",
+    tagline: "ISA100 & LoRaWAN Mesh Networks",
+    desc: "Zero-cabling intrinsically safe wireless telemetry bridging Zone 0 sensors directly into central DCS and SCADA systems.",
+    href: "/applications/wireless-data-acquisition",
+  },
+  {
+    id: "ai-predictive-analytics",
+    name: "AI Predictive Analytics",
+    tagline: "Machine Learning Risk Prevention",
+    desc: "Advanced neural diagnostic algorithms predicting instrument failure, gas leakage patterns, and thermal anomalies before critical trips.",
+    href: "/applications/ai-predictive-analytics",
+  },
+  {
+    id: "fire-rescue-systems",
+    name: "Fire & Rescue Systems",
+    tagline: "CAFS Extinguishing & Tactical Vehicles",
+    desc: "High-expansion One Seven CAFS, specialized emergency response vehicles, and municipal firefighting infrastructure.",
+    href: "/applications/fire-rescue-systems",
+  },
+  {
+    id: "explosion-proof-mobility",
+    name: "Explosion-Proof Mobility",
+    tagline: "Zone 1/2 Certified Mobile Devices",
+    desc: "Rugged ATEX/IECEx certified smartphones, tablets, and wearable cameras for field operators working inside explosive atmospheres.",
+    href: "/applications/explosion-proof-mobility",
+  },
+  {
+    id: "breathing-protection",
+    name: "Breathing & Asset Protection",
+    tagline: "SCBA, Air Cascade Loops & Shelters",
+    desc: "Life-support breathing air systems, H2S emergency cascade loops, and temporary refuge chambers (TGR) for hazardous plant environments.",
+    href: "/applications/breathing-protection",
+  },
+];
+
 function SolutionsPageContent() {
   const searchParams = useSearchParams();
   const urlCat = searchParams.get("cat") || searchParams.get("id") || searchParams.get("tab") || searchParams.get("category");
+  const marqueeScrollRef = useRef<HTMLDivElement>(null);
+
+  const [mainCategory, setMainCategory] = useState<"solutions" | "applications" | "services">((): "solutions" | "applications" | "services" => {
+    const typeParam = searchParams.get("type") || searchParams.get("cat") || searchParams.get("tab") || searchParams.get("category");
+    if (typeParam === "services" || typeParam === "service") {
+      return "services";
+    }
+    if (urlCat === "applications" || urlCat === "application" || searchParams.get("type") === "applications") {
+      return "applications";
+    }
+    return "solutions";
+  });
 
   const [pageConfig, setPageConfig] = useState<SolutionsPageConfig>(defaultPageConfig);
   const [activeTab, setActiveTab] = useState<string>(() => {
     const matched = getMatchingIndustryId(urlCat, defaultPageConfig.industries);
     return matched || "oil-gas";
   });
+
+  useEffect(() => {
+    const typeParam = searchParams.get("type") || searchParams.get("cat") || searchParams.get("tab") || searchParams.get("category");
+    if (typeParam === "services" || typeParam === "service") {
+      setMainCategory("services");
+    } else if (typeParam === "applications" || typeParam === "application") {
+      setMainCategory("applications");
+    } else if (typeParam === "solutions" || typeParam === "solution") {
+      setMainCategory("solutions");
+    }
+  }, [searchParams]);
   const [hoveredSolution, setHoveredSolution] = useState<string | null>(null);
   const [solutionsList, setSolutionsList] = useState<any[]>([]);
 
@@ -601,44 +669,243 @@ function SolutionsPageContent() {
           </div>
         </section>
 
-        {/* Section 1: Solution Mapping Area */}
+        {/* Section 1: Solutions & Applications Domain Area */}
         <section id="industry-solutions" className="py-24 max-w-[1400px] mx-auto px-10 max-sm:px-5 z-10 relative">
           
+          {/* Top Level Category Selector matching Screenshot Design (Solutions | Applications | Services) */}
+          <div className="flex items-center gap-10 border-b border-slate-200 mb-14 pb-1 max-sm:gap-6 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setMainCategory("solutions")}
+              className={`relative pb-3 font-extrabold tracking-tight transition-all duration-300 cursor-pointer text-[1.4rem] ${
+                mainCategory === "solutions"
+                  ? "text-[#1e3e8f]"
+                  : "text-slate-400 hover:text-slate-700"
+              }`}
+            >
+              Solutions
+              {mainCategory === "solutions" && (
+                <motion.div
+                  layoutId="mainCatUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[3.5px] bg-[#1e3e8f] rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMainCategory("applications")}
+              className={`relative pb-3 font-extrabold tracking-tight transition-all duration-300 cursor-pointer text-[1.4rem] ${
+                mainCategory === "applications"
+                  ? "text-[#c22026]"
+                  : "text-slate-400 hover:text-slate-700"
+              }`}
+            >
+              Applications
+              {mainCategory === "applications" && (
+                <motion.div
+                  layoutId="mainCatUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[3.5px] bg-[#c22026] rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMainCategory("services")}
+              className={`relative pb-3 font-extrabold tracking-tight transition-all duration-300 cursor-pointer text-[1.4rem] ${
+                mainCategory === "services"
+                  ? "text-emerald-700"
+                  : "text-slate-400 hover:text-slate-700"
+              }`}
+            >
+              Services
+              {mainCategory === "services" && (
+                <motion.div
+                  layoutId="mainCatUnderline"
+                  className="absolute bottom-0 left-0 right-0 h-[3.5px] bg-emerald-600 rounded-full"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+          </div>
+
           <div className="border-b border-slate-200/60 pb-12 mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">{pageConfig.industriesTagline}</span>
-              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">{pageConfig.industriesTitle}</h2>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#c22026]">
+                {mainCategory === "services"
+                  ? "Engineering & Compliance Consultancy"
+                  : mainCategory === "applications"
+                  ? "Technical Capabilities & Scopes"
+                  : pageConfig.industriesTagline}
+              </span>
+              <h2 className="text-3xl font-extrabold uppercase text-slate-900 tracking-tight">
+                {mainCategory === "services"
+                  ? "Services & Technical Consultancy"
+                  : mainCategory === "applications"
+                  ? "Technical Applications Portfolio"
+                  : pageConfig.industriesTitle}
+              </h2>
             </div>
             <p className="text-sm text-slate-600 leading-relaxed max-w-md">
-              {pageConfig.industriesDesc}
+              {mainCategory === "services"
+                ? "Turnkey engineering design, hazardous area compliance auditing, F&G mapping simulations, and field commissioning support for high-hazard industrial facilities."
+                : mainCategory === "applications"
+                ? "Explore our core technical application frameworks designed to engineer continuous safety and operational intelligence across hazardous facilities."
+                : pageConfig.industriesDesc}
             </p>
           </div>
 
-          {/* Premium Fluid Segmented Switch */}
-          <div className="flex overflow-x-auto no-scrollbar md:flex-wrap p-1.5 bg-slate-100/80 border border-slate-200/60 backdrop-blur-md rounded-xl gap-1 max-w-4xl mx-auto mb-16 relative z-20 max-sm:justify-start shadow-sm">
-            {pageConfig.industries.map((ind) => {
-              const isActive = activeTab === ind.id;
-              return (
-                <button
-                  key={ind.id}
-                  onClick={() => setActiveTab(ind.id)}
-                  className="flex items-center justify-center gap-2.5 py-3 px-5 text-xs font-mono uppercase tracking-wider transition-all duration-300 rounded-lg relative flex-1 min-w-[140px] shrink-0 cursor-pointer"
+          {mainCategory === "services" ? (
+            /* Services Portfolio List View */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+              {[
+                {
+                  id: "explosion-proof-design",
+                  title: "Explosion-Proof System Design",
+                  category: "Hazardous Area Engineering",
+                  desc: "Comprehensive ATEX/IECEx compliant engineering consultancy for hazardous plant environments. Designing pressurized shelters, LER units, and intrinsically safe sensor loops.",
+                  badge: "ATEX / IECEx Certified",
+                  items: ["Zone 1 & 2 Audit Studies", "Pressurized Shelter Engineering", "Intrinsically Safe Loops"]
+                },
+                {
+                  id: "hse-consultancy",
+                  title: "HSE & Risk Consultancy",
+                  category: "Safety & Threat Assessment",
+                  desc: "End-to-end HSE risk studies, toxic gas dispersion modeling, blast wave calculation, and emergency response planning for energy infrastructure.",
+                  badge: "3D CFD Dispersion",
+                  items: ["Quantitative Risk Analysis (QRA)", "3D Blast & Gas Dispersion", "Refuge Chamber Assessment"]
+                },
+                {
+                  id: "fire-gas-mapping",
+                  title: "Fire & Gas Mapping Services",
+                  category: "Detection System Optimization",
+                  desc: "Advanced 3D optical detector mapping to ensure maximum flame and gas detector coverage with zero blind spots across process areas.",
+                  badge: "SIL 2/3 Target Coverage",
+                  items: ["3D Line-of-Sight Flame Mapping", "Gas Cloud Accumulation Studies", "Detector Layout Matrix"]
+                },
+                {
+                  id: "digitalisation-consultancy",
+                  title: "Digitalisation Consultancy",
+                  category: "IIoT & Telemetry Integration",
+                  desc: "Architecting wireless ISA100 and WirelessHART IIoT telemetry fabrics across offshore platforms and remote refineries for real-time asset monitoring.",
+                  badge: "ISA 100 Wireless",
+                  items: ["Wireless Mesh Network Design", "Edge AI Telemetry Integration", "SCADA Gateway Protocol Specs"]
+                },
+                {
+                  id: "electromechanical-automation",
+                  title: "Electromechanical Automation",
+                  category: "Plant Safety Control Systems",
+                  desc: "Turnkey engineering of automated fire deluge valves, One Seven CAFS foam skid controls, and integrated safety shutdown panels.",
+                  badge: "SIL 3 PLC Controls",
+                  items: ["Deluge Actuation Control Skids", "Emergency Shutdown (ESD) Panels", "FAT & SAT Field Commissioning"]
+                },
+                {
+                  id: "power-optimisation",
+                  title: "Power Optimisation Support",
+                  category: "Energy & Infrastructure Resilience",
+                  desc: "Designing redundant industrial UPS systems, solar-powered telemetry nodes, and battery backup loops for continuous safety monitoring.",
+                  badge: "72Hr+ Autonomy",
+                  items: ["Redundant Industrial UPS Loops", "Solar IIoT Power Packs", "Battery Autonomy Calculations"]
+                }
+              ].map((srv, idx) => (
+                <div
+                  key={srv.id}
+                  className="bg-white border border-slate-200/90 rounded-3xl p-7 shadow-xs hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between group"
                 >
-                  <span className={`relative z-10 flex items-center gap-2 ${isActive ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-800'}`}>
-                    <span>{ind.name}</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono font-extrabold uppercase text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                        {srv.category}
+                      </span>
+                      <span className="text-[10px] font-mono font-bold text-slate-400">
+                        0{idx + 1}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-slate-900 leading-snug group-hover:text-emerald-700 transition-colors">
+                      {srv.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                      {srv.desc}
+                    </p>
+
+                    <div className="pt-2 space-y-1.5 border-t border-slate-100">
+                      {srv.items.map((item, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+                          <span className="text-emerald-600 font-bold">✓</span>
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-6 mt-6 border-t border-slate-100">
+                    <a
+                      href="#enquire-form"
+                      className="w-full py-2.5 px-4 bg-slate-900 hover:bg-emerald-700 text-white font-bold text-xs uppercase font-mono tracking-wider rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-xs no-underline"
+                    >
+                      <span>Enquire About This Service</span>
+                      <span>→</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : mainCategory === "applications" ? (
+            /* Applications Streamlined List View */
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+              {pageApplicationsList.map((app, idx) => (
+                <Link
+                  key={app.id}
+                  href={app.href}
+                  className="group relative p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-slate-300 transition-all duration-300 flex items-center justify-between no-underline text-inherit cursor-pointer"
+                >
+                  <div className="flex items-center gap-4 min-w-0">
+                    <span className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-[#c22026] text-xs font-mono font-bold shrink-0">
+                      0{idx + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="text-base font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#1e3e8f] transition-colors m-0 truncate">
+                        {app.name}
+                      </h3>
+                      <p className="text-xs font-medium text-slate-400 m-0 mt-0.5 truncate">
+                        {app.tagline}
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#1e3e8f] group-hover:text-white transition-all duration-300 text-xs font-bold shrink-0 ml-3">
+                    →
                   </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="spatialActiveTabHighlight"
-                      className="absolute inset-0 bg-white border border-slate-200/80 rounded-lg shadow-sm"
-                      style={{ borderBottom: `2px solid ${activeIndustry.accent || '#c22026'}` }}
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            /* Solutions View */
+            <>
+              {/* Simple Clean Industry Tab Bar */}
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-12 p-2 bg-slate-100/90 border border-slate-200 rounded-xl shadow-sm">
+                {pageConfig.industries.map((ind) => {
+                  const isActive = activeTab === ind.id;
+                  return (
+                    <button
+                      key={ind.id}
+                      onClick={() => setActiveTab(ind.id)}
+                      className={`px-5 py-3 rounded-lg text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                        isActive
+                          ? "bg-[#1e3e8f] text-white shadow-sm"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-white/80"
+                      }`}
+                    >
+                      {ind.name}
+                    </button>
+                  );
+                })}
+              </div>
 
           {/* Spatial Interactive Content Block */}
           <AnimatePresence mode="wait">
@@ -707,7 +974,7 @@ function SolutionsPageContent() {
                           </h4>
                         </div>
                         
-                        <ul className="space-y-3 pl-0 list-none m-0">
+                        <ul className="space-y-2.5 pl-0 list-none m-0">
                           {sol.items.map((item: any, itemIdx: number) => {
                             const isService = ["hse-consultancy", "explosion-proof-design"].includes(item.id || "");
                             const isProduct = ["fire-truck", "one-seven-cafs", "sione-hood", "gas-detector", "smoke-detector", "heat-detector", "temp-transmitter", "pressure-transmitter", "diving-chambers", "cascade-system", "scba-system", "nardi-compressor"].includes(item.id || "");
@@ -716,8 +983,7 @@ function SolutionsPageContent() {
                               : null;
 
                             return (
-                              <li key={itemIdx} className="flex items-start gap-3 text-xs text-slate-650 group-hover:text-slate-800 transition-colors">
-                                <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ backgroundColor: activeIndustry.accent || '#c22026' }} />
+                              <li key={itemIdx} className="text-xs sm:text-sm text-slate-700 font-medium group-hover:text-slate-900 transition-colors">
                                 {path ? (
                                   <Link href={path} className="hover:text-sky-600 hover:underline transition-colors font-medium">
                                     {item.name}
@@ -736,7 +1002,9 @@ function SolutionsPageContent() {
               </div>
 
             </motion.div>
-          </AnimatePresence>
+              </AnimatePresence>
+            </>
+          )}
         </section>
 
         {/* Section 2: Framework Competence / Core Capabilities */}
@@ -801,15 +1069,119 @@ function SolutionsPageContent() {
             </p>
           </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 max-w-5xl mx-auto">
-            {pageConfig.partners.map((partner) => (
-              <div
-                key={partner}
-                className="bg-white border border-slate-200 hover:border-slate-350 py-3.5 px-4 rounded-xl text-slate-600 hover:text-[#1e3e8f] hover:bg-[#1e3e8f]/5 text-center font-mono text-[10px] uppercase tracking-wider transition-all duration-300 cursor-default select-none shadow-3xs hover:shadow-sm"
+          {/* Auto-Scrolling Brand Cards Marquee with Left & Right Arrow Buttons */}
+          <div className="relative w-full select-none max-w-6xl mx-auto group/carousel">
+            {/* Left Navigation Arrow */}
+            <button
+              type="button"
+              onClick={() => {
+                if (marqueeScrollRef.current) {
+                  marqueeScrollRef.current.scrollBy({ left: -340, behavior: "smooth" });
+                }
+              }}
+              className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white text-slate-800 hover:bg-[#1e3e8f] hover:text-white border border-slate-200/80 shadow-xl backdrop-blur-md flex items-center justify-center transition-all duration-300 cursor-pointer group/btn active:scale-95"
+              aria-label="Previous Brand"
+            >
+              <svg className="w-5 h-5 transition-transform group-hover/btn:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Right Navigation Arrow */}
+            <button
+              type="button"
+              onClick={() => {
+                if (marqueeScrollRef.current) {
+                  marqueeScrollRef.current.scrollBy({ left: 340, behavior: "smooth" });
+                }
+              }}
+              className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-white text-slate-800 hover:bg-[#1e3e8f] hover:text-white border border-slate-200/80 shadow-xl backdrop-blur-md flex items-center justify-center transition-all duration-300 cursor-pointer group/btn active:scale-95"
+              aria-label="Next Brand"
+            >
+              <svg className="w-5 h-5 transition-transform group-hover/btn:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+
+            {/* Soft Edge Fade Gradients */}
+            <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-white via-white/90 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-white via-white/90 to-transparent z-10 pointer-events-none" />
+
+            {/* Scroll Container */}
+            <div
+              ref={marqueeScrollRef}
+              className="w-full overflow-x-auto scroll-smooth py-8 scrollbar-none"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              <motion.div
+                className="flex items-center gap-6 w-max"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{
+                  repeat: Infinity,
+                  ease: "linear",
+                  duration: 40,
+                }}
               >
-                {partner}
-              </div>
-            ))}
+              {[...(pageConfig.partners || []), ...(pageConfig.partners || [])].map((partner, index) => {
+                const name = typeof partner === "string" ? partner : (partner?.name || "Partner Brand");
+                const customLogo = typeof partner === "object" ? partner?.logo || partner?.image : null;
+                const cleanKey = name.toLowerCase().trim();
+                
+                const logoSrc = customLogo || (
+                  cleanKey.includes("dräg") || cleanKey.includes("draeg") ? "/brands/draeger.png" :
+                  cleanKey.includes("one seven") ? "/brands/oneseven.png" :
+                  cleanKey.includes("xshield") ? "/brands/xshielder.png" :
+                  cleanKey.includes("nardi") ? "/brands/nardi.png" :
+                  cleanKey.includes("mimes") ? "/brands/mimes.png" :
+                  cleanKey.includes("sieon") || cleanKey.includes("sione") ? "/brands/sione.png" :
+                  cleanKey.includes("e2s") ? "/brands/e2s.png" :
+                  cleanKey.includes("flamepro") ? "/brands/flamepro.png" :
+                  cleanKey.includes("schneider") ? "/brands/schneider.png" :
+                  cleanKey.includes("pepperl") ? "/brands/pepperlfuchs.png" : null
+                );
+
+                return (
+                  <div
+                    key={`${name}-${index}`}
+                    className="flex flex-col items-center justify-between p-6 bg-white border border-slate-200/90 hover:border-[#1e3e8f]/40 rounded-3xl shadow-2xs hover:shadow-xl transition-all duration-300 w-[280px] sm:w-[320px] shrink-0 h-56 sm:h-64 group relative overflow-hidden"
+                  >
+                    {/* Subtle Card Background Accent */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-50/60 via-white to-white group-hover:from-[#1e3e8f]/5 group-hover:to-white transition-all duration-300" />
+
+                    <div className="relative z-10 w-full h-full flex flex-col items-center justify-between">
+                      {logoSrc ? (
+                        <div className="h-36 sm:h-40 w-full flex items-center justify-center px-2 my-auto">
+                          <img
+                            src={logoSrc}
+                            alt={name}
+                            className="max-h-36 sm:max-h-40 max-w-[270px] w-auto h-auto object-contain group-hover:scale-105 transition-all duration-300 drop-shadow-xs"
+                            onError={(e) => {
+                              const target = e.target as HTMLElement;
+                              target.style.display = "none";
+                              const parent = target.parentElement;
+                              if (parent && !parent.querySelector('.fallback-icon')) {
+                                const fallback = document.createElement('div');
+                                fallback.className = 'fallback-icon w-20 h-20 rounded-3xl bg-red-50 border border-red-100 flex items-center justify-center text-[#c22026] font-black text-3xl shadow-sm group-hover:bg-[#1e3e8f] group-hover:text-white transition-colors';
+                                fallback.innerText = name.charAt(0);
+                                parent.appendChild(fallback);
+                              }
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-20 h-20 rounded-3xl bg-red-50 border border-red-100 flex items-center justify-center text-[#c22026] font-black text-3xl my-auto shadow-sm group-hover:bg-[#1e3e8f] group-hover:text-white transition-colors">
+                          {name.charAt(0)}
+                        </div>
+                      )}
+                      <span className="text-sm sm:text-base font-extrabold text-slate-800 group-hover:text-[#1e3e8f] tracking-widest uppercase transition-colors text-center truncate w-full pt-2">
+                        {name}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </motion.div>
+            </div>
           </div>
 
         </section>

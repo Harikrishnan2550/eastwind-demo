@@ -159,7 +159,7 @@ export default function AdminSolutionsPage() {
   const [partnersTagline, setPartnersTagline] = useState<string>("Global Integration");
   const [partnersTitle, setPartnersTitle] = useState<string>("Integrated Technology Partners");
   const [partnersDesc, setPartnersDesc] = useState<string>("We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.");
-  const [partners, setPartners] = useState<string[]>([
+  const [partners, setPartners] = useState<any[]>([
     "Dräger", "Empel", "Nardi", "Mimes", "One Seven", "Sieon", "Xshielder",
     "Nittan", "FlamePro", "E2S", "Schneider", "CRI", "CEJN", "Polyhose",
     "Keiconnections", "Leader", "Tridiagonal", "Phoenix", "Pepperl+Fuchs",
@@ -844,41 +844,155 @@ export default function AdminSolutionsPage() {
             </div>
           </div>
 
-          {/* Partner Brands Array */}
+          {/* Partner Brands Cards Editor with View, Edit, Add, and Delete Actions */}
           <div className="bg-white p-8 border border-slate-200/60 rounded-2xl space-y-6 shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h2 className="text-lg font-bold text-slate-800 m-0">Integrated Partner Brands List</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-800 m-0 flex items-center gap-2">
+                  <span>Integrated Partner Brands & Logos</span>
+                  <span className="text-xs font-mono font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200">
+                    {partners.length} Brands
+                  </span>
+                </h2>
+                <p className="text-xs text-slate-500 m-0 mt-1">Manage brand names and logo images displayed on the auto-scrolling solutions carousel.</p>
+              </div>
               <button
                 type="button"
-                onClick={() => setPartners([...partners, "New Brand"])}
-                className="px-4 py-2 bg-orange-600 text-white text-xs font-semibold rounded-lg hover:bg-orange-700 cursor-pointer"
+                onClick={() => {
+                  const newBrand = { name: "New Partner Brand", logo: "" };
+                  setPartners([...partners, newBrand]);
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl shadow-md cursor-pointer transition-all shrink-0"
               >
-                + Add Partner Brand
+                <span>+ Add Partner Brand</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-              {partners.map((brand, idx) => (
-                <div key={idx} className="flex items-center gap-2 p-2 border border-slate-200 rounded-xl bg-slate-50">
-                  <input
-                    type="text"
-                    value={brand}
-                    onChange={(e) => {
-                      const updated = [...partners];
-                      updated[idx] = e.target.value;
-                      setPartners(updated);
-                    }}
-                    className="w-full px-3 py-1.5 text-xs border rounded-lg bg-white font-medium"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setPartners(partners.filter((_, i) => i !== idx))}
-                    className="text-rose-500 hover:text-rose-700 font-bold text-xs p-1 cursor-pointer shrink-0"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {partners.map((partnerItem, idx) => {
+                const name = typeof partnerItem === "string" ? partnerItem : partnerItem?.name || "Partner Brand";
+                const logo = typeof partnerItem === "object" ? partnerItem?.logo || partnerItem?.image || "" : "";
+                const cleanKey = name.toLowerCase().trim();
+                const defaultLogo = logo || (
+                  cleanKey.includes("dräg") || cleanKey.includes("draeg") ? "/brands/draeger.png" :
+                  cleanKey.includes("one seven") ? "/brands/oneseven.png" :
+                  cleanKey.includes("xshield") ? "/brands/xshielder.png" :
+                  cleanKey.includes("nardi") ? "/brands/nardi.png" :
+                  cleanKey.includes("mimes") ? "/brands/mimes.png" :
+                  cleanKey.includes("sieon") || cleanKey.includes("sione") ? "/brands/sione.png" :
+                  cleanKey.includes("e2s") ? "/brands/e2s.png" :
+                  cleanKey.includes("flamepro") ? "/brands/flamepro.png" :
+                  cleanKey.includes("schneider") ? "/brands/schneider.png" :
+                  cleanKey.includes("pepperl") ? "/brands/pepperlfuchs.png" : ""
+                );
+
+                return (
+                  <div key={idx} className="p-4 border border-slate-200 rounded-2xl bg-slate-50 hover:bg-white hover:border-slate-300 transition-all duration-200 flex flex-col justify-between space-y-3 shadow-3xs hover:shadow-sm group">
+                    <div className="space-y-3">
+                      {/* Logo Preview Box */}
+                      <div className="h-20 w-full bg-white border border-slate-200 rounded-xl p-2 flex items-center justify-center relative overflow-hidden shadow-2xs">
+                        {defaultLogo ? (
+                          <img
+                            src={defaultLogo}
+                            alt={name}
+                            className="max-h-14 max-w-[120px] object-contain"
+                            onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-extrabold text-sm">
+                            {name.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Brand Name */}
+                      <div>
+                        <h3 className="text-sm font-extrabold text-slate-900 m-0 truncate group-hover:text-orange-600 transition-colors">
+                          {name}
+                        </h3>
+                        <span className="text-[10px] text-slate-400 font-mono truncate block mt-0.5">
+                          {logo ? "Custom Logo Attached" : "Default Auto Match"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Inline Quick Field Edits */}
+                    <div className="space-y-2 pt-2 border-t border-slate-200/60">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Brand Name</label>
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => {
+                            const updated = [...partners];
+                            if (typeof updated[idx] === "string") {
+                              updated[idx] = { name: e.target.value, logo: "" };
+                            } else {
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                            }
+                            setPartners(updated);
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border rounded-lg bg-white font-medium focus:ring-1 focus:ring-orange-500 focus:outline-none"
+                          placeholder="Brand Name"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Logo Image</label>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            value={logo}
+                            onChange={(e) => {
+                              const updated = [...partners];
+                              if (typeof updated[idx] === "string") {
+                                updated[idx] = { name: updated[idx], logo: e.target.value };
+                              } else {
+                                updated[idx] = { ...updated[idx], logo: e.target.value };
+                              }
+                              setPartners(updated);
+                            }}
+                            className="flex-1 px-2.5 py-1.5 text-[11px] border rounded-lg bg-white font-mono focus:ring-1 focus:ring-orange-500 focus:outline-none"
+                            placeholder="/brands/logo.png"
+                          />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id={`partner-file-${idx}`}
+                            className="hidden"
+                            onChange={(e) => handleImageUpload(e, (url) => {
+                              const updated = [...partners];
+                              if (typeof updated[idx] === "string") {
+                                updated[idx] = { name: updated[idx], logo: url };
+                              } else {
+                                updated[idx] = { ...updated[idx], logo: url };
+                              }
+                              setPartners(updated);
+                            }, `partner-logo-${idx}`)}
+                          />
+                          <label
+                            htmlFor={`partner-file-${idx}`}
+                            className="px-3.5 py-2 bg-slate-900 hover:bg-orange-600 !text-white text-[11px] font-extrabold uppercase tracking-wider rounded-lg cursor-pointer shrink-0 flex items-center shadow-sm transition-colors"
+                          >
+                            Upload
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Card Action Row: Delete Button */}
+                      <div className="pt-1 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setPartners(partners.filter((_, i) => i !== idx))}
+                          className="text-rose-600 hover:text-rose-700 text-[11px] font-bold py-1 px-2.5 rounded-md hover:bg-rose-50 cursor-pointer transition-colors flex items-center gap-1"
+                        >
+                          <span>🗑️ Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

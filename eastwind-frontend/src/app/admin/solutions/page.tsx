@@ -129,6 +129,37 @@ export default function UnifiedAdminSolutionsPage() {
   const [gatewayDesc, setGatewayDesc] = useState<string>("Complete the security assessment form below.");
   const [submitButtonText, setSubmitButtonText] = useState<string>("Submit Solution Blueprint Scope");
 
+  // Technology Partners State
+  const [partnersTagline, setPartnersTagline] = useState<string>("Global Integration");
+  const [partnersTitle, setPartnersTitle] = useState<string>("Integrated Technology Partners");
+  const [partnersDesc, setPartnersDesc] = useState<string>("We securely assimilate components from verified global market leaders into unified, field-ready physical frameworks.");
+  const [partners, setPartners] = useState<any[]>([
+    { name: "Dräger", logo: "/brands/draeger.png" },
+    { name: "Empel", logo: "" },
+    { name: "Nardi", logo: "/brands/nardi.png" },
+    { name: "Mimes", logo: "/brands/mimes.png" },
+    { name: "One Seven", logo: "/brands/oneseven.png" },
+    { name: "Sieon", logo: "/brands/sione.png" },
+    { name: "Xshielder", logo: "/brands/xshielder.png" },
+    { name: "Nittan", logo: "" },
+    { name: "FlamePro", logo: "/brands/flamepro.png" },
+    { name: "E2S", logo: "/brands/e2s.png" },
+    { name: "Schneider", logo: "/brands/schneider.png" },
+    { name: "CRI", logo: "" },
+    { name: "CEJN", logo: "" },
+    { name: "Polyhose", logo: "" },
+    { name: "Keiconnections", logo: "" },
+    { name: "Leader", logo: "" },
+    { name: "Tridiagonal", logo: "" },
+    { name: "Phoenix", logo: "" },
+    { name: "Pepperl+Fuchs", logo: "/brands/pepperlfuchs.png" },
+    { name: "Guttor", logo: "" },
+    { name: "Paratech", logo: "" },
+    { name: "Panam", logo: "" },
+    { name: "Atexxor", logo: "" },
+    { name: "Thermocable", logo: "" }
+  ]);
+
   const clearMessages = () => {
     setError(null);
     setSuccess(null);
@@ -167,6 +198,10 @@ export default function UnifiedAdminSolutionsPage() {
         if (data.capabilitiesTitle) setCapabilitiesTitle(data.capabilitiesTitle);
         if (data.capabilitiesDesc) setCapabilitiesDesc(data.capabilitiesDesc);
         if (data.corePortfolios && data.corePortfolios.length > 0) setCorePortfolios(data.corePortfolios);
+        if (data.partnersTagline) setPartnersTagline(data.partnersTagline);
+        if (data.partnersTitle) setPartnersTitle(data.partnersTitle);
+        if (data.partnersDesc) setPartnersDesc(data.partnersDesc);
+        if (data.partners && data.partners.length > 0) setPartners(data.partners);
         if (data.gatewayTagline) setGatewayTagline(data.gatewayTagline);
         if (data.gatewayTitle) setGatewayTitle(data.gatewayTitle);
         if (data.gatewayDesc) setGatewayDesc(data.gatewayDesc);
@@ -281,13 +316,59 @@ export default function UnifiedAdminSolutionsPage() {
     }
   };
 
+  // Helper to convert any Base64 image string to lightweight uploaded file URL before saving
+  const sanitizeImage = async (urlOrBase64: string, token: string | null, baseUrl: string): Promise<string> => {
+    if (!urlOrBase64 || typeof urlOrBase64 !== "string" || !urlOrBase64.startsWith("data:image/")) {
+      return urlOrBase64;
+    }
+    try {
+      const res = await fetch(urlOrBase64);
+      const blob = await res.blob();
+      const formData = new FormData();
+      formData.append("file", blob, `brand_logo_${Date.now()}.png`);
+
+      const uploadRes = await fetch(`${baseUrl}/api/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token || ""}` },
+        body: formData
+      });
+
+      if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) return uploadData.url;
+      }
+    } catch (err) {
+      console.warn("Auto base64 upload failed:", err);
+    }
+    return urlOrBase64;
+  };
+
   // Save Handler for Tab 2 Solutions Page Banners & Content
   const handleSaveSolutionsPageLayout = async () => {
     clearMessages();
     setSavingPage(true);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
+
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const token = localStorage.getItem("admin_token");
+
+      // Auto-sanitize partners logos to turn giant Base64 strings into lightweight file URLs
+      const sanitizedPartners = await Promise.all(
+        partners.map(async (partnerItem) => {
+          if (typeof partnerItem === "string") {
+            const logo = await sanitizeImage(partnerItem, token, baseUrl);
+            return { name: partnerItem, logo };
+          }
+          const name = partnerItem?.name || "Partner Brand";
+          const rawLogo = partnerItem?.logo || partnerItem?.image || "";
+          const logo = await sanitizeImage(rawLogo, token, baseUrl);
+          return { ...partnerItem, name, logo };
+        })
+      );
+
+      setPartners(sanitizedPartners);
 
       const payload = {
         heroBgImage,
@@ -302,6 +383,10 @@ export default function UnifiedAdminSolutionsPage() {
         capabilitiesTitle,
         capabilitiesDesc,
         corePortfolios,
+        partnersTagline,
+        partnersTitle,
+        partnersDesc,
+        partners: sanitizedPartners,
         gatewayTagline,
         gatewayTitle,
         gatewayDesc,
@@ -314,13 +399,28 @@ export default function UnifiedAdminSolutionsPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
 
-      if (!res.ok) throw new Error("Failed to save Solutions Page layout");
+      clearTimeout(timeoutId);
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) {
+          throw new Error("Admin authentication session expired. Please logout and log back in.");
+        }
+        throw new Error(data.error || data.message || `Failed to save Solutions Page layout (${res.status})`);
+      }
+
       setSuccess("Solutions Page Banners & Layout saved successfully!");
     } catch (err: any) {
-      setError(err.message || "Failed to save layout.");
+      clearTimeout(timeoutId);
+      if (err.name === "AbortError") {
+        setError("Request timed out while saving. Please try saving again now.");
+      } else {
+        setError(err.message || "Failed to save layout.");
+      }
     } finally {
       setSavingPage(false);
     }
@@ -363,14 +463,43 @@ export default function UnifiedAdminSolutionsPage() {
     setCorePortfolios(corePortfolios.filter((_, idx) => idx !== index));
   };
 
-  // Image Upload helper with HTML5 canvas compression to prevent 413 Payload Too Large errors
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
+  // Direct server upload helper with client canvas compression fallback
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, setter: (url: string) => void) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
     clearMessages();
 
+    // 1. Attempt direct upload to server /api/upload to get lightweight file URL
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const token = localStorage.getItem("admin_token");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${baseUrl}/api/upload`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (res.ok) {
+        const uploadData = await res.json();
+        if (uploadData.url) {
+          setter(uploadData.url);
+          setSuccess(`Image '${file.name}' uploaded successfully!`);
+          setUploading(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Direct upload fallback to client compression:", err);
+    }
+
+    // 2. Client-side canvas compression fallback
     const reader = new FileReader();
     reader.onload = (event) => {
       if (!event.target?.result) {
@@ -379,12 +508,11 @@ export default function UnifiedAdminSolutionsPage() {
       }
       const rawUrl = event.target.result as string;
 
-      // Compress image using HTML5 Canvas to keep payload light (<300KB)
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        const MAX_WIDTH = 1200;
-        const MAX_HEIGHT = 1200;
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
         let width = img.width;
         let height = img.height;
 
@@ -405,9 +533,9 @@ export default function UnifiedAdminSolutionsPage() {
         const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.drawImage(img, 0, 0, width, height);
-          const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.82);
+          const compressedDataUrl = canvas.toDataURL(file.type === "image/png" ? "image/png" : "image/jpeg", 0.7);
           setter(compressedDataUrl);
-          setSuccess(`Image '${file.name}' compressed and attached successfully!`);
+          setSuccess(`Image '${file.name}' attached successfully!`);
         } else {
           setter(rawUrl);
         }
@@ -821,6 +949,159 @@ export default function UnifiedAdminSolutionsPage() {
                   }} className="w-full p-2 border rounded" />
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* SECTION 4: INTEGRATED PARTNER BRANDS & LOGOS */}
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <h3 className="text-base font-bold text-slate-800 m-0 flex items-center gap-2">
+                  <span>4. Integrated Partner Brands & Logos</span>
+                  <span className="text-xs font-mono font-bold text-orange-600 bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200">
+                    {partners.length} Brands
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-500 m-0 mt-1">
+                  Manage brand names and logo images displayed on the public solutions auto-scrolling marquee.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setPartners([...partners, { name: "New Partner Brand", logo: "" }]);
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-xl shadow-md cursor-pointer transition-all shrink-0"
+              >
+                <span>+ Add Partner Brand</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {partners.map((partnerItem, idx) => {
+                const name = typeof partnerItem === "string" ? partnerItem : partnerItem?.name || "Partner Brand";
+                const logo = typeof partnerItem === "object" ? partnerItem?.logo || partnerItem?.image || "" : "";
+                const cleanKey = name.toLowerCase().trim();
+                const defaultLogo = logo || (
+                  cleanKey.includes("dräg") || cleanKey.includes("draeg") ? "/brands/draeger.png" :
+                  cleanKey.includes("one seven") ? "/brands/oneseven.png" :
+                  cleanKey.includes("xshield") ? "/brands/xshielder.png" :
+                  cleanKey.includes("nardi") ? "/brands/nardi.png" :
+                  cleanKey.includes("mimes") ? "/brands/mimes.png" :
+                  cleanKey.includes("sieon") || cleanKey.includes("sione") ? "/brands/sione.png" :
+                  cleanKey.includes("e2s") ? "/brands/e2s.png" :
+                  cleanKey.includes("flamepro") ? "/brands/flamepro.png" :
+                  cleanKey.includes("schneider") ? "/brands/schneider.png" :
+                  cleanKey.includes("pepperl") ? "/brands/pepperlfuchs.png" : ""
+                );
+
+                return (
+                  <div key={idx} className="p-4 border border-slate-200 rounded-2xl bg-slate-50 hover:bg-white hover:border-slate-300 transition-all duration-200 flex flex-col justify-between space-y-3 shadow-3xs hover:shadow-sm group">
+                    <div className="space-y-3">
+                      {/* Logo Preview Box */}
+                      <div className="h-20 w-full bg-white border border-slate-200 rounded-xl p-2 flex items-center justify-center relative overflow-hidden shadow-2xs">
+                        {defaultLogo ? (
+                          <img
+                            src={defaultLogo}
+                            alt={name}
+                            className="max-h-14 max-w-[120px] object-contain"
+                            onError={(e) => { (e.currentTarget as HTMLElement).style.display = "none"; }}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 font-extrabold text-sm">
+                            {name.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Brand Name */}
+                      <div>
+                        <h4 className="text-sm font-extrabold text-slate-900 m-0 truncate group-hover:text-orange-600 transition-colors">
+                          {name}
+                        </h4>
+                        <span className="text-[10px] text-slate-400 font-mono truncate block mt-0.5">
+                          {logo ? "Custom Logo Uploaded" : "Default Auto Match"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Inline Quick Field Edits */}
+                    <div className="space-y-2 pt-2 border-t border-slate-200/60">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Brand Name</label>
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => {
+                            const updated = [...partners];
+                            if (typeof updated[idx] === "string") {
+                              updated[idx] = { name: e.target.value, logo: "" };
+                            } else {
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                            }
+                            setPartners(updated);
+                          }}
+                          className="w-full px-3 py-1.5 text-xs border rounded-lg bg-white font-medium focus:ring-1 focus:ring-orange-500 focus:outline-none"
+                          placeholder="Brand Name"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase tracking-wider">Logo Image</label>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            value={logo}
+                            onChange={(e) => {
+                              const updated = [...partners];
+                              if (typeof updated[idx] === "string") {
+                                updated[idx] = { name: updated[idx], logo: e.target.value };
+                              } else {
+                                updated[idx] = { ...updated[idx], logo: e.target.value };
+                              }
+                              setPartners(updated);
+                            }}
+                            className="flex-1 px-2.5 py-1.5 text-[11px] border rounded-lg bg-white font-mono focus:ring-1 focus:ring-orange-500 focus:outline-none"
+                            placeholder="/brands/logo.png"
+                          />
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id={`partner-file-${idx}`}
+                            className="hidden"
+                            onChange={(e) => handleFileUpload(e, (url) => {
+                              const updated = [...partners];
+                              if (typeof updated[idx] === "string") {
+                                updated[idx] = { name: updated[idx], logo: url };
+                              } else {
+                                updated[idx] = { ...updated[idx], logo: url };
+                              }
+                              setPartners(updated);
+                            })}
+                          />
+                          <label
+                            htmlFor={`partner-file-${idx}`}
+                            className="px-3.5 py-2 bg-slate-900 hover:bg-orange-600 !text-white text-[11px] font-extrabold uppercase tracking-wider rounded-lg cursor-pointer shrink-0 flex items-center shadow-sm transition-colors"
+                          >
+                            Upload
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Card Action Row: Delete Button */}
+                      <div className="pt-1 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => setPartners(partners.filter((_, i) => i !== idx))}
+                          className="text-rose-600 hover:text-rose-700 text-[11px] font-bold py-1 px-2.5 rounded-md hover:bg-rose-50 cursor-pointer transition-colors flex items-center gap-1"
+                        >
+                          <span>🗑️ Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

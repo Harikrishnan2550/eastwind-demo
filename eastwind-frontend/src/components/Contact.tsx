@@ -237,14 +237,7 @@ export default function Contact() {
 
             </div>
 
-            {/* Bottom active telemetry status */}
-            <div className="pt-8 mt-10 border-t border-slate-200/60 font-mono text-[10px] text-slate-400 flex justify-between items-center">
-              <span>{contactInfo.gatewayText}</span>
-              <span className="flex items-center gap-1.5 font-semibold text-emerald-600">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping" />
-                {contactInfo.gatewayStatus}
-              </span>
-            </div>
+
 
           </div>
 

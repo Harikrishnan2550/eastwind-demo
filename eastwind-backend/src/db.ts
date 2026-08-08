@@ -152,7 +152,7 @@ export interface ISolutionPage extends Document {
   partnersTagline?: string;
   partnersTitle?: string;
   partnersDesc?: string;
-  partners?: string[];
+  partners?: any[];
   gatewayTagline?: string;
   gatewayTitle?: string;
   gatewayDesc?: string;
@@ -351,7 +351,7 @@ const SolutionPageSchema = new Schema<ISolutionPage>({
   partnersTagline: { type: String },
   partnersTitle: { type: String },
   partnersDesc: { type: String },
-  partners: { type: [String], default: [] },
+  partners: { type: [Schema.Types.Mixed], default: [] },
   gatewayTagline: { type: String },
   gatewayTitle: { type: String },
   gatewayDesc: { type: String },

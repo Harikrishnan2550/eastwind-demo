@@ -959,39 +959,30 @@ export default function IndustrySolutions() {
   );
 
   const applicationsGrid = (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
       {applicationsList.map((app, idx) => (
         <Link
           key={app.id}
           href={app.href}
-          className="group relative p-7 bg-white border border-slate-200/80 rounded-3xl shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 transition-all duration-300 flex flex-col justify-between overflow-hidden no-underline text-inherit"
+          className="group relative p-6 bg-white border border-slate-200/80 rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 hover:border-slate-300 transition-all duration-300 flex items-center justify-between no-underline text-inherit cursor-pointer"
         >
-          <div className="space-y-4 relative z-10">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-[#c22026] bg-red-50 border border-red-100 px-3 py-1.5 rounded-full">
-                Application 0{idx + 1}
-              </span>
-              <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#1e3e8f] group-hover:text-white transition-all duration-300 text-xs font-bold">
-                →
-              </span>
-            </div>
-            <div>
-              <h3 className="text-xl font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#1e3e8f] transition-colors m-0">
+          <div className="flex items-center gap-4 min-w-0">
+            <span className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-[#c22026] text-xs font-mono font-bold shrink-0">
+              0{idx + 1}
+            </span>
+            <div className="min-w-0">
+              <h3 className="text-base font-extrabold text-slate-900 tracking-tight leading-snug group-hover:text-[#1e3e8f] transition-colors m-0 truncate">
                 {app.name}
               </h3>
-              <p className="text-xs font-bold text-slate-400 mt-1 m-0">
+              <p className="text-xs font-medium text-slate-400 m-0 mt-0.5 truncate">
                 {app.tagline}
               </p>
             </div>
-            <p className="text-xs text-slate-600 leading-relaxed font-normal m-0 line-clamp-3">
-              {app.desc}
-            </p>
           </div>
 
-          <div className="pt-6 border-t border-slate-100 mt-6 flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#1e3e8f] group-hover:text-[#c22026] transition-colors relative z-10">
-            <span>Explore Application Page</span>
-            <span className="group-hover:translate-x-1 transition-transform font-bold text-sm">›</span>
-          </div>
+          <span className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-[#1e3e8f] group-hover:text-white transition-all duration-300 text-xs font-bold shrink-0 ml-3">
+            →
+          </span>
         </Link>
       ))}
     </div>

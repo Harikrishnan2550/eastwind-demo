@@ -17,6 +17,7 @@ const getFrameUrl = (index: number) => {
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const bannerImgRef = useRef<HTMLDivElement>(null);
   const frame1Ref = useRef<HTMLDivElement>(null);
   const frame2Ref = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -92,55 +93,67 @@ export default function Hero() {
     if (!ctx) return;
 
     const drawFrame = (progress: number) => {
-      // Complete 100% of frames at 88% scroll depth to enforce an anti-separation cushion zone
-      const mappedProgress = Math.min(1, progress / 0.88);
-      const frameIndex = Math.min(
-        TOTAL_FRAMES - 1,
-        Math.floor(mappedProgress * TOTAL_FRAMES)
-      );
-      
-      const img = images[frameIndex] || images[0];
-      if (!img || !img.complete) return;
-
-      const imgRatio = img.width / img.height;
-      const canvasRatio = canvas.width / canvas.height;
-      let drawWidth, drawHeight, drawX, drawY;
-
-      if (imgRatio > canvasRatio) {
-        drawHeight = canvas.height;
-        drawWidth = canvas.height * imgRatio;
-        drawX = (canvas.width - drawWidth) / 2;
-        drawY = 0;
-      } else {
-        drawWidth = canvas.width;
-        drawHeight = canvas.width / imgRatio;
-        drawX = 0;
-        drawY = (canvas.height - drawHeight) / 2;
+      // 1. Slide 1 (0% to 35%): Show fixed banner image
+      // 2. Transition (35% to 50%): Cross-fade fixed banner to 3D canvas animation
+      // 3. Slide 2 (35% to 100%): Scrub 85 frame 3D animation
+      if (bannerImgRef.current) {
+        const bannerOpacity = progress <= 0.35 ? 1 : Math.max(0, 1 - (progress - 0.35) / 0.15);
+        bannerImgRef.current.style.opacity = String(bannerOpacity);
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+      if (canvasRef.current) {
+        const canvasOpacity = progress > 0.35 ? Math.min(1, (progress - 0.35) / 0.15) : 0;
+        canvasRef.current.style.opacity = String(canvasOpacity);
+      }
+
+      if (progress > 0.30) {
+        const slide2Progress = Math.min(1, (progress - 0.30) / 0.65);
+        const frameIndex = Math.min(
+          TOTAL_FRAMES - 1,
+          Math.floor(slide2Progress * TOTAL_FRAMES)
+        );
+        
+        const img = images[frameIndex] || images[0];
+        if (img && img.complete) {
+          const imgRatio = img.width / img.height;
+          const canvasRatio = canvas.width / canvas.height;
+          let drawWidth, drawHeight, drawX, drawY;
+
+          if (imgRatio > canvasRatio) {
+            drawHeight = canvas.height;
+            drawWidth = canvas.height * imgRatio;
+            drawX = (canvas.width - drawWidth) / 2;
+            drawY = 0;
+          } else {
+            drawWidth = canvas.width;
+            drawHeight = canvas.width / imgRatio;
+            drawX = 0;
+            drawY = (canvas.height - drawHeight) / 2;
+          }
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+        }
+      }
     };
 
     const updateDOM = (progress: number) => {
-      const mappedProgress = Math.min(1, progress / 0.88);
-
       if (frame1Ref.current) {
-        const opacity = mappedProgress <= 0.45 ? 1 - (mappedProgress / 0.45) : 0;
+        const opacity = progress <= 0.45 ? 1 - (progress / 0.45) : 0;
         frame1Ref.current.style.opacity = String(opacity);
-        frame1Ref.current.style.pointerEvents = mappedProgress <= 0.35 ? "auto" : "none";
-        frame1Ref.current.style.transform = `translate3d(0, calc(-50% - ${mappedProgress * 60}px), 0)`;
+        frame1Ref.current.style.pointerEvents = progress <= 0.35 ? "auto" : "none";
+        frame1Ref.current.style.transform = `translate3d(0, calc(-50% - ${progress * 60}px), 0)`;
       }
 
       if (frame2Ref.current) {
-        const opacity = mappedProgress > 0.45 ? Math.min(1, (mappedProgress - 0.45) / 0.10) : 0;
+        const opacity = progress > 0.45 ? Math.min(1, (progress - 0.45) / 0.10) : 0;
         frame2Ref.current.style.opacity = String(opacity);
-        frame2Ref.current.style.pointerEvents = mappedProgress > 0.50 ? "auto" : "none";
-        frame2Ref.current.style.transform = `translate3d(0, calc(-50% - ${(mappedProgress - 0.75) * 60}px), 0)`;
+        frame2Ref.current.style.pointerEvents = progress > 0.50 ? "auto" : "none";
+        frame2Ref.current.style.transform = `translate3d(0, calc(-50% - ${(progress - 0.75) * 60}px), 0)`;
       }
 
       if (indicatorRef.current) {
-        indicatorRef.current.style.opacity = String(Math.max(0, 1 - mappedProgress * 6));
+        indicatorRef.current.style.opacity = String(Math.max(0, 1 - progress * 6));
       }
     };
 
@@ -154,7 +167,6 @@ export default function Hero() {
       let progress = -rect.top / scrollHeight;
       progress = Math.max(0, Math.min(1, progress));
       
-      // Lock-step direct state redraw
       drawFrame(progress);
       updateDOM(progress);
     };
@@ -178,7 +190,20 @@ export default function Hero() {
   return (
     <div ref={containerRef} className="h-[200vh] relative bg-white w-full" id="hero">
       <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
-        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full object-cover z-10 bg-black" />
+        {/* Slide 1 Fixed Banner Image */}
+        <div
+          ref={bannerImgRef}
+          className="absolute top-0 left-0 w-full h-full z-10 transition-opacity duration-300 pointer-events-none bg-[#08090c]"
+        >
+          <img
+            src="/hero section.png"
+            alt="Safety Arabia Hero Banner"
+            className="w-full h-full object-cover object-right-top sm:object-right"
+          />
+        </div>
+
+        {/* Slide 2 Canvas 3D Frame Animation */}
+        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full object-cover z-10 bg-black opacity-0 transition-opacity duration-300" />
         <div className="absolute inset-0 z-15 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(to bottom, rgba(0, 240, 255, 0.01) 0px, rgba(0, 240, 255, 0.01) 1px, transparent 1px, transparent 4px)" }} />
         <div className="absolute inset-0 bg-gradient-to-b from-[#08090c]/70 via-[#08090c]/20 to-[#08090c]/75 z-20 pointer-events-none" />
 
@@ -202,13 +227,11 @@ export default function Hero() {
               <a href="#solutions" className="btn-primary">{slide2Btn1Text}</a>
             </div>
 
-
-
           </div>
         </div>
 
         <div ref={indicatorRef} className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-40 transition-opacity duration-300 pointer-events-none">
-          <span className="font-mono text-[0.65rem] uppercase text-white/60 tracking-widest">Scroll to scrub model</span>
+          <span className="font-mono text-[0.65rem] uppercase text-white/60 tracking-widest">Scroll to explore model</span>
           <div className="w-5 h-9 rounded-[10px] border-2 border-white/40 relative">
             <div className="w-1 h-2 bg-sky-400 rounded-[2px] absolute top-1.5 left-1/2 -translate-x-1/2 animate-[scrollMouse_1.5s_infinite]" />
           </div>

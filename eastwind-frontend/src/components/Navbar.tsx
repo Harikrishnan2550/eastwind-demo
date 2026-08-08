@@ -492,52 +492,27 @@ export default function Navbar() {
             <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
           </Link>
 
-          {/* Solutions Link Button - Direct Redirect to /solutions */}
+          {/* Single Solutions & Applications Link Button */}
           <Link
             href="/solutions"
             className={`nav-link relative group/nav px-3.5 py-2 text-[0.76rem] font-extrabold uppercase no-underline tracking-wider rounded-full transition-all duration-200 ${
               showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
             }`}
           >
-            <span>Solutions</span>
+            <span>Solutions & Applications</span>
             <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
           </Link>
 
-          {/* Applications Dropdown - Technical Applications List */}
-          <div className="nav-dropdown relative group/nav">
-            <button
-              type="button"
-              onClick={() => setActiveDropdown(activeDropdown === "applications" ? null : "applications")}
-              className={`nav-link-dropdown inline-flex items-center gap-1.25 px-3.5 py-2 text-[0.76rem] font-extrabold uppercase tracking-wider rounded-full transition-all duration-200 cursor-pointer ${
-                showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
-              } ${activeDropdown === "applications" ? (showTransparent ? "text-white bg-white/15" : "text-[#1e3e8f] bg-slate-100") : ""}`}
-            >
-              Applications {renderChevron(activeDropdown === "applications")}
-            </button>
-            {activeDropdown === "applications" && (
-              <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-72 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
-                {renderDropdownLinks(applicationsList)}
-              </div>
-            )}
-          </div>
-
-          {/* Services Dropdown - Engineering Services / Consultancy */}
-          <div className="nav-dropdown relative group/nav">
-            <button
-              type="button"
-              onClick={() => setActiveDropdown(activeDropdown === "services" ? null : "services")}
-              className={`nav-link-dropdown inline-flex items-center gap-1.25 px-3.5 py-2 text-[0.76rem] font-extrabold uppercase tracking-wider rounded-full transition-all duration-200 cursor-pointer ${
-                showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
-              } ${activeDropdown === "services" ? (showTransparent ? "text-white bg-white/15" : "text-[#1e3e8f] bg-slate-100") : ""}`}
-            >
-              Services {renderChevron(activeDropdown === "services")}
-            </button>
-            {activeDropdown === "services" && (
-              <div className="dropdown-container absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 w-64 p-4.5 bg-white/95 border border-slate-200/80 rounded-[24px] shadow-xl z-[150] backdrop-blur-xl">
-                {renderDropdownLinks(servicesList)}
-              </div>
-            )}
-          </div>
+          {/* Single Direct Services Link Button */}
+          <Link
+            href="/solutions?type=services"
+            className={`nav-link relative group/nav px-3.5 py-2 text-[0.76rem] font-extrabold uppercase no-underline tracking-wider rounded-full transition-all duration-200 ${
+              showTransparent ? "text-white/90 hover:text-white hover:bg-white/10" : "text-slate-700 hover:text-[#1e3e8f] hover:bg-slate-100"
+            }`}
+          >
+            <span>Services</span>
+            <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full opacity-0 scale-50 group-hover/nav:opacity-100 group-hover/nav:scale-100 transition-all duration-300 ${showTransparent ? "bg-white" : "bg-[#c22026]"}`} />
+          </Link>
 
 
 
@@ -606,66 +581,23 @@ export default function Navbar() {
               About Us
             </Link>
 
-            {/* Mobile Solutions Direct Link */}
+            {/* Mobile Solutions & Applications Direct Link */}
             <Link 
               href="/solutions" 
               onClick={() => setMobileMenuOpen(false)} 
               className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold no-underline"
             >
-              Solutions
+              Solutions & Applications
             </Link>
 
-            {/* Mobile Applications Section */}
-            <div>
-              <button 
-                type="button" 
-                onClick={() => toggleMobileAccordion("applications")} 
-                className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold cursor-pointer"
-              >
-                <span>Applications</span>
-                {renderChevron(mobileAccordions.applications)}
-              </button>
-              {mobileAccordions.applications && (
-                <div className="flex flex-col gap-1 mt-1.5 p-2 border border-slate-200/40 rounded-xl bg-white/70 shadow-inner">
-                  {applicationsList.map((item) => (
-                    <Link 
-                      key={item.name} 
-                      href={item.href} 
-                      onClick={() => setMobileMenuOpen(false)} 
-                      className="min-h-[36px] flex items-center px-3 rounded-lg text-slate-600 no-underline text-[0.82rem] font-semibold hover:text-[#1e3e8f] hover:bg-slate-50"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Services Section */}
-            <div>
-              <button 
-                type="button" 
-                onClick={() => toggleMobileAccordion("services")} 
-                className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold cursor-pointer"
-              >
-                <span>Services</span>
-                {renderChevron(mobileAccordions.services)}
-              </button>
-              {mobileAccordions.services && (
-                <div className="flex flex-col gap-1 mt-1.5 p-2 border border-slate-200/40 rounded-xl bg-white/70 shadow-inner">
-                  {servicesList.map((item) => (
-                    <Link 
-                      key={item.name} 
-                      href={item.href} 
-                      onClick={() => setMobileMenuOpen(false)} 
-                      className="min-h-[36px] flex items-center px-3 rounded-lg text-slate-600 no-underline text-[0.82rem] font-semibold"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Mobile Services Direct Link */}
+            <Link 
+              href="/solutions?type=services" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="w-full min-h-[44px] flex items-center justify-between px-4 border border-slate-200/50 rounded-xl bg-slate-50/50 text-slate-800 text-[0.88rem] font-bold no-underline"
+            >
+              Services & Consultancy
+            </Link>
 
 
 
